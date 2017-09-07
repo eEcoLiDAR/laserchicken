@@ -21,6 +21,7 @@ before_install:
 - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pip openblas numpy scipy
 - source activate test-environment
 - "pip install 'coverage'"
+- "pip install -q 'codacy-coverage'"
 - "pip install -qr requirements.txt"
 
 install:
@@ -28,6 +29,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script: 
-- pytest
+- pytest --cov=temp --cov-report xml:coverage.xml
 
 after_script:
+- python-codacy-coverage -r coverage.xml
