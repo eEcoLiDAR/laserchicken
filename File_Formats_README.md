@@ -12,7 +12,7 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 
 ## PCD:
-The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for moe information and reference.
+The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for reference and more information.
 Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file. 
 
 **HEADER:** The header entries must be specified precisely in the following order:
@@ -46,3 +46,16 @@ A list of all the [PCD pre-defined point types](https://github.com/PointCloudLib
 
 
 * You can [add custom point type](http://pointclouds.org/documentation/tutorials/adding_custom_ptype.php) to the point cloud.
+
+## PLY:
+Format for storing graphical objects that are described as a collection of polygons. 
+PLY is composed of an header followed by a list of vertices and  a list of polygons. The header specifies how many vertices and polygons are in the file, and also states what properties are associated with each vertex, such as (x,y,z) coordinates, normals and color. The polygon faces are simply lists of indices into the vertex list, and each face begins with a count of the number of elements in each list. 
+Please refer to [paulbourke- PLY file format](http://paulbourke.net/dataformats/ply/) for reference and more information.
+The structure of a typical PLY file:
+```
+  Header
+  Vertex List
+  Face List
+  (lists of other elements)
+```
+* Adding new attributes - applications can create new properties that are attached to elements of an object. The format for defining a new element is exactly the same as for vertices, faces and edges. 
