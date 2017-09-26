@@ -12,7 +12,7 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 
 ## PCD:
-The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) file format is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for moe information and reference.
+The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for moe information and reference.
 Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file. 
 
 **HEADER:** The header entries must be specified precisely in the following order:
@@ -37,5 +37,12 @@ HEIGHT - height of the point cloud dataset in the number of points, one of the 2
 * specify the height (total number of rows) of an organized point cloud dataset
 VIEWPOINT - specifies an acquisition viewpoint for the points in the dataset. The viewpoint information is specified as a translation (tx ty tz) + quaternion (qw qx qy qz). Default: VIEWPOINT 0 0 0 1 0 0 0
 POINTS - total number of points in the cloud. 
-DATA - data type that the point cloud data is stored in: ascii/binary.```
+DATA - data type that the point cloud data is stored in: ascii/binary.
+```
+**Attributes**
 
+PCL comes with a variety of pre-defined point types, ranging from SSE-aligned structures for XYZ data, to more complex n-dimensional histogram representations such as PFH (Point Feature Histograms). 
+A list of all the [PCD pre-defined point types](https://github.com/PointCloudLibrary/pcl/blob/master/common/include/pcl/impl/point_types.hpp).
+
+
+* You can [add custom point type](http://pointclouds.org/documentation/tutorials/adding_custom_ptype.php) to the point cloud.
