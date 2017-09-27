@@ -1,7 +1,7 @@
 import os
 from setuptools import setup
 
-with open(os.path.join(os.path.dirname(__file__), 'temp/_version.py')) as versionpy:
+with open(os.path.join(os.path.dirname(__file__), 'laserchicken/_version.py')) as versionpy:
     exec(versionpy.read())
 
 def read(fname):
