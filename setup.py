@@ -11,7 +11,7 @@ with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name = "temp",
+    name = "laserchicken",
     version = __version__,
     description = ("Point cloud toolkit"),
     license = "Apache 2.0",

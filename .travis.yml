@@ -30,7 +30,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script: 
-- pytest --cov=temp --cov-report xml:coverage.xml
+- pytest --cov=laserchicken --cov-report xml:coverage.xml
 
 after_script:
 - python-codacy-coverage -r coverage.xml
