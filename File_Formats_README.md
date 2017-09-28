@@ -8,7 +8,7 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 * PLY - Polygon File Format or the [Stanford Triangle Format](http://www.graphics.stanford.edu/data/3Dscanrep) 
 
-* [Postgresql](https://www.postgresql.org/) - [NLeSc loader and quierier](https://github.com/NLeSC/pointcloud-benchmark/blob/master/python/pointcloud)
+* [Postgresql](https://www.postgresql.org/) - [NLeSc load and query](https://github.com/NLeSC/pointcloud-benchmark/blob/master/python/pointcloud)
 
 
 ## PCD:
