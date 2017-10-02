@@ -140,17 +140,18 @@ A log or comments can be placed in the header by using the word comment at the s
 ```
   comment this is ignored
 ```
-**Point Cloud libraries**
+**Point Cloud libraries that can be used with PLY**
 
-PLY can be used in [CloudCompare](http://www.cloudcompare.org/) which can run on Windows, MacOS and Linux. 
+* PLY can be used in [CloudCompare](http://www.cloudcompare.org/) which can run on Windows, MacOS and Linux. 
 
-*[python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python*
+* [python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python. Dependencies python2 >= 2.7 or python3. The test suite was designed to test python2.7 and python3.4 but the reader/writer works for python3.5.
+
 
 # Size comparison
 
 CSV/TXT: 9.24 MB
 
-ODM: (OPALS) - 23.3 MB - more information?
+ODM: [OPALS](http://geo.tuwien.ac.at/opals/html/index.html) - 23.3 MB 
 
 LAS: 7.15 MB
 
