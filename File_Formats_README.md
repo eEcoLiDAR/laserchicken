@@ -49,11 +49,11 @@ A list of all the [PCD pre-defined point types](https://github.com/PointCloudLib
 
 ## PLY:
 Format for storing graphical objects that are described as a collection of polygons. 
-PLY is composed of an header followed by a list of vertices and  a list of polygons. The header specifies how many vertices and polygons are in the file, and also states what properties are associated with each vertex, such as (x,y,z) coordinates, normals and color. The polygon faces are simply lists of indices into the vertex list, and each face begins with a count of the number of elements in each list. 
+PLY is composed of an header (in ASCII format) followed by a list of vertices and a list of polygons. The header specifies the elements of a mesh and their types and states what properties are associated with each vertex, such as (x,y,z) coordinates, normals and color. The polygon faces are simply lists of indices into the vertex list, and each face begins with a count of the number of elements in each list. The header is followed by the list of elements.
 
 Please refer to [paulbourke- PLY file format](http://paulbourke.net/dataformats/ply/) for reference and more information.
 
-**HEADER**: A sample header must follow this specification: 
+**HEADER**
 ```
 ply
 format ascii 1.0
@@ -66,12 +66,10 @@ element face 516960
 property list uchar int vertex_indices
 end_header
 ```
-
 * ply - file format
 * format - ascii 1.0, binary_little_endian 1.0, binary_big_endian 1.0
 * comment - a comment which is ignored
-* element - a description of how some particular data element is stored and how many of them there are. 
-In a file where there are 12 vertices, each represented as a floating point (X,Y,Z) triple, one would expect to see:
+* element - a description of how some particular data element is stored and how many of them there are. Hence, in a file where there are 12 vertices, each represented as a floating point (X,Y,Z) triple, one would expect to see:
 ```
 element vertex 12
 property float x
@@ -83,26 +81,6 @@ Other properties may indicate colours or other data items are stored at each ver
 At the end of the header, there must always be the line:
 ```
 end_header
-```
-
-**Attributes**
-
-A variety of properties can be stored, including: xyz, color, surface normals, texture coordinates and data confidence values.
-
-The structure of a typical PLY file:
-```
-  Header
-  Vertex List
-  Face List
-  (lists of other elements)
-```
-* Adding new attributes - applications can create new properties that are attached to elements of an object. The format for defining a new element is exactly the same as for vertices, faces and edges. 
-
-**Log**
-
-A log or comments can be placed in the header by using the word comment at the start of the line. Everything from there until the end of the line is ignored.
-```
-  comment this is ignored
 ```
 A sample file addapted from [paulbourke](http://paulbourke.net/dataformats/ply/example1.ply):
 
@@ -143,4 +121,35 @@ end_header
 
      lots of triangular facets follow
 ```
+**Attributes**
 
+A variety of properties can be stored, including: xyz, color, surface normals, texture coordinates and data confidence values.
+
+The structure of a typical PLY file:
+```
+  Header
+  Vertex List
+  Face List
+  (lists of other elements)
+```
+* Adding new attributes - applications can create new properties that are attached to elements of an object. The format for defining a new element is exactly the same as for vertices, faces and edges. 
+
+**Log**
+
+A log or comments can be placed in the header by using the word comment at the start of the line. Everything from there until the end of the line is ignored.
+```
+  comment this is ignored
+```
+**Point Cloud libraries**
+
+PLY can be used in [CloudCompare](http://www.cloudcompare.org/) which can run on Windows, MacOS and Linux. 
+
+*[python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python*
+
+#Size comparison
+
+CSV/TXT: 9.24 MB
+ODM: (OPALS) - 23.3 MB - more information?
+LAS: 7.15 MB
+PLY: 5.04 MB
+PCD: 3.36 MB
