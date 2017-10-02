@@ -146,10 +146,14 @@ PLY can be used in [CloudCompare](http://www.cloudcompare.org/) which can run on
 
 *[python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python*
 
-#Size comparison
+# Size comparison
 
 CSV/TXT: 9.24 MB
+
 ODM: (OPALS) - 23.3 MB - more information?
+
 LAS: 7.15 MB
+
 PLY: 5.04 MB
+
 PCD: 3.36 MB
