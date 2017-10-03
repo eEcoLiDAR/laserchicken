@@ -8,6 +8,9 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 * [PLY](http://paulbourke.net/dataformats/ply/) - Polygon File Format or the [Stanford Triangle Format](http://www.graphics.stanford.edu/data/3Dscanrep) 
 
+## CSV:
+
+The CSV (Comma Separated Values) file format is the most common import and export format for spreadsheets and databases. Easy to use within python but once dealing with huge point clouds with extra attributes the file will become too big to process easily. 
 
 ## PCD:
 
@@ -152,15 +155,15 @@ A log or comments can be placed in the header by using the word comment at the s
 
 # Size comparison
 
-CSV/TXT: 9.24 MB
-
 ODM: [OPALS](http://geo.tuwien.ac.at/opals/html/index.html) - 23.3 MB
 
 LAS: 7.15 MB
 
-PLY: 5.04 MB
+CSV/TXT: 9.24 MB
 
 PCD: 3.36 MB
+
+PLY: 5.04 MB
 
 # Notes:
 
