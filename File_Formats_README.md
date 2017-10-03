@@ -4,18 +4,19 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 * [CSV](https://docs.python.org/3/library/csv.html)
 
-* PCD - the Point Cloud Library format [(PCL)](http://pointclouds.org/), python binding [NLeSc/python-pcl](https://github.com/NLeSC/python-pcl)
+* [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) - the Point Cloud Library format [(PCL)](http://pointclouds.org/), python binding [NLeSc/python-pcl](https://github.com/NLeSC/python-pcl)
 
-* PLY - Polygon File Format or the [Stanford Triangle Format](http://www.graphics.stanford.edu/data/3Dscanrep) 
-
-* [Postgresql](https://www.postgresql.org/) - [NLeSc load and query](https://github.com/NLeSC/pointcloud-benchmark/blob/master/python/pointcloud)
+* [PLY](http://paulbourke.net/dataformats/ply/) - Polygon File Format or the [Stanford Triangle Format](http://www.graphics.stanford.edu/data/3Dscanrep) 
 
 
 ## PCD:
+
 The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for reference and more information.
 Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file. 
 
-**HEADER:** The header entries must be specified precisely in the following order:
+**HEADER:** 
+
+The header entries must be specified precisely in the following order:
 ```
 VERSION - PCD file version
 FIELDS -  name of each dimension/field that a point can have, for example: xyz, rgb (colors), surface normals, moment invariants (j1-3) and more...
@@ -48,12 +49,14 @@ A list of all the [PCD pre-defined point types](https://github.com/PointCloudLib
 * You can [add custom point type](http://pointclouds.org/documentation/tutorials/adding_custom_ptype.php) to the point cloud.
 
 ## PLY:
+
 Format for storing graphical objects that are described as a collection of polygons. 
 PLY is composed of an header (in ASCII format) followed by a list of vertices and a list of polygons. The header specifies the elements of a mesh and their types and states what properties are associated with each vertex, such as (x,y,z) coordinates, normals and color. The polygon faces are simply lists of indices into the vertex list, and each face begins with a count of the number of elements in each list. The header is followed by the list of elements.
 
 Please refer to [paulbourke- PLY file format](http://paulbourke.net/dataformats/ply/) for reference and more information.
 
 **HEADER**
+
 ```
 ply
 format ascii 1.0
@@ -140,21 +143,26 @@ A log or comments can be placed in the header by using the word comment at the s
 ```
   comment this is ignored
 ```
-**Point Cloud libraries that can be used with PLY**
+**Point Cloud libraries**
 
 * PLY can be used in [CloudCompare](http://www.cloudcompare.org/) which can run on Windows, MacOS and Linux. 
 
-* [python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python. Dependencies python2 >= 2.7 or python3. The test suite was designed to test python2.7 and python3.4 but the reader/writer works for python3.5.
+* [python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python. Dependencies python2 >= 2.7 or python3. The test suite was designed to test python2.7 and 3.4 but works for python3.5.
 
 
 # Size comparison
 
 CSV/TXT: 9.24 MB
 
-ODM: [OPALS](http://geo.tuwien.ac.at/opals/html/index.html) - 23.3 MB 
+ODM: [OPALS](http://geo.tuwien.ac.at/opals/html/index.html) - 23.3 MB
 
 LAS: 7.15 MB
 
 PLY: 5.04 MB
 
 PCD: 3.36 MB
+
+# Notes:
+
+* [NLeSc load and query](https://github.com/NLeSC/pointcloud-benchmark): NLeSc has a pointcloud Python package which can be used to deal with point clouds in various Point Cloud Data Management Systems (PCDMS's), such as [Postgresql](https://www.postgresql.org/), MonetDB, Oracle and a combination of LAStools tools (lassort, lasindex, lasmerge and lasclip).
+
