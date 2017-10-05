@@ -9,5 +9,4 @@ def load(path):
 
     file = laspy.file.File(path)
     points = {'x': file.get_x, 'y': file.get_y, 'z': file.get_z}
-    result = {'points': points}
-    return result
+    return {'points': points}
