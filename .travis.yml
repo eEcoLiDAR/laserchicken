@@ -29,7 +29,8 @@ install:
 - "echo done"
 
 # command to run tests, e.g. python setup.py test
-script: 
+script:
+- cd laserchicken
 - pytest --cov=laserchicken --cov-report xml:coverage.xml
 
 after_script:
