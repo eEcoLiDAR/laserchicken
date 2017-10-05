@@ -14,7 +14,6 @@ class TestLoadLas(unittest.TestCase):
 
     def test_load_contains_x(self):
         """ Should run without exception and return points with x attributes. """
-        target = os.path.join(self._test_dir, 'target.ply')
         o = load(self.test_file_path)
         self.assertIn('points', o)
         self.assertIn('x', o['points'])
