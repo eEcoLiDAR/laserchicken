@@ -17,7 +17,8 @@ class TestLoad(unittest.TestCase):
     test_file_path = os.path.join(_test_dir, _test_file_name)
 
     @mock.patch('laserchicken.load_las.load')
-    def test_load(self, mock1):
-        """ Should raise exception. """
-        load('nonexistent.las')
-        mock1.assert_called_once_with()
+    def test_load(self, load_las_mock):
+        """ Load module should call load_las to get the file. """
+        nonexistent_las = 'nonexistent.las'
+        load(nonexistent_las)
+        load_las_mock.assert_called_once_with(nonexistent_las)
