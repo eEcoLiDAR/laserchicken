@@ -22,7 +22,7 @@ class TestLoadLas(unittest.TestCase):
 
     def test_load_nonexistentFile(self):
         """ Should raise exception. """
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(OSError):
             load('nonexistent.las')
 
     def setUp(self):

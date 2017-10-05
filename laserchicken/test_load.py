@@ -1,9 +1,13 @@
 import os
 import shutil
 import unittest
+import sys
 
 import pytest
-from unittest import mock
+if sys.version_info.major == 2:
+    import mock
+else:
+    from unittest import mock
 
 from laserchicken.load import load
 
@@ -18,5 +22,5 @@ class TestLoad(unittest.TestCase):
     def test_load(self, mock1):
         """ Should raise exception. """
         load('nonexistent.las')
-        mock1.assert_called_once()
+        mock1.assert_called_once_with()
 
