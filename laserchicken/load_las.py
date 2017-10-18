@@ -7,5 +7,5 @@ def load(path):
         raise OSError('{} not found.'.format(path))
 
     file = laspy.file.File(path)
-    points = {'x': file.get_x, 'y': file.get_y, 'z': file.get_z}
+    points = {'x': file.X, 'y': file.Y, 'z': file.Z}
     return {'points': points}
