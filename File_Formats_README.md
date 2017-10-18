@@ -150,8 +150,9 @@ A log or comments can be placed in the header by using the word comment at the s
 
 * PLY can be used in [CloudCompare](http://www.cloudcompare.org/) which can run on Windows, MacOS and Linux. 
 
-* [python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python. Dependencies python2 >= 2.7 or python3. The test suite was designed to test python2.7 and 3.4 but works for python3.5.
+* [python-plyfile](https://github.com/dranjan/python-plyfile) is a NumPy-based text/binary PLY file reader/writer for Python. Dependencies python2 >= 2.7 or python3. The test suite was designed to test python2.7 and 3.4 but works for python3.5. 
 
+Installing: ```pip install plyfile ```
 
 # Size comparison
 
