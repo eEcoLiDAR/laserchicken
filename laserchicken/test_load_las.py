@@ -1,6 +1,7 @@
 import os
 import shutil
 import unittest
+
 import pytest
 
 from laserchicken.load_las import load
@@ -12,11 +13,16 @@ class TestLoadLas(unittest.TestCase):
     _test_data_source = 'testdata'
     test_file_path = os.path.join(_test_dir, _test_file_name)
 
-    def test_load_contains_x(self):
-        """ Should run without exception and return points with x attributes. """
-        o = load(self.test_file_path)
-        self.assertIn('points', o)
-        self.assertIn('x', o['points'])
+    def test_load_containsPoints(self):
+        """ Should run without exception and return points. """
+        point_cloud = load(self.test_file_path)
+        self.assertIn('points', point_cloud)
+
+    def test_load_PointsContainX(self):
+        """ Should run without exception and return points. """
+        point_cloud = load(self.test_file_path)
+        print(point_cloud)
+        self.assertIn('data', point_cloud['points']['x'])
 
     def test_load_nonexistentFile(self):
         """ Should raise exception. """
