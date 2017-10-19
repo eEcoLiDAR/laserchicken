@@ -10,12 +10,13 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 ## CSV:
 
-The CSV (Comma Separated Values) file format is the most common import and export format for spreadsheets and databases. Easy to use within python but once dealing with huge point clouds with extra attributes the file will become too big to process easily. 
+The CSV (Comma Separated Values) file format is the most common import and export format for spreadsheets and databases. Easy to use within python but once dealing with huge point clouds with extra attributes the file will become too big to process easily. And it is completely non standard.
 
 ## PCD:
 
 The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for reference and more information.
-Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file. 
+Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file.
+This is PCL's format which is very complicated to install. 
 
 **HEADER:** 
 
@@ -154,7 +155,7 @@ A log or comments can be placed in the header by using the word comment at the s
 
 Installing: ```pip install plyfile ```
 
-# Size comparison
+## Size comparison
 
 ODM: [OPALS](http://geo.tuwien.ac.at/opals/html/index.html) - 23.3 MB
 
@@ -166,7 +167,44 @@ PCD: 3.36 MB
 
 PLY: 5.04 MB
 
-# Notes:
+## Notes:
 
 * [NLeSc load and query](https://github.com/NLeSC/pointcloud-benchmark): NLeSc has a pointcloud Python package which can be used to deal with point clouds in various Point Cloud Data Management Systems (PCDMS's), such as [Postgresql](https://www.postgresql.org/), MonetDB, Oracle and a combination of LAStools tools (lassort, lasindex, lasmerge and lasclip).
 
+# Internal data structure
+
+To stay close to the chosen file format the python data structure will look like this:
+```
+{'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
+   'pointcloud':
+       {'offset': {'type': 'double', 'data': 12.1}},
+   'points':
+       {'x': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+        'y': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+        'z': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+        'return': {'type': 'int', 'data': np.array([1, 1, 2])}}}
+ ```
+ 
+ This gives us the three data types that we want to store in the memory (and file):
+ * Logging
+ * Points with unlimited custom attributes
+ * Point cloud wide attributes (offset for instance).
+ The logging will be stored in COMMENT lines in the PLY file. Example:
+ ```
+ ply
+format ascii 1.0
+comment log0000 Processed by module load
+comment log0001 Processed by module filter using parameters(x,y,z)
+element vertex 3
+property float x
+property float y
+property float z
+property int return
+element pointcloud 1
+property double offset
+end_header
+0.1 0.1 0.1 1
+0.2 0.2 0.2 1
+0.3 0.3 0.3 2
+12.1
+```
