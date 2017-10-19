@@ -10,12 +10,13 @@ There is a multitude of File Formats that can be used with LAS and LAZ files. A 
 
 ## CSV:
 
-The CSV (Comma Separated Values) file format is the most common import and export format for spreadsheets and databases. Easy to use within python but once dealing with huge point clouds with extra attributes the file will become too big to process easily. 
+The CSV (Comma Separated Values) file format is the most common import and export format for spreadsheets and databases. Easy to use within python but once dealing with huge point clouds with extra attributes the file will become too big to process easily. And it is completely non standard.
 
 ## PCD:
 
 The [PCD](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) is used as a file format to support 3D point cloud data. Please refer to [pointclouds.org](http://pointclouds.org/documentation/tutorials/pcd_file_format.php) for reference and more information.
-Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file. 
+Each PCD file contains a header (ASCII) that identifies and declares certain properties of the point cloud data stored in the file.
+This is PCL's format which is very complicated to install. 
 
 **HEADER:** 
 
