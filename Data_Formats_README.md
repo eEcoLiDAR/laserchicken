@@ -83,7 +83,7 @@ property float x
 property float y
 property float z
 ```
-Other properties may indicate colours or other data items are stored at each vertex and indicate the data type of that information. Data types can be one of two variants, depending on the source of the ply file. The type can be specified with one of char uchar short ushort int uint float double, or one of int8 uint8 int16 uint16 int32 uint32 float32 float64.
+Other properties may indicate any data items that are stored at each vertex (for example return number) and the data type of that information. Data types can be one of two variants, depending on the source of the ply file. The type can be specified with one of  [char uchar short ushort int uint float double], or one of  [int8 uint8 int16 uint16 int32 uint32 float32 float64].
 
 At the end of the header, there must always be the line:
 ```
