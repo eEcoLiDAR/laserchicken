@@ -12,4 +12,4 @@ engines:
  coverage:
    enabled: true
 exclude_paths:
-  - test_*.py
+  - **/test_*.py
