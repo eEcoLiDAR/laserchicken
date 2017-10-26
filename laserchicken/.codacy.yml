@@ -1,0 +1,15 @@
+engines:
+ pylint:
+   enabled: true
+ prospector:
+   enabled: true
+ bandit:
+   enabled: true
+ duplication:
+   enabled: true
+ metrics:
+   enabled: true
+ coverage:
+   enabled: true
+exclude_paths:
+  - test_*.py
