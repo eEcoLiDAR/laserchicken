@@ -24,6 +24,7 @@ before_install:
 - "pip install -q 'pytest-cov'"
 - "pip install -q 'codacy-coverage'"
 - "pip install -qr requirements.txt"
+- "pip install -q coveralls"
 
 install:
 - "echo done"
@@ -35,3 +36,4 @@ script:
 
 after_script:
 - python-codacy-coverage -r coverage.xml
+- coveralls
