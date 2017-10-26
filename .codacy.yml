@@ -1,15 +1,27 @@
 engines:
  pylint:
    enabled: true
+   exclude_paths:
+  - **/test_*.py
  prospector:
    enabled: true
+   exclude_paths:
+  - **/test_*.py
  bandit:
    enabled: true
+   exclude_paths:
+  - **/test_*.py
  duplication:
    enabled: true
+   exclude_paths:
+  - **/test_*.py
  metrics:
    enabled: true
+   exclude_paths:
+  - **/test_*.py
  coverage:
    enabled: true
+   exclude_paths:
+  - **/test_*.py
 exclude_paths:
   - **/test_*.py
