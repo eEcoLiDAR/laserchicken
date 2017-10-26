@@ -49,9 +49,9 @@ def _copy_dict(pc_in, array_mask):
     """
     result = {}
     for key, value in pc_in.items():
-        if type(value) == dict:
+        if isinstance(value, dict):
             new_value = _copy_dict(value, array_mask)
-        elif type(value) == np.ndarray:
+        elif isinstance(value, np.ndarray):
             new_value = value[array_mask]
         else:
             new_value = value
