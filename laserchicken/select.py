@@ -5,7 +5,7 @@ def select_above(pc, attribute, threshold):
     """
     Return the selection of the input point cloud that contains only points with a given attribute above some value.
     :param pc: Input point cloud
-    :param attribute: The attribute used for selection
+    :param attribute: The attribute name used for selection
     :param threshold: The threshold value used for selection
     :return: A new point cloud containing only the selected points
     """
@@ -18,7 +18,7 @@ def select_below(pc, attribute, threshold):
     """
     Return the selection of the input point cloud that contains only points with a given attribute below some value.
     :param pc: Input point cloud
-    :param attribute: The attribute used for selection
+    :param attribute: The attribute name used for selection
     :param threshold: The threshold value used for selection
     :return: A new point cloud containing only the selected points
     """
