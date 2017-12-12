@@ -2,12 +2,10 @@ import os
 import shutil
 import unittest
 
-import pytest
 import numpy as np
+import pytest
 
 from laserchicken.read_las import read
-from laserchicken.write_las import write
-from laserchicken.test_utils import generate_test_point_cloud
 
 
 class TestReadWriteLas(unittest.TestCase):
