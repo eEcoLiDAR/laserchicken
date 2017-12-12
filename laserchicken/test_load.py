@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+
 from laserchicken.load import load
 
 if sys.version_info.major == 2:
@@ -16,7 +17,7 @@ class TestLoad(unittest.TestCase):
     test_file_path = os.path.join(_test_dir, _test_file_name)
 
     @mock.patch('laserchicken.write_ply.write')
-    @mock.patch('laserchicken.load_las.load')
+    @mock.patch('laserchicken.read_las.read')
     def test_load(self, load_las_mock, write_ply_mock):
         """ Load module should call load_las to get the file. """
         nonexistent_las = 'nonexistent.las'
@@ -26,7 +27,7 @@ class TestLoad(unittest.TestCase):
 
     @unittest.skip('Production code not implemented yet.')
     @mock.patch('laserchicken.write_ply.write')
-    @mock.patch('laserchicken.load_las.load')
+    @mock.patch('laserchicken.read_las.read')
     def test_write(self, load_las_mock, write_ply_mock):
         """ Load module should call write_ply to get the file. """
         nonexistent_las = 'nonexistent.las'
