@@ -3,7 +3,7 @@ import os
 import laspy
 
 
-def load(path):
+def read(path):
     """
     Loads the points from a LAS file into memory.
     Resulting data structure looks like:
@@ -22,10 +22,15 @@ def load(path):
         raise OSError('{} not found.'.format(path))
 
     file = laspy.file.File(path)
-    points = {'x': _get_attribute(file.X, 'double'),
-              'y': _get_attribute(file.Y, 'double'),
-              'z': _get_attribute(file.Z, 'double')}
+    print(file.header.scale)
+    points = {'x': _get_attribute(_compute_value(file.X, file.header.scale[0], file.header.offset[0]), 'double'),
+              'y': _get_attribute(_compute_value(file.Y, file.header.scale[1], file.header.offset[1]), 'double'),
+              'z': _get_attribute(_compute_value(file.Z, file.header.scale[2], file.header.offset[2]), 'double')}
     return {'points': points}
+
+
+def _compute_value(data, scale, offset):
+    return data * scale + offset
 
 
 def _get_attribute(data, data_type):
