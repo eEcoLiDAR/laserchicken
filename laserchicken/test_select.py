@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_equal, assert_almost_equal
 
+from laserchicken.keys import point
 from laserchicken.select import select_below, select_above
 
 
@@ -28,7 +29,7 @@ class TestSelectBelow(unittest.TestCase):
         """ Select change output, make sure that input hasn't changed. """
         pc_in = get_test_data()
         pc_out = select_below(pc_in, 'z', 3.2)
-        pc_out['points']['x']['data'][0] += 1
+        pc_out[point]['x']['data'][0] += 1
         assert_points_equal(pc_in, get_test_data())
 
     @staticmethod
@@ -36,7 +37,7 @@ class TestSelectBelow(unittest.TestCase):
         """ Selecting all point under some super high value should return all the points. """
         pc_in = get_test_data()
         pc_out = select_below_ridiculous_high_z(pc_in)
-        assert_equal(len(pc_out['points']['x']['data']), 3)
+        assert_equal(len(pc_out[point]['x']['data']), 3)
         assert_points_equal(pc_in, pc_out)
 
     @staticmethod
@@ -44,11 +45,11 @@ class TestSelectBelow(unittest.TestCase):
         """ Selecting below some threshold should only result the correct lowest point. """
         pc_in = get_test_data()
         pc_out = select_below(pc_in, 'z', 3.2)
-        assert_equal(len(pc_out['points']['x']['data']), 1)
-        assert_almost_equal(pc_out['points']['x']['data'][0], 1.1)
-        assert_almost_equal(pc_out['points']['y']['data'][0], 2.1)
-        assert_almost_equal(pc_out['points']['z']['data'][0], 3.1)
-        assert_almost_equal(pc_out['points']['return']['data'][0], 1)
+        assert_equal(len(pc_out[point]['x']['data']), 1)
+        assert_almost_equal(pc_out[point]['x']['data'][0], 1.1)
+        assert_almost_equal(pc_out[point]['y']['data'][0], 2.1)
+        assert_almost_equal(pc_out[point]['z']['data'][0], 3.1)
+        assert_almost_equal(pc_out[point]['return']['data'][0], 1)
 
 
 class TestSelectAbove(unittest.TestCase):
@@ -79,17 +80,17 @@ class TestSelectAbove(unittest.TestCase):
         """ Selecting above some threshold should only result the correct highest point. """
         pc_in = get_test_data()
         pc_out = select_above(pc_in, 'z', 3.2)
-        assert_equal(len(pc_out['points']['x']['data']), 1)
-        assert_almost_equal(pc_out['points']['x']['data'][0], 1.3)
-        assert_almost_equal(pc_out['points']['y']['data'][0], 2.3)
-        assert_almost_equal(pc_out['points']['z']['data'][0], 3.3)
-        assert_almost_equal(pc_out['points']['return']['data'][0], 2)
+        assert_equal(len(pc_out[point]['x']['data']), 1)
+        assert_almost_equal(pc_out[point]['x']['data'][0], 1.3)
+        assert_almost_equal(pc_out[point]['y']['data'][0], 2.3)
+        assert_almost_equal(pc_out[point]['z']['data'][0], 3.3)
+        assert_almost_equal(pc_out[point]['return']['data'][0], 2)
 
 
 def get_test_data():
     return {'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
             'pointcloud': {'offset': {'type': 'double', 'data': 12.1}},
-            'points':
+            point:
                 {'x': {'type': 'double', 'data': np.array([1.1, 1.2, 1.3])},
                  'y': {'type': 'double', 'data': np.array([2.1, 2.2, 2.3])},
                  'z': {'type': 'double', 'data': np.array([3.1, 3.2, 3.3])},
@@ -101,11 +102,11 @@ def select_below_ridiculous_high_z(pc_in):
 
 
 def assert_points_equal(pc_in, pc_out):
-    assert_equal(len(pc_out['points']['x']['data']), len(pc_in['points']['x']['data']))
-    assert_almost_equal(pc_out['points']['x']['data'], pc_in['points']['x']['data'])
-    assert_almost_equal(pc_out['points']['y']['data'], pc_in['points']['y']['data'])
-    assert_almost_equal(pc_out['points']['z']['data'], pc_in['points']['z']['data'])
-    assert_almost_equal(pc_out['points']['return']['data'], pc_in['points']['return']['data'])
+    assert_equal(len(pc_out[point]['x']['data']), len(pc_in[point]['x']['data']))
+    assert_almost_equal(pc_out[point]['x']['data'], pc_in[point]['x']['data'])
+    assert_almost_equal(pc_out[point]['y']['data'], pc_in[point]['y']['data'])
+    assert_almost_equal(pc_out[point]['z']['data'], pc_in[point]['z']['data'])
+    assert_almost_equal(pc_out[point]['return']['data'], pc_in[point]['return']['data'])
 
 
 def assert_none_pc_raises_value_error(function):

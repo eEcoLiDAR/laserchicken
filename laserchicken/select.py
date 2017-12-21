@@ -1,5 +1,7 @@
 import numpy as np
 
+from laserchicken.keys import point
+
 
 def select_above(pc, attribute, threshold):
     """
@@ -10,7 +12,7 @@ def select_above(pc, attribute, threshold):
     :return: A new point cloud containing only the selected points
     """
     _check_valid_arguments(attribute, pc)
-    mask = pc['points'][attribute]['data'] > threshold
+    mask = pc[point][attribute]['data'] > threshold
     return _copy_dict(pc, mask)
 
 
@@ -23,7 +25,7 @@ def select_below(pc, attribute, threshold):
     :return: A new point cloud containing only the selected points
     """
     _check_valid_arguments(attribute, pc)
-    mask = pc['points'][attribute]['data'] < threshold
+    mask = pc[point][attribute]['data'] < threshold
     return _copy_dict(pc, mask)
 
 
@@ -36,7 +38,7 @@ def _check_valid_arguments(attribute, pc):
     """
     if pc is None:
         raise ValueError('Input point cloud cannot be None.')
-    if attribute not in pc['points']:
+    if attribute not in pc[point]:
         raise ValueError('Attribute key {} for selection not found in point cloud.'.format(attribute))
 
 
