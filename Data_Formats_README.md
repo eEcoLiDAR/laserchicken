@@ -178,7 +178,7 @@ To stay close to the chosen file format the python data structure will look like
 {'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
    'pointcloud':
        {'offset': {'type': 'double', 'data': 12.1}},
-   'points':
+   'vertex':
        {'x': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
         'y': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
         'z': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},

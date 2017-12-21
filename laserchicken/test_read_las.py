@@ -5,6 +5,7 @@ import unittest
 import numpy as np
 import pytest
 
+from laserchicken import keys
 from laserchicken.read_las import read
 
 
@@ -17,20 +18,20 @@ class TestReadWriteLas(unittest.TestCase):
     def test_load_containsPoints(self):
         """ Should run without exception and return points. """
         point_cloud = read(self.test_file_path)
-        self.assertIn('points', point_cloud)
+        self.assertIn(keys.point, point_cloud)
 
     def test_load_PointsContainX(self):
         """ Should run without exception and return points. """
         point_cloud = read(self.test_file_path)
         print(point_cloud)
-        self.assertIn('data', point_cloud['points']['x'])
+        self.assertIn('data', point_cloud[keys.point]['x'])
 
     def test_load_CorrectFirstX(self):
         """ Should . """
         point_cloud = read(self.test_file_path)
-        point = [point_cloud['points']['x']['data'][0],
-                 point_cloud['points']['y']['data'][0],
-                 point_cloud['points']['z']['data'][0]]
+        point = [point_cloud[keys.point]['x']['data'][0],
+                 point_cloud[keys.point]['y']['data'][0],
+                 point_cloud[keys.point]['z']['data'][0]]
         np.testing.assert_allclose(np.array(point),
                                    np.array([-1870.480059509277, 338897.281499328557, 192.363999260664]))
 
