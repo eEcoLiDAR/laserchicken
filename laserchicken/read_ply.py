@@ -5,7 +5,7 @@ import numpy as np
 
 def read(path):
     if not os.path.exists(path):
-        raise FileNotFoundError('File not found: {}'.format(path))
+        raise IOError('File not found: {}'.format(path))
 
     with open(path, 'r') as ply:
         try:
@@ -23,7 +23,8 @@ def read(path):
 
 def read_header(ply):
     index = []
-    for line in ply:
+    line = ply.readline()
+    while line.strip() != 'end_header':
         if line[:8] == 'element ':
             element_type = line.split()[1]
             number_of_elements = int(line.split()[2])
@@ -34,9 +35,7 @@ def read_header(ply):
         if line[:9] == 'property ':
             property_type, property_name = line[9:].strip('\n').split(' ')
             current_properties.append({'type': property_type, 'name': property_name})
-
-        if line.strip() == 'end_header':
-            break
+        line = ply.readline()
     return index
 
 
