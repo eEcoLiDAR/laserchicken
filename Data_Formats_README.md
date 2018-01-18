@@ -175,7 +175,8 @@ PLY: 5.04 MB
 
 To stay close to the chosen file format the python data structure will look like this:
 ```
-{'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
+{'log': [{'time': '2018-01-18 16:01', 'module': 'load', 'parameters': [], 'version': '0.9.2'},
+         {'time': '2018-01-18 16:01', 'module': 'filter', 'parameters': [('z', 'gt', '1.5')], 'version': '0.9.2'}],
    'pointcloud':
        {'offset': {'type': 'double', 'data': 12.1}},
    'vertex':
@@ -193,8 +194,10 @@ To stay close to the chosen file format the python data structure will look like
  ```
  ply
 format ascii 1.0
-comment log0000 Processed by module load
-comment log0001 Processed by module filter using parameters(x,y,z)
+comment [
+comment {'time': '2018-01-18 16:01', 'module': 'load', 'parameters': [], 'version': '0.9.2'}
+comment {'time': '2018-01-18 16:01', 'module': 'filter', 'parameters': [('z', 'gt', '1.5')], 'version': '0.9.2'}
+comment ]
 element vertex 3
 property float x
 property float y
