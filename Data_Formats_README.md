@@ -1,5 +1,5 @@
 # Point Cloud File Formats -work in progress
-Handeling huge point clouds requires a spatial data structure to efficiatly access each point.
+Handeling huge point clouds requires a spatial data structure to efficiently access each point.
 There is a multitude of File Formats that can be used with LAS and LAZ files. A summary of [File Formats](http://www.cloudcompare.org/doc/wiki/index.php?title=FILE_I/O), out of which we would focus on: 
 
 * [CSV](https://docs.python.org/3/library/csv.html)
@@ -180,9 +180,9 @@ To stay close to the chosen file format the python data structure will look like
    'pointcloud':
        {'offset': {'type': 'double', 'data': 12.1}},
    'vertex':
-       {'x': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
-        'y': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
-        'z': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+       {'x': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
+        'y': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
+        'z': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
         'return': {'type': 'int', 'data': np.array([1, 1, 2])}}}
  ```
  
