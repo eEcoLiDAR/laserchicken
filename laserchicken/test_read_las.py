@@ -40,8 +40,7 @@ class TestReadWriteLas(unittest.TestCase):
         names = sorted(data)
         print("Order:", names)
         point = [point_cloud[keys.point][name]['data'][0] for name in names]
-        np.testing.assert_allclose(np.array(point),
-                                   np.array([data[name] for name in names]))
+        np.testing.assert_allclose(np.array(point), np.array([data[name] for name in names]))
 
     def test_load_nonexistentFile(self):
         """ Should raise exception. """
