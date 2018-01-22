@@ -3,8 +3,8 @@
 ## Pull Request Submission Guidelines
 
 Before you submit your pull request consider the following guidelines: 
-* Please communicate with us up front about any new feature you would like to add, to avoid disappointment later. You can do this by creating an [issue](https://github.com/eEcoLiDAR/eEcoLiDAR/issues).
-* Fork the repository to your own git account if you don't have write access
+* Please communicate with us up front about any new feature you would like to add, to avoid disappointment later. You can do this by creating an [issue](https://github.com/eEcoLiDAR/eEcoLiDAR/issues)
+* Fork the repository to your own github account if you don't have write access
 * Clone the repository on your local machine
 * Make your changes in a new git branch:  
 `git checkout -b my-fix-branch master`
