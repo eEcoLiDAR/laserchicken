@@ -1,3 +1,4 @@
+"""Test read_las module."""
 import os
 import shutil
 import unittest
@@ -16,18 +17,18 @@ class TestReadWriteLas(unittest.TestCase):
     test_file_path = os.path.join(_test_dir, _test_file_name)
 
     def test_load_containsPoints(self):
-        """ Should run without exception and return points. """
+        """Should run without exception and return points."""
         point_cloud = read(self.test_file_path)
         self.assertIn(keys.point, point_cloud)
 
     def test_load_PointsContainX(self):
-        """ Should run without exception and return points. """
+        """Should run without exception and return points."""
         point_cloud = read(self.test_file_path)
         print(point_cloud)
         self.assertIn('data', point_cloud[keys.point]['x'])
 
     def test_load_CorrectFirstX(self):
-        """ Should . """
+        """Should run without exception and compare equal."""
         point_cloud = read(self.test_file_path)
         data = {
             'x': 131999.984125,
@@ -43,7 +44,7 @@ class TestReadWriteLas(unittest.TestCase):
         np.testing.assert_allclose(np.array(point), np.array([data[name] for name in names]))
 
     def test_load_nonexistentFile(self):
-        """ Should raise exception. """
+        """Should raise exception."""
         with pytest.raises(OSError):
             read('nonexistent.las')
 

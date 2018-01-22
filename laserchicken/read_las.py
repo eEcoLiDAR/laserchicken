@@ -1,3 +1,4 @@
+"""Module for reading LAS files."""
 import os
 
 import laspy
@@ -7,7 +8,8 @@ from laserchicken import keys
 
 def read(path):
     """
-    Loads the points from a LAS file into memory.
+    Load the points from a LAS file into memory.
+
     Resulting data structure looks like:
     {'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
      'pointcloud':
