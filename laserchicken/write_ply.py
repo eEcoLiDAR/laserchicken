@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 from laserchicken import keys
 
@@ -6,7 +7,7 @@ def write(pc, path):
     # TODO: raise exception if file already exists?
     with open(path, 'w') as ply:
         write_header(pc,ply)
-        #write_data(pc,ply)
+        write_data(pc,ply)
 
 def write_header(pc,ply):
     ply.write("ply" + '\n')
@@ -17,9 +18,28 @@ def write_header(pc,ply):
         write_elements(pc,ply,elem_name,get_num_elems = get_num_elems)
     ply.write("end_header" + '\n')
 
-'''def write_data(pc,ply):
+def write_data(pc,ply):
+    delim = ' '
     for elem_name in get_ordered_elems(pc.keys()):
-'''
+        props = get_ordered_props(elem_name,pc[elem_name].keys())
+        num_elems = len(pc[elem_name]["x"].get("data",[])) if elem_name == keys.point else 1
+        for i in range(num_elems):
+            for prop in props:
+                datavalues = pc[elem_name][prop]["data"]
+                if(isinstance(datavalues,np.ndarray)):
+                    if(prop == props[-1]):
+                        ply.write(formatply(datavalues[i]))
+                    else:
+                        ply.write(formatply(datavalues[i]) + delim)
+                else:
+                    if(i != 0):
+                        raise Exception("Scalar quantity does not have element at index %d" % i)
+                    ply.write(formatply(datavalues))
+            ply.write('\n')
+
+
+def formatply(obj):
+    return str(obj)
 
 def get_ordered_elems(elem_names):
     if(keys.point in elem_names):

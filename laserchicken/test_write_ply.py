@@ -7,7 +7,7 @@ import numpy as np
 from laserchicken.write_ply import write
 from laserchicken.read_ply import read
 
-from laserchicken.test_utils import generate_simple_test_point_cloud, generate_simple_test_header, generate_complex_test_point_cloud, generate_complex_test_header
+from laserchicken.test_utils import * 
 
 def read_header(ply):
     header = ''
@@ -16,6 +16,17 @@ def read_header(ply):
         header = header + line
         line = ply.readline()
     return header
+
+def read_data(ply):
+    data = ''
+    in_header = True
+    for line in ply:
+        if(line == 'end_header\n'):
+            in_header = False
+        else:
+            if(not in_header):
+                data = data + line
+    return data
 
 class TestWritePly(unittest.TestCase):
     _test_dir = 'TestLoad_dir'
@@ -55,17 +66,24 @@ class TestWritePly(unittest.TestCase):
         self.assertMultiLineEqual(header_in, header_out)
 
 
-    @unittest.skip('Production code for writing not yet implemented.')
-    def test_write_loadTheSameData(self):
+    #@unittest.skip('Production code for writing not yet implemented.')
+    def test_write_loadTheSameSimpleData(self):
         """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
-        pass
-        """ to finish comparing writing and reading of the same PC
-        pc_in = generate_test_point_cloud()
-        points_in = data[keys.point]
+        pc_in = generate_simple_test_point_cloud()
         write(pc_in, self.test_file_path)
-        pc_out = read(self.test_file_path)
-        self.asserEqual()
-        """
+        data_in = generate_simple_test_data()
+        with open(self.test_file_path,'r') as ply:
+            data_out = read_data(ply)
+        self.assertEqual(data_in, data_out)
+
+    def test_write_loadTheSameComplexData(self):
+        """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
+        pc_in = generate_complex_test_point_cloud()
+        write(pc_in, self.test_file_path)
+        data_in = generate_complex_test_data()
+        with open(self.test_file_path,'r') as ply:
+            data_out = read_data(ply)
+        self.assertEqual(data_in, data_out)
 
     def setUp(self):
         os.mkdir(self._test_dir)
