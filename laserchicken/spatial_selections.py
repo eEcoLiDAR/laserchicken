@@ -13,34 +13,27 @@ def read_wkt_file(path):
     return content
 
 
-def contains(points, polygon_wkt):
+def contains(pc, polygon_wkt):
     polygon = loads(polygon_wkt)
-    points_in = np.full(points.size, False, dtype=bool)
-    point_id = 0
-    for i in range(points.size):
-        if polygon.contains(points[i]):
-            points_in[point_id] = i
-            point_id += 1
-    return points_in
-
-
-def create_points(pc):
     x = pc[point]['x']['data']
     y = pc[point]['y']['data']
-    points = np.empty(x.size)
-    for i in range(x.size):
-        points[i] = Point(x[i], y[i])
-    return points
 
+    points_in = []
+    point_id = 0
+    for i in range(x.size):
+        if polygon.contains(Point(x[i], y[i])):
+            points_in.append(i)
+            point_id += 1
+    return points_in
 
 def filter_points(pc, points_in):
     x = pc[point]['x']['data']
     y = pc[point]['y']['data']
     z = pc[point]['z']['data']
-    new_x = np.full(points_in.size, 0)
-    new_y = np.full(points_in.size, 0)
-    new_z = np.full(points_in.size, 0)
-    for i in range(points_in.size):
+    new_x = np.full(len(points_in), 0)
+    new_y = np.full(len(points_in), 0)
+    new_z = np.full(len(points_in), 0)
+    for i in range(len(points_in)):
         new_x[i] = x[points_in[i]]
         new_y[i] = y[points_in[i]]
         new_z[i] = z[points_in[i]]
@@ -52,7 +45,6 @@ def filter_points(pc, points_in):
 
 def points_in_polygon_wkt(pc, polygons_wkt_path):
     polygons_wkts = read_wkt_file(polygons_wkt_path)
-    points = create_points(pc)
-    points_in = contains(points, polygons_wkts)
+    points_in = contains(pc, polygons_wkts[0])
     new_pc = filter_points(pc, points_in)
     return new_pc
