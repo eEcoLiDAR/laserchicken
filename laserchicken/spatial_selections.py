@@ -3,7 +3,8 @@ from shapely.geometry import Point
 from shapely.wkt import loads
 import numpy as np
 from laserchicken.keys import point
-
+import shapefile
+import shapely
 
 def read_wkt_file(path):
     with open(path) as f:
@@ -13,8 +14,7 @@ def read_wkt_file(path):
     return content
 
 
-def contains(pc, polygon_wkt):
-    polygon = loads(polygon_wkt)
+def contains(pc, polygon):
     x = pc[point]['x']['data']
     y = pc[point]['y']['data']
 
@@ -42,9 +42,23 @@ def filter_points(pc, points_in):
     pc[point]['z']['data'] = new_z
     return pc
 
+def read_shp_file(path):
+    shape = shapefile.Reader(path)
+    # first feature of the shapefile
+    feature = shape.shapeRecords()[0]
+    first = feature.shape.__geo_interface__
+    shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
+    return shp_geom
 
 def points_in_polygon_wkt(pc, polygons_wkt_path):
     polygons_wkts = read_wkt_file(polygons_wkt_path)
-    points_in = contains(pc, polygons_wkts[0])
+    polygon = loads(polygons_wkts[0])
+    points_in = contains(pc, polygon)
+    new_pc = filter_points(pc, points_in)
+    return new_pc
+
+def points_in_polygon_shp(pc, polygons_shp_path):
+    polygon = read_shp_file(polygons_shp_path)
+    points_in = contains(pc, polygon)
     new_pc = filter_points(pc, points_in)
     return new_pc
