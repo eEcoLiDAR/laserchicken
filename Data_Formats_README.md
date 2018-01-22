@@ -1,5 +1,5 @@
 # Point Cloud File Formats -work in progress
-Handeling huge point clouds requires a spatial data structure to efficiatly access each point.
+Handeling huge point clouds requires a spatial data structure to efficiently access each point.
 There is a multitude of File Formats that can be used with LAS and LAZ files. A summary of [File Formats](http://www.cloudcompare.org/doc/wiki/index.php?title=FILE_I/O), out of which we would focus on: 
 
 * [CSV](https://docs.python.org/3/library/csv.html)
