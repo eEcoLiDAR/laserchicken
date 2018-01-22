@@ -1,7 +1,9 @@
 ply
 format ascii 1.0
-comment log0000 Processed by module load
-comment log0001 Processed by module filter using parameters(x,y,z)
+comment [
+comment {'time': '2018-01-18 16:01', 'module': 'load', 'parameters': [], 'version': '0.9.2'}
+comment {'time': '2018-01-18 16:01', 'module': 'filter', 'parameters': [('z', 'gt', '1.5')], 'version': '0.9.2'}
+comment ]
 element vertex 3
 property float x
 property float y
@@ -10,7 +12,7 @@ property int return
 element pointcloud 1
 property double offset
 end_header
-0.11 0.12 0.13 1
-0.21 0.22 0.23 1
-0.31 0.32 0.33 2
+0.1 0.1 0.1 1
+0.2 0.2 0.2 1
+0.3 0.3 0.3 2
 12.1
