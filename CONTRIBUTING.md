@@ -15,7 +15,7 @@ Before you submit your pull request consider the following guidelines:
 `isort your_changed_file.py`
 * Format your code according the the project standard:  
 `yapf -i your_changed_file.py`
-* Check that your code is clean and any issues:  
+* Check that your code is clean and fix any issues:  
 `prospector`
 * Run tests and make sure they pass:  
 `python setup.py test`
