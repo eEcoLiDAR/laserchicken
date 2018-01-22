@@ -1,4 +1,6 @@
 import os
+import json
+import ast
 
 import numpy as np
 
@@ -30,7 +32,10 @@ def read(path, verbose=False):
             for data_field in result:
                 print(data_field)
                 print(result['%s' % data_field])
-                print
+
+            print('***************************')
+            print(result)
+
         return result
 
 
@@ -57,14 +62,17 @@ def read_header(ply):
         line = ply.readline()
 
     if len(comments) > 0:
-        index.append({'type': 'comment', 'data': comments})
+        for i, comment_line in enumerate(comments):
+            comments[i] = ast.literal_eval(comment_line)
+
+        index.append({'type': 'log', 'log': comments})
 
     return index
 
 
 def read_block(block, ply_body):
-    if block['type'] == 'comment':
-        return block['data']
+    if block['type'] == 'log':
+        return block['log']
     else:
         properties, property_names = get_properties(block)
         block_type = block['type']
