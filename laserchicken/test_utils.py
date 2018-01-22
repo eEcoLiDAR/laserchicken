@@ -31,10 +31,11 @@ property float z
 """
     return  header
 def generate_complex_test_header():
+    comment = {"time" : dt.datetime(2018,1,18,16,1,0),"module" : "filter"}
     header = """ply
 format ascii 1.0
 comment [
-comment {'module': 'filter', 'time': datetime.datetime(2018, 1, 18, 16, 1)}
+comment %s
 comment ]
 element vertex 5
 property float x
@@ -43,7 +44,7 @@ property float z
 property int return
 element pointcloud 1
 property double offset
-"""
+""" % str(comment)
     return  header
 
 def generate_simple_test_data():
