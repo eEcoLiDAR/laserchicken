@@ -56,7 +56,10 @@ def points_in_polygon_wkt(pc, polygons_wkt):
     if polygons_wkt is None:
         raise ValueError('Polygons wkt cannot be None.')
     polygon = loads(polygons_wkt)
-    points_in = contains(pc, polygon)
+    if isinstance(polygon, 'shapely.geometry.polygon.Polygon'):
+        points_in = contains(pc, polygon)
+    else:
+        raise ValueError('It is not a Polygon.')
     new_pc = filter_points(pc, points_in)
     return new_pc
 
@@ -67,7 +70,10 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
         raise ValueError('Polygons wkt file path cannot be None.')
     polygons_wkts = read_wkt_file(polygons_wkt_path)
     polygon = loads(polygons_wkts[0])
-    points_in = contains(pc, polygon)
+    if isinstance(polygon, 'shapely.geometry.polygon.Polygon'):
+        points_in = contains(pc, polygon)
+    else:
+        raise ValueError('It is not a Polygon.')
     new_pc = filter_points(pc, points_in)
     return new_pc
 
@@ -77,6 +83,9 @@ def points_in_polygon_shp_file(pc, polygons_shp_path):
     if polygons_shp_path is None:
         raise ValueError('Polygons shp file path cannot be None.')
     polygon = read_shp_file(polygons_shp_path)
-    points_in = contains(pc, polygon)
+    if isinstance(polygon, 'shapely.geometry.polygon.Polygon'):
+        points_in = contains(pc, polygon)
+    else:
+        raise ValueError('It is not a Polygon.')
     new_pc = filter_points(pc, points_in)
     return new_pc
