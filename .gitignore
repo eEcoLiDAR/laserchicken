@@ -107,8 +107,8 @@ ENV/
 .idea/misc.xml
 
 #shapefiles
-laserchicken/testdata/ahn2_polygon_shp/*.cpg
-laserchicken/testdata/ahn2_polygon_shp/*.dbf
-laserchicken/testdata/ahn2_polygon_shp/*.prj
-laserchicken/testdata/ahn2_polygon_shp/*.qpj
-laserchicken/testdata/ahn2_polygon_shp/*.shx
+laserchicken/testdata/ahn2_geometries_shp/*.cpg
+laserchicken/testdata/ahn2_geometries_shp/*.dbf
+laserchicken/testdata/ahn2_geometries_shp/*.prj
+laserchicken/testdata/ahn2_geometries_shp/*.qpj
+laserchicken/testdata/ahn2_geometries_shp/*.shx
