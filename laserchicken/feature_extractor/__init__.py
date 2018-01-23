@@ -8,8 +8,8 @@ def _feature_map(module_name=__name__):
     module = importlib.import_module(module_name)
     return {
         feature_name: extractor
-        for name, extractor in vars(module).items()
-        if re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name) for feature_name in extractor.provides()
+        for name, extractor in vars(module).items() if re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name)
+        for feature_name in extractor.provides()
     }
 
 
@@ -26,4 +26,4 @@ def extract_features(point_cloud, target, feature_names):
         extract_features(point_cloud, target, extractor.requires())
         extractor.extract(point_cloud, target)
         assert feature_name in target, ("{} failed to add feature {} to target {}".format(
-            extractor, feature_name, target))
+            type(extractor).__name__, feature_name, target))

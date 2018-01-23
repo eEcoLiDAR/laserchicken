@@ -13,7 +13,8 @@ class Test2FeatureExtractor(AbstractFeatureExtractor):
 
     def extract(self, _, target):
         for feature_name in self.provides():
-            target[feature_name] = len(target)
+            if feature_name not in target:
+                target[feature_name] = len(target)
 
 
 class Test3FeatureExtractor(AbstractFeatureExtractor):
@@ -27,4 +28,5 @@ class Test3FeatureExtractor(AbstractFeatureExtractor):
 
     def extract(self, _, target):
         for feature_name in self.provides():
-            target[feature_name] = len(target)
+            if feature_name not in target:
+                target[feature_name] = len(target)
