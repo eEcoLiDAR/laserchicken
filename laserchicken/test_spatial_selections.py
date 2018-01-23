@@ -98,49 +98,49 @@ class TestSpatialSelectionWKTFile(unittest.TestCase):
     def test_points_in_polygon_wkt_Point():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/point.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/point.wkt")
 
     @staticmethod
     def test_points_in_polygon_wkt_Line():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/line.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/line.wkt")
 
     @staticmethod
     def test_points_in_polygon_wkt_MultiPoint():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/multipoint.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/multipoint.wkt")
 
     @staticmethod
     def test_points_in_polygon_wkt_MultiLine():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/multiline.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/multiline.wkt")
 
     @staticmethod
     def test_points_in_polygon_wkt_MultiPolygon():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/multipolygon.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/multipolygon.wkt")
 
     @staticmethod
     def test_points_in_polygon_wkt_Collection():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/collection.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/collection.wkt")
 
     @staticmethod
     def test_points_in_polygon_wkt_invalidPolygon():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/invalid_polygon.wkt")
+            points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/invalid_polygon.wkt")
 
     @staticmethod
     def test_wkt_polygons_contains():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
-        pc_out = points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/ahn2_polygon.wkt")
+        pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon.wkt")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
         df_out = pd.DataFrame({'x':x, 'y':y})
@@ -151,7 +151,7 @@ class TestSpatialSelectionWKTFile(unittest.TestCase):
     def test_wkt_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
-        pc_out = points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/ahn2_polygon_empty.wkt")
+        pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon_empty.wkt")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
         assert (len(x) == 0)
@@ -179,44 +179,44 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
     def test_points_in_polygon_shp_Point():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/point.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/point.shp")
 
     @staticmethod
     def test_points_in_polygon_shp_Line():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/line.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/line.shp")
 
     @staticmethod
     def test_points_in_polygon_shp_MultiPoint():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/multipoint.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/multipoint.shp")
 
     @staticmethod
     def test_points_in_polygon_shp_MultiLine():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/multiline.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/multiline.shp")
 
     @staticmethod
     def test_points_in_polygon_shp_MultiPolygon():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/multipolygon.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/multipolygon.shp")
 
     @staticmethod
     def test_points_in_polygon_shp_Collection():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/collection.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/collection.shp")
 
 
     @staticmethod
     def test_points_in_polygon_shp_invalidPolygon():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/invalid_polygon.shp")
+            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/invalid_polygon.shp")
 
     @staticmethod
     def test_shp_polygons_contains():
