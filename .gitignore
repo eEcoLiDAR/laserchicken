@@ -105,10 +105,3 @@ ENV/
 .idea/tasks.xml
 .idea/eEcoLiDAR.iml
 .idea/misc.xml
-
-#shapefiles
-testdata/ahn2_geometries_shp/*.cpg
-testdata/ahn2_geometries_shp/*.dbf
-testdata/ahn2_geometries_shp/*.prj
-testdata/ahn2_geometries_shp/*.qpj
-testdata/ahn2_geometries_shp/*.shx
