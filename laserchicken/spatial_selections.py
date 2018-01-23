@@ -51,12 +51,20 @@ def read_shp_file(path):
     return shp_geom
 
 def points_in_polygon_wkt(pc, polygons_wkt):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
+    if polygons_wkt is None:
+        raise ValueError('Polygons wkt cannot be None.')
     polygon = loads(polygons_wkt)
     points_in = contains(pc, polygon)
     new_pc = filter_points(pc, points_in)
     return new_pc
 
 def points_in_polygon_wkt_file(pc, polygons_wkt_path):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
+    if polygons_wkt_path is None:
+        raise ValueError('Polygons wkt file path cannot be None.')
     polygons_wkts = read_wkt_file(polygons_wkt_path)
     polygon = loads(polygons_wkts[0])
     points_in = contains(pc, polygon)
@@ -64,6 +72,10 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
     return new_pc
 
 def points_in_polygon_shp_file(pc, polygons_shp_path):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
+    if polygons_shp_path is None:
+        raise ValueError('Polygons shp file path cannot be None.')
     polygon = read_shp_file(polygons_shp_path)
     points_in = contains(pc, polygon)
     new_pc = filter_points(pc, points_in)
