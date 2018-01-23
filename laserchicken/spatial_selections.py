@@ -50,14 +50,20 @@ def read_shp_file(path):
     shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
     return shp_geom
 
-def points_in_polygon_wkt(pc, polygons_wkt_path):
+def points_in_polygon_wkt(pc, polygons_wkt):
+    polygon = loads(polygons_wkt)
+    points_in = contains(pc, polygon)
+    new_pc = filter_points(pc, points_in)
+    return new_pc
+
+def points_in_polygon_wkt_file(pc, polygons_wkt_path):
     polygons_wkts = read_wkt_file(polygons_wkt_path)
     polygon = loads(polygons_wkts[0])
     points_in = contains(pc, polygon)
     new_pc = filter_points(pc, points_in)
     return new_pc
 
-def points_in_polygon_shp(pc, polygons_shp_path):
+def points_in_polygon_shp_file(pc, polygons_shp_path):
     polygon = read_shp_file(polygons_shp_path)
     points_in = contains(pc, polygon)
     new_pc = filter_points(pc, points_in)
