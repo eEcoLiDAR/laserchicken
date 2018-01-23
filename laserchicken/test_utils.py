@@ -4,6 +4,7 @@ import datetime as dt
 
 
 def generate_simple_test_point_cloud():
+    # This simple_test_point cloud and the simple_test_header should be in sync. Some tests depend on it.
     pc = {point: {'x': {'type': 'float', 'data': np.array([1, 2, 3])},
                   'y': {'type': 'float', 'data': np.array([20, 30, 40])},
                   'z': {'type': 'float', 'data': np.array([300, 400, 500])}}}
@@ -22,6 +23,7 @@ def generate_complex_test_point_cloud():
     return pc
 
 def generate_simple_test_header():
+    # This simple_test_header cloud and the simple_test_point should be in sync. Some tests depend on it.
     header = """ply
 format ascii 1.0
 element vertex 3
