@@ -11,7 +11,7 @@ from laserchicken import keys,kd_tree,read_las
 class TestKDTree(unittest.TestCase):
 
     _test_file_name = 'AHN3.las'
-    _test_data_source = 'laserchicken/testdata'
+    _test_data_source = 'testdata'
     pointcloud = None
 
     def test_build_kd_tree(self):
