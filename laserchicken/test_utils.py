@@ -11,6 +11,7 @@ def generate_simple_test_point_cloud():
     return pc
 
 def generate_complex_test_point_cloud():
+    # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
     dto= dt.datetime(2018,1,18,16,1,0)
     pc = {point: {'x': {'type': 'float', 'data': np.array([1, 2, 3, 4, 5])},
                   'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6])},
@@ -33,6 +34,7 @@ property float z
 """
     return  header
 def generate_complex_test_header():
+    # This complex_test_header cloud and the complex_test_point should be in sync. Some tests depend on it.
     comment = {"time" : dt.datetime(2018,1,18,16,1,0),"module" : "filter"}
     header = """ply
 format ascii 1.0
