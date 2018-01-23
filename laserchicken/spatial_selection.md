@@ -14,7 +14,7 @@ from laserchicken.keys import point
 from laserchicken import read_las
 from laserchicken.spatial_selections import points_in_polygon_wkt
 
-pc_in = read_las.read("laserchicken/testdata/AHN2.las")
+pc_in = read_las.read("testdata/AHN2.las")
 pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0, 243590.0 572110.0 ))")
 ```
 
@@ -25,8 +25,8 @@ from laserchicken.keys import point
 from laserchicken import read_las
 from laserchicken.spatial_selections import points_in_polygon_wkt_file
 
-pc_in = read_las.read("laserchicken/testdata/AHN2.las")
-pc_out = points_in_polygon_wkt_file(pc_in, "laserchicken/testdata/anh2_geometries_wkt/ahn2_polygon.wkt")
+pc_in = read_las.read("testdata/AHN2.las")
+pc_out = points_in_polygon_wkt_file(pc_in, "testdata/anh2_geometries_wkt/ahn2_polygon.wkt")
 ```
 
 ### Example with a ESRI shapefile.
@@ -36,8 +36,8 @@ from laserchicken.keys import point
 from laserchicken import read_las
 from laserchicken.spatial_selections import points_in_polygon_shp_file
 
-pc_in = read_las.read("laserchicken/testdata/AHN2.las")
-pc_out = points_in_polygon_shp_file(pc_in, "laserchicken/testdata/anh2_geometries_shp/ahn2_polygon.shp")
+pc_in = read_las.read("testdata/AHN2.las")
+pc_out = points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/ahn2_polygon.shp")
 ```
 
 ## Future work
