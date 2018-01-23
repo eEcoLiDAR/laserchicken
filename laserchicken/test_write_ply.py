@@ -2,6 +2,8 @@ import os
 import shutil
 import unittest
 
+import pytest
+
 from laserchicken.test_utils import SimpleTestData, ComplexTestData
 from laserchicken.write_ply import write
 
@@ -40,10 +42,12 @@ class TestWritePly(unittest.TestCase):
         assert (os.path.exists(self.test_file_path))
 
     def test_write_sameFileTwice(self):
-        """ Should not throw an exception. """
+        """ Should throw an exception. """
         pc = SimpleTestData.get_point_cloud()
         write(pc, self.test_file_path)
-        write(pc, self.test_file_path)
+        # Catch most specific subclass of FileExistsError (3.6) and IOError (2.7).
+        with pytest.raises(Exception):
+            write(pc, self.test_file_path)
 
     def test_write_loadTheSameSimpleHeader(self):
         """  Writing a simple point cloud and loading it afterwards should result in the same point cloud."""

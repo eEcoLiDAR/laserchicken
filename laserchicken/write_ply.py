@@ -5,7 +5,9 @@ from laserchicken import keys
 
 # Writes the pointcloud data structure to a ply-file
 def write(pc, path):
-    # TODO: raise exception if file already exists?
+    if os.path.exists(path):
+        # Raise most specific subclass of FileExistsError (3.6) and IOError (2.7).
+        raise Exception('Cannot write because path {} already exists.'.format(path))
     with open(path, 'w') as ply:
         write_header(pc,ply)
         write_data(pc,ply)
