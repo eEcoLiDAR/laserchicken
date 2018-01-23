@@ -18,11 +18,7 @@ class TestReadPly(unittest.TestCase):
     test_file_path = os.path.join(_test_dir, _test_file_name)
 
     def test_nonexistentFile_error(self):
-        # Catching very general Exception instead of something more specific because of following reason:
-        # In 3.x a FileNotFoundException is raised while in 2.7 an IOError is raised. The most specific superclass
-        # is the very general Exception class. See:
-        # https://docs.python.org/2/library/exceptions.html#exception-hierarchy
-        # https://docs.python.org/3/library/exceptions.html#exception-hierarchy
+        # Catch most specific subclass of FileNotFoundException (3.6) and IOError (2.7).
         with raises(Exception):
             read('nonexistentfile.ply')
 
