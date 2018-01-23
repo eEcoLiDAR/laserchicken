@@ -1,9 +1,5 @@
 import os
-import shutil
 import unittest
-import time
-import numpy as np
-from pytest import raises
 
 from laserchicken import keys,kd_tree,read_las
 
@@ -24,7 +20,7 @@ class TestKDTree(unittest.TestCase):
         secondtree = kd_tree.get_kdtree_for_pc(self.pointcloud)
         self.assertEqual(firsttree,secondtree)
 
-    def test_build_kd_tree(self):
+    def test_sphere_neighb_kd_tree(self):
         """ Tests whether sphere neighborhood gives good result """
         tree = kd_tree.get_kdtree_for_pc(self.pointcloud)
         rad = 10.
