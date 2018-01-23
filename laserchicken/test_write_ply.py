@@ -34,7 +34,6 @@ class TestWritePly(unittest.TestCase):
     _test_data_source = 'testdata'
     test_file_path = os.path.join(_test_dir, _test_file_name)
 
-    #@unittest.skip('Production code for writing not yet implemented.')
     def test_write_nonExistingFile(self):
         """ Should create a file. """
         pc = generate_simple_test_point_cloud()
@@ -65,8 +64,6 @@ class TestWritePly(unittest.TestCase):
             header_out = read_header(ply)
         self.assertMultiLineEqual(header_in, header_out)
 
-
-    #@unittest.skip('Production code for writing not yet implemented.')
     def test_write_loadTheSameSimpleData(self):
         """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
         pc_in = generate_simple_test_point_cloud()
