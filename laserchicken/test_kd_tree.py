@@ -2,17 +2,16 @@ import os
 import shutil
 import unittest
 import time
-import keys
 import numpy as np
 from pytest import raises
 
-from laserchicken import kd_tree,read_las
+from laserchicken import keys,kd_tree,read_las
 
 
 class TestKDTree(unittest.TestCase):
 
     _test_file_name = 'AHN3.las'
-    _test_data_source = 'testdata'
+    _test_data_source = 'laserchicken/testdata'
     pointcloud = None
 
     def test_build_kd_tree(self):

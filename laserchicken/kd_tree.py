@@ -1,8 +1,7 @@
 from scipy.spatial import cKDTree
 import numpy as np
 import weakref
-import keys
-
+from laserchicken import keys
 
 kd_tree_cache = ([],[],[])
 
