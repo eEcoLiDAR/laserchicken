@@ -105,3 +105,10 @@ ENV/
 .idea/tasks.xml
 .idea/eEcoLiDAR.iml
 .idea/misc.xml
+
+#shapefiles
+laserchicken/testdata/ahn2_polygon_shp/*.cpg
+laserchicken/testdata/ahn2_polygon_shp/*.dbf
+laserchicken/testdata/ahn2_polygon_shp/*.prj
+laserchicken/testdata/ahn2_polygon_shp/*.qpj
+laserchicken/testdata/ahn2_polygon_shp/*.shx
