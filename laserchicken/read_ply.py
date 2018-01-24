@@ -1,9 +1,7 @@
 import os
-import json
 import ast
-
 import numpy as np
-
+from dateutil import parser
 
 def read(path, verbose=False):
     if not os.path.exists(path):
@@ -64,6 +62,8 @@ def read_header(ply):
     if len(comments) > 0:
         for i, comment_line in enumerate(comments):
             comments[i] = ast.literal_eval(comment_line)
+            if comments[i]['time']:
+                comments[i]['time'] = parser.parse(comments[i]['time'])
 
         index.append({'type': 'log', 'log': comments})
 
