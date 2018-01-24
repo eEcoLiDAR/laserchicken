@@ -29,12 +29,13 @@ class AbstractFeatureExtractor(object):
         """
         raise NotImplementedError("Class %s doesn't implement get_names()" % (cls.__name__))
 
-    def extract(self, point_cloud, target):
+    def extract(self, point_cloud, target_point_cloud, target_index):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
-        :param point_cloud:
-        :param target:
-        :return:
+        :param point_cloud: environment (search space) point cloud
+        :param target_point_cloud: pointcloud that contains target point
+        :target_index: index of the target point in the target pointcloud
+        :return: feature value
         """
         raise NotImplementedError("Class %s doesn't implement extract_features()" % (self.__class__.__name__))
