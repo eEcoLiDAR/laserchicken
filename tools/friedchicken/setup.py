@@ -4,7 +4,7 @@ ead las and write ply
 from setuptools import find_packages, setup
 
 #dependencies = ['click']
-dependencies = ['click', 'laserchicken']
+dependencies = ['laserchicken', 'click', 'colorama']
 
 setup(
     name='friedchicken',
