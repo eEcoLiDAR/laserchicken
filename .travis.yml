@@ -33,7 +33,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-- pytest --cov=laserchicken --cov-report xml:coverage.xml
+- pytest --cov=laserchicken --ignore=./tools --cov-report xml:coverage.xml
 - friedchicken --help
 
 after_script:
