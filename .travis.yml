@@ -34,6 +34,7 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
 - pytest --cov=laserchicken --cov-report xml:coverage.xml
+- friedchicken --help
 
 after_script:
 - python-codacy-coverage -r coverage.xml
