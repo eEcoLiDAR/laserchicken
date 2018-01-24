@@ -1,4 +1,8 @@
 import numpy as np
+import keys
+
+def get_point(pc,index):
+    return pc[keys.point]["x"]["data"][index],pc[keys.point]["y"]["data"][index],pc[keys.point]["z"]["data"][index]
 
 def copy_pointcloud(pc_in, array_mask = []):
     """

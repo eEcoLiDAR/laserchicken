@@ -4,6 +4,13 @@ import datetime
 from laserchicken import utils,test_tools,keys
 
 class TestUtils(unittest.TestCase):
+    def test_GetPointCloudPoint(self):
+        """ Should not raise exception. """
+        pc = test_tools.generate_test_point_cloud()
+        x,y,z = utils.get_point(pc,1)
+        self.assertEqual(2,x)
+        self.assertEqual(3,y)
+        self.assertEqual(4,z)
 
     def test_CopyEmptyPointCloud(self):
         """ Should not raise exception. """
