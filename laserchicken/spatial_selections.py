@@ -23,11 +23,8 @@ def read_shp_file(path):
         raise ValueError('Incorrect path.')
     # first feature of the shapefile
     feature = shape.shapeRecords()[0]
-    try:
-        first = feature.shape.__geo_interface__
-        shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
-    except WKTReadingError:
-        raise ValueError('Polygon is invalid.')
+    first = feature.shape.__geo_interface__
+    shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
     return shp_geom
 
 def contains(pc, polygon):

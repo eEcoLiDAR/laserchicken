@@ -15,6 +15,11 @@ class TestSpatialSelectionWKT(unittest.TestCase):
         assert_none_pc_raises_value_error(points_in_polygon_wkt)
 
     @staticmethod
+    def test_points_in_polygon_wkt_noneWKT():
+        """ If key is None, raise Value Error. """
+        assert_none_wkt_raises_value_error(points_in_polygon_wkt)
+
+    @staticmethod
     def test_points_in_polygon_wkt_Point():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
@@ -262,6 +267,11 @@ def assert_unknown_path_raises_value_error(function):
         function(pc_in, 'unknown_path_123')
 
 def assert_none_path_raises_value_error(function):
+    pc_in = read_las.read("testdata/AHN2.las")
+    with pytest.raises(ValueError):
+        function(pc_in, None)
+
+def assert_none_wkt_raises_value_error(function):
     pc_in = read_las.read("testdata/AHN2.las")
     with pytest.raises(ValueError):
         function(pc_in, None)
