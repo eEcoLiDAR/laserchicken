@@ -163,9 +163,6 @@ class TestSpatialSelectionWKTFile(unittest.TestCase):
         assert (len(x) == 0)
         assert (len(y) == 0)
 
-
-
-
 class TestSpatialSelectionSHPFile(unittest.TestCase):
     @staticmethod
     def test_points_in_polygon_shp_None():
@@ -223,7 +220,7 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
     def test_shp_polygons_contains():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
-        pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon.shp")
+        pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/ahn2_polygon.shp")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
         df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32)
@@ -235,7 +232,7 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
     def test_shp_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
-        pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon_empty.shp")
+        pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/ahn2_polygon_empty.shp")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
         assert (len(x) == 0)
