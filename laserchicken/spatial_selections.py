@@ -6,6 +6,7 @@ import numpy as np
 from laserchicken.keys import point
 import shapefile
 import shapely
+from shapely.geometry import box
 
 def read_wkt_file(path):
     try:
@@ -30,13 +31,18 @@ def read_shp_file(path):
 def contains(pc, polygon):
     x = pc[point]['x']['data']
     y = pc[point]['y']['data']
-
     points_in = []
-    point_id = 0
-    for i in range(x.size):
-        if polygon.contains(Point(x[i], y[i])):
-            points_in.append(i)
-            point_id += 1
+
+    mbr = polygon.envelope()
+    point_box = box(np.min(x), np.min(y), np.max(x), np.max(y))
+
+    if point_box.intersects(mbr):
+        point_id = 0
+        for i in range(x.size):
+            if polygon.contains(Point(x[i], y[i])):
+                points_in.append(i)
+                point_id += 1
+
     return points_in
 
 def filter_points(pc, points_in):
