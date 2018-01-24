@@ -212,12 +212,6 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
             points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/multiline.shp")
 
     @staticmethod
-    def test_points_in_polygon_shp_MultiPolygon():
-        pc_in = read_las.read("testdata/AHN2.las")
-        with pytest.raises(ValueError):
-            points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/multipolygon.shp")
-
-    @staticmethod
     def test_points_in_polygon_shp_Collection():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
