@@ -64,29 +64,24 @@ class TestSpatialSelectionWKT(unittest.TestCase):
     @staticmethod
     def test_wkt_polygons_contains():
         """ Selecting all points within a Polygon. """
-        try:
-            pc_in = read_las.read("testdata/AHN2.las")
-            pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0, 243590.0 572110.0 ))")
-            x = pc_out[point]['x']['data']
-            y = pc_out[point]['y']['data']
-            df_out = pd.DataFrame({'x':x, 'y':y}, dtype=np.int32)
-            df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
-            assert(pd.DataFrame.equals(df, df_out))
-        except ValueError as err:
-            print('Handling ValueError:', err)
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0, 243590.0 572110.0 ))")
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        df_out = pd.DataFrame({'x':x, 'y':y}, dtype=np.int32)
+        df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
+        assert(pd.DataFrame.equals(df, df_out))
+
 
     @staticmethod
     def test_wkt_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
-        try:
-            pc_in = read_las.read("testdata/AHN2.las")
-            pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 253590.0 582110.0, 253640.0 582160.0, 253700.0 582110.0, 253640.0 582060.0, 253590.0 582110.0 ))")
-            x = pc_out[point]['x']['data']
-            y = pc_out[point]['y']['data']
-            assert (len(x) == 0)
-            assert (len(y) == 0)
-        except ValueError as err:
-            print('Handling ValueError:', err)
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 253590.0 582110.0, 253640.0 582160.0, 253700.0 582110.0, 253640.0 582060.0, 253590.0 582110.0 ))")
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        assert (len(x) == 0)
+        assert (len(y) == 0)
 
 
 class TestSpatialSelectionWKTFile(unittest.TestCase):
@@ -150,29 +145,24 @@ class TestSpatialSelectionWKTFile(unittest.TestCase):
     @staticmethod
     def test_wkt_polygons_contains():
         """ Selecting all points within a Polygon. """
-        try:
-            pc_in = read_las.read("testdata/AHN2.las")
-            pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon.wkt")
-            x = pc_out[point]['x']['data']
-            y = pc_out[point]['y']['data']
-            df_out = pd.DataFrame({'x':x, 'y':y}, dtype=np.int32)
-            df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
-            assert(pd.DataFrame.equals(df, df_out))
-        except ValueError as err:
-            print('Handling ValueError:', err)
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon.wkt")
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        df_out = pd.DataFrame({'x':x, 'y':y}, dtype=np.int32)
+        df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
+        assert(pd.DataFrame.equals(df, df_out))
 
     @staticmethod
     def test_wkt_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
-        try:
-            pc_in = read_las.read("testdata/AHN2.las")
-            pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon_empty.wkt")
-            x = pc_out[point]['x']['data']
-            y = pc_out[point]['y']['data']
-            assert (len(x) == 0)
-            assert (len(y) == 0)
-        except ValueError as err:
-            print('Handling ValueError:', err)
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon_empty.wkt")
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        assert (len(x) == 0)
+        assert (len(y) == 0)
+
 
 
 
@@ -232,29 +222,24 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
     @staticmethod
     def test_shp_polygons_contains():
         """ Selecting all points within a Polygon. """
-        try:
-            pc_in = read_las.read("testdata/AHN2.las")
-            pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon.shp")
-            x = pc_out[point]['x']['data']
-            y = pc_out[point]['y']['data']
-            df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32)
-            df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
-            assert (pd.DataFrame.equals(df, df_out))
-        except ValueError as err:
-            print('Handling ValueError:', err)
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon.shp")
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32)
+        df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
+        assert (pd.DataFrame.equals(df, df_out))
+
 
     @staticmethod
     def test_shp_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
-        try:
-            pc_in = read_las.read("testdata/AHN2.las")
-            pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon_empty.shp")
-            x = pc_out[point]['x']['data']
-            y = pc_out[point]['y']['data']
-            assert (len(x) == 0)
-            assert (len(y) == 0)
-        except ValueError as err:
-            print('Handling ValueError:', err)
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon_empty.shp")
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        assert (len(x) == 0)
+        assert (len(y) == 0)
 
 def assert_none_pc_raises_value_error(function):
     with pytest.raises(ValueError):
