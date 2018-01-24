@@ -1,4 +1,5 @@
 from shapely.geometry import Point
+from shapely.errors import WKTReadingError
 
 from shapely.wkt import loads
 import numpy as np
@@ -7,12 +8,27 @@ import shapefile
 import shapely
 
 def read_wkt_file(path):
-    with open(path) as f:
-        content = f.readlines()
-
+    try:
+        with open(path) as f:
+            content = f.readlines()
+    except:
+        raise ValueError('Incorrect path.')
     content = [x.strip() for x in content]
     return content
 
+def read_shp_file(path):
+    try:
+        shape = shapefile.Reader(path)
+    except:
+        raise ValueError('Incorrect path.')
+    # first feature of the shapefile
+    feature = shape.shapeRecords()[0]
+    try:
+        first = feature.shape.__geo_interface__
+        shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
+    except WKTReadingError:
+        raise ValueError('Polygon is invalid.')
+    return shp_geom
 
 def contains(pc, polygon):
     x = pc[point]['x']['data']
@@ -42,20 +58,16 @@ def filter_points(pc, points_in):
     pc[point]['z']['data'] = new_z
     return pc
 
-def read_shp_file(path):
-    shape = shapefile.Reader(path)
-    # first feature of the shapefile
-    feature = shape.shapeRecords()[0]
-    first = feature.shape.__geo_interface__
-    shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
-    return shp_geom
 
 def points_in_polygon_wkt(pc, polygons_wkt):
     if pc is None:
         raise ValueError('Input point cloud cannot be None.')
     if polygons_wkt is None:
         raise ValueError('Polygons wkt cannot be None.')
-    polygon = loads(polygons_wkt)
+    try:
+        polygon = loads(polygons_wkt)
+    except WKTReadingError:
+        raise ValueError('Polygon is invalid.')
     if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = contains(pc, polygon)
     else:
@@ -69,7 +81,10 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
     if polygons_wkt_path is None:
         raise ValueError('Polygons wkt file path cannot be None.')
     polygons_wkts = read_wkt_file(polygons_wkt_path)
-    polygon = loads(polygons_wkts[0])
+    try:
+        polygon = loads(polygons_wkts[0])
+    except WKTReadingError:
+        raise ValueError('Polygon is invalid.')
     if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = contains(pc, polygon)
     else:
