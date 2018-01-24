@@ -6,7 +6,10 @@ import numpy as np
 from laserchicken.keys import point
 import shapefile
 import shapely
+import math
 from shapely.geometry import box
+
+from laserchicken import kd_tree
 
 def read_wkt_file(path):
     try:
@@ -33,12 +36,18 @@ def contains(pc, polygon):
     y = pc[point]['y']['data']
     points_in = []
 
-    mbr = polygon.envelope()
+    mbr = polygon.envelope
     point_box = box(np.min(x), np.min(y), np.max(x), np.max(y))
 
     if point_box.intersects(mbr):
+        (x_min, y_min, x_max, y_max) = mbr.bounds
+        rad = math.sqrt(math.pow((x_max-x_min)/2,2) + math.pow((y_max-y_min)/2,2))
+        p = [(x_max-x_min)+x_min, (y_max-y_min)+y_min]
+        tree = kd_tree.get_kdtree_for_pc(pc)
+        indices = tree.query_ball_point(p,rad)
+
         point_id = 0
-        for i in range(x.size):
+        for i in indices:
             if polygon.contains(Point(x[i], y[i])):
                 points_in.append(i)
                 point_id += 1
