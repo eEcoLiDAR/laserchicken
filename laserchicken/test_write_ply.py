@@ -6,7 +6,7 @@ import numpy as np
 
 from laserchicken.write_ply import write
 
-from laserchicken.test_utils import generate_test_point_cloud
+from laserchicken.test_tools import generate_test_point_cloud
 
 
 class TestWritePly(unittest.TestCase):
