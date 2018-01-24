@@ -41,10 +41,11 @@ def contains(pc, polygon):
 
     if point_box.intersects(mbr):
         (x_min, y_min, x_max, y_max) = mbr.bounds
-        rad = math.sqrt(math.pow((x_max-x_min)/2,2) + math.pow((y_max-y_min)/2,2))
-        p = [(x_max-x_min)+x_min, (y_max-y_min)+y_min]
+
+        rad = math.ceil(math.sqrt(math.pow(x_max-x_min,2) + math.pow(y_max-y_min,2))/2)
+        p = [x_min + ((x_max-x_min)/2), y_min + ((y_max-y_min)/2)]
         tree = kd_tree.get_kdtree_for_pc(pc)
-        indices = tree.query_ball_point(p,rad)
+        indices = np.sort(tree.query_ball_point(x=p,r=rad))
 
         point_id = 0
         for i in indices:
