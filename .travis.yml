@@ -26,6 +26,7 @@ before_install:
 - "pip install -q 'codacy-coverage'"
 - "pip install -qr requirements.txt"
 - "pip install -q coveralls"
+- "pip install -q ."
 - "cd tools/friedchicken && pip install -q ."
 install:
 - "echo done"
