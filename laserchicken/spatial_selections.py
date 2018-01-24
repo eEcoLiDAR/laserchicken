@@ -80,11 +80,13 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
         raise ValueError('Input point cloud cannot be None.')
     if polygons_wkt_path is None:
         raise ValueError('Polygons wkt file path cannot be None.')
-    polygons_wkts = read_wkt_file(polygons_wkt_path)
     try:
+        polygons_wkts = read_wkt_file(polygons_wkt_path)
         polygon = loads(polygons_wkts[0])
     except WKTReadingError:
         raise ValueError('Polygon is invalid.')
+    except:
+        raise
     if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = contains(pc, polygon)
     else:
@@ -97,7 +99,10 @@ def points_in_polygon_shp_file(pc, polygons_shp_path):
         raise ValueError('Input point cloud cannot be None.')
     if polygons_shp_path is None:
         raise ValueError('Polygons shp file path cannot be None.')
-    polygon = read_shp_file(polygons_shp_path)
+    try:
+        polygon = read_shp_file(polygons_shp_path)
+    except:
+        raise
     if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = contains(pc, polygon)
     else:
