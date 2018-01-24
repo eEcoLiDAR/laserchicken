@@ -68,7 +68,7 @@ def points_in_polygon_wkt(pc, polygons_wkt):
         polygon = loads(polygons_wkt)
     except WKTReadingError:
         raise ValueError('Polygon is invalid.')
-    if isinstance(polygon, shapely.geometry.polygon.Polygon):
+    if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
         points_in = contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
@@ -87,7 +87,7 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
         raise ValueError('Polygon is invalid.')
     except:
         raise
-    if isinstance(polygon, shapely.geometry.polygon.Polygon):
+    if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
         points_in = contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
@@ -103,7 +103,7 @@ def points_in_polygon_shp_file(pc, polygons_shp_path):
         polygon = read_shp_file(polygons_shp_path)
     except:
         raise
-    if isinstance(polygon, shapely.geometry.polygon.Polygon):
+    if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
         points_in = contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
