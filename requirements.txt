@@ -6,3 +6,6 @@ pytest
 mock
 plyfile
 python-dateutil
+shapely
+PyShp
+pandas

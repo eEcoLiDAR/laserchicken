@@ -103,3 +103,5 @@ ENV/
 # PyCharm
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/eEcoLiDAR.iml
+.idea/misc.xml
