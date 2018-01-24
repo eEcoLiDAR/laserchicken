@@ -27,7 +27,7 @@ before_install:
 - "pip install -qr requirements.txt"
 - "pip install -q coveralls"
 - "pip install -q ."
-- "cd tools/friedchicken && pip install -q ."
+- "pip install --no-cache-dir --force-reinstall -q ./tools/friedchicken"
 install:
 - "echo done"
 
