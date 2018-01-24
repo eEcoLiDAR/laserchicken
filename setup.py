@@ -19,7 +19,7 @@ setup(
     license='Apache 2.0',
     keywords=['Python', 'Point cloud'],
     url='https://github.com/eEcoLiDAR/eEcoLiDAR',
-    packages=[],
+    packages=['laserchicken'],
     install_requires=required,
     long_description=read('README.md'),
     classifiers=[
