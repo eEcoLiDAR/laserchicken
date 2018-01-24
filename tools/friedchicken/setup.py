@@ -1,19 +1,18 @@
 """
-ead las and write ply
+Reads a las file and writes as a ply
 """
 from setuptools import find_packages, setup
 
-#dependencies = ['click']
 dependencies = ['laserchicken', 'click', 'colorama']
 
 setup(
     name='friedchicken',
     version='0.1.0',
     url='https://github.com/eEcoLiDAR/eEcoLiDAR',
-    license='BSD',
+    license='Apache 2.0',
     author='Chicken Collaboration',
-    author_email='laser@chicken',
-    description='Reads las and writes ply',
+    author_email='fried@chicken',
+    description='Reads a las file and writes as a ply',
     long_description=__doc__,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
@@ -36,7 +35,7 @@ setup(
         # 'Development Status :: 7 - Inactive',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: Apache 2.0',
         'Operating System :: POSIX',
         'Operating System :: MacOS',
         'Operating System :: Unix',

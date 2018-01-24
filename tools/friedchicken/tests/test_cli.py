@@ -16,7 +16,7 @@ def runner():
 #
 #
 # def test_cli_with_option(runner):
-#     result = runner.invoke(cli.main, ['--', '../../testdata/AHN2.las'])
+#     result = runner.invoke(cli.main, ['--', './testdata/AHN2.las'])
 #     assert not result.exception
 #     assert result.exit_code == 0
 #     assert result.output.strip() == ''
