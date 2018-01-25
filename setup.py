@@ -1,4 +1,5 @@
 import os
+
 from setuptools import setup
 
 with open(os.path.join(os.path.dirname(__file__), 'laserchicken/_version.py')) as versionpy:
@@ -28,7 +29,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'laserchicken = tools.cli:main',
+            'laserchicken = laserchicken.tools.cli:main',
         ],
     },
 )
