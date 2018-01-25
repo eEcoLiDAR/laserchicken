@@ -26,4 +26,9 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
+    entry_points={
+        'console_scripts': [
+            'laserchicken = tools.cli:main',
+        ],
+    },
 )
