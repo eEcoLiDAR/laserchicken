@@ -4,7 +4,6 @@ import random
 import numpy as np
 from laserchicken import keys, compute_neighbors, read_las, utils, feature_extractor
 
-
 class TestExtractEigenValues(unittest.TestCase):
 
     _test_file_name = 'AHN3.las'
