@@ -12,11 +12,11 @@ Before you submit your pull request consider the following guidelines:
 `python setup.py develop`
 * Make your changes and add tests demonstrating that you fixed the bug or covering the new feature you added
 * Order your imports:  
-`isort your_changed_file.py`
+`isort -w 120 your_changed_file.py`
 * Format your code according the the project standard:  
 `yapf -i your_changed_file.py`
 * Check that your code is clean and fix any issues:  
-`prospector`
+`prospector your_changed_file.py`
 * Run tests and make sure they pass:  
 `python setup.py test`
 * Commit your changes and upload:

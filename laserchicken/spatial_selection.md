@@ -39,6 +39,3 @@ from laserchicken.spatial_selections import points_in_polygon_shp_file
 pc_in = read_las.read("testdata/AHN2.las")
 pc_out = points_in_polygon_shp_file(pc_in, "testdata/anh2_geometries_shp/ahn2_polygon.shp")
 ```
-
-## Future work
-The *refinement* step could be further improved if the points were indexed with a *Kd-tree* or a grid index. Such approache would avoid to execution of **contains** for all the points.
