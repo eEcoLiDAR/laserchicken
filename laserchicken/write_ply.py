@@ -4,27 +4,32 @@ import numpy as np
 from laserchicken import keys
 
 # Writes the pointcloud data structure to a ply-file
-def write(pc, path):
+def write(pc, path,csv={'enabled':False,'delimiter':','}):
     if os.path.exists(path):
         # Raise most specific subclass of FileExistsError (3.6) and IOError (2.7).
         raise Exception('Cannot write because path {} already exists.'.format(path))
     with open(path, 'w') as ply:
-        write_header(pc,ply)
-        write_data(pc,ply)
+        write_header(pc,ply,csv)
+        write_data(pc,ply,csv)
 
 # Writes the ply-header
-def write_header(pc,ply):
-    ply.write("ply" + '\n')
-    ply.write("format ascii 1.0" + '\n')
-    write_comment(pc,ply)
+def write_header(pc,ply,csv):
+    if csv['enabled']:
+        ply.write("# format csv" + '\n')
+    else:
+        ply.write("ply" + '\n')
+        ply.write("format ascii 1.0" + '\n')
+    write_comment(pc,ply,csv)
     for elem_name in get_ordered_elems(pc.keys()):
         get_num_elems = (lambda d: len(d["x"].get("data",[]))) if elem_name == keys.point else None
-        write_elements(pc,ply,elem_name,get_num_elems = get_num_elems)
-    ply.write("end_header" + '\n')
+        write_elements(pc,ply,elem_name,csv,get_num_elems = get_num_elems)
+    if not csv['enabled']:
+        ply.write("end_header" + '\n')
 
 # Writes the ply-data
-def write_data(pc,ply):
-    delim = ' '
+def write_data(pc,ply,csv):
+    delim = csv['enabled']*csv['delimiter'] + ' '
+
     for elem_name in get_ordered_elems(pc.keys()):
         props = get_ordered_props(elem_name,pc[elem_name].keys())
         num_elems = len(pc[elem_name]["x"].get("data",[])) if elem_name == keys.point else 1
@@ -62,21 +67,21 @@ def get_ordered_props(elem_name,prop_list):
 
 # Writes the comment
 # TODO: Use json for this
-def write_comment(pc,ply):
+def write_comment(pc,ply,csv):
     log = pc.get(keys.provenance,[])
     if(any(log)):
-        ply.write("comment [" + '\n')
+        ply.write("comment [\n" * csv['enabled'])
         for msg in log:
-            ply.write("comment " + str(msg) + '\n')
-        ply.write("comment ]" + '\n')
+            ply.write("comment " * (not csv['enabled']) + ('#' * csv['enabled'])  + str(msg) + '\n')
+        ply.write("comment ]\n" * csv['enabled'])
 
 # Writes elements for the header
-def write_elements(pc,ply,elem_name,get_num_elems = None):
+def write_elements(pc,ply,elem_name,csv,get_num_elems=None):
     if(elem_name in pc):
         num_elems = get_num_elems(pc[elem_name]) if get_num_elems else 1
-        ply.write("element %s %d\n" % (elem_name,num_elems))
+        ply.write('# ' * csv['enabled'] + "element %s %d\n" % (elem_name,num_elems))
         keylist = get_ordered_props(elem_name,pc[elem_name].keys())
         for key in keylist:
             property_type = pc[elem_name][key]["type"]
-            property_tuple = ("property",property_type,key)
+            property_tuple = ('#' * csv['enabled'],"property",property_type,key)
             ply.write(" ".join(property_tuple) + '\n')
