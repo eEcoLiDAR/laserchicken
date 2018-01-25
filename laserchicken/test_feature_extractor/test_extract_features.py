@@ -1,7 +1,7 @@
 """Test feature extraction."""
 import pytest
-
-from laserchicken import feature_extractor
+import numpy as np
+from laserchicken import feature_extractor,keys,test_tools
 
 from . import __name__ as test_module_name
 
@@ -9,51 +9,34 @@ from . import __name__ as test_module_name
 feature_extractor.FEATURES = feature_extractor._feature_map(test_module_name)
 
 
-def _extract_features(feature_names):
-    point_cloud = None
-    target = {}
-    feature_extractor.extract_features(point_cloud, target, feature_names)
+def _compute_features(target,feature_names,overwrite = False):
+    neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
+    feature_extractor.compute_features({}, neighborhoods, target, feature_names, overwrite)
     return target
 
 
 def test_extract_single_feature():
-    target = _extract_features(['test3_a'])
-    assert target['test3_a'] == 5
-
+    target = test_tools.ComplexTestData.get_point_cloud()
+    _compute_features(target,['test3_a'])
+    assert ('test1_b' in target[keys.point])
+    assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data'])
 
 def test_extract_multiple_features():
-    result = {
-        'test1_a': 0,
-        'test1_b': 1,
-        'test2_a': 2,
-        'test2_b': 3,
-        'test2_c': 4,
-    }
-    feature_names = ['test2_c']
-    target = _extract_features(feature_names)
-    assert target == result
+    target = test_tools.ComplexTestData.get_point_cloud()
+    feature_names = ['test3_a','test2_b']
+    target = _compute_features(target,feature_names)
+    assert ('test3_a' in target[keys.point] and 'test2_b' in target[keys.point])
 
+def test_extract_does_not_overwrite():
+    target = test_tools.ComplexTestData.get_point_cloud()
+    target[keys.point]['test2_b'] = {"type":np.float64,"data":[0.9,0.99,0.999,0.9999]}
+    feature_names = ['test3_a','test2_b']
+    target = _compute_features(target,feature_names)
+    assert (target[keys.point]['test2_b']['data'][2] == 0.999)
 
-def test_no_overwrite_existing_feature():
-    result = {
-        'x': 10,
-        'test1_a': 20,
-        'test1_b': 2,
-    }
-    point_cloud = None
-    target = {
-        'x': 10,
-        'test1_a': 20,
-    }
-    feature_extractor.extract_features(point_cloud, target, ['test1_b'])
-    assert target == result
-
-
-def test_extract_broken_feature():
-    point_cloud = None
-    target = {}
-    feature_names = ['test_broken']
-    msg = "TestBrokenFeatureExtractor failed to add feature test_broken to target {}"
-    with pytest.raises(AssertionError) as exc:
-        feature_extractor.extract_features(point_cloud, target, feature_names)
-    assert str(exc.value) == msg
+def test_extract_can_overwrite():
+    target = test_tools.ComplexTestData.get_point_cloud()
+    target[keys.point]['test2_b'] = {"type":np.float64,"data":[0.9,0.99,0.999,0.9999]}
+    feature_names = ['test3_a','test2_b']
+    target = _compute_features(target,feature_names,overwrite = True)
+    assert (target[keys.point]['test2_b']['data'][2] == 11.5)

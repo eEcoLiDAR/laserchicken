@@ -1,6 +1,6 @@
 """Test1 feature extractor."""
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
-
+from laserchicken import utils
 
 class Test1FeatureExtractor(AbstractFeatureExtractor):
     @classmethod
@@ -11,7 +11,6 @@ class Test1FeatureExtractor(AbstractFeatureExtractor):
     def provides(cls):
         return ['test1_a', 'test1_b']
 
-    def extract(self, _, target):
-        for feature_name in self.provides():
-            if feature_name not in target:
-                target[feature_name] = len(target)
+    def extract(self,sourcepc,neighborhood,targetpc,targetindex):
+        x,y,z = utils.get_point(targetpc,targetindex)
+        return [0.5 * z,1.5 * z]

@@ -1,10 +1,12 @@
 """Feature extractor module."""
 import importlib
 import re
-from laserchicken import keys
+import numpy as np
+from laserchicken import keys,utils
+#from .gijs_elena_feature import MyFeatureExtractor
 
 
-def _feature_map(module_name=__name__):
+def _feature_map(module_name = __name__):
     """Construct a mapping from feature names to feature extractor classes."""
     module = importlib.import_module(module_name)
     return {
@@ -17,23 +19,29 @@ def _feature_map(module_name=__name__):
 FEATURES = _feature_map()
 
 
-def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names):
+def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, overwrite = False):
     ordered_features = _make_feature_list(feature_names)
+    targetsize = len(target_point_cloud[keys.point]["x"]["data"])
     for feature in ordered_features:
-        if(feature in target_point_cloud): continue
+        if((not overwrite) and (feature in target_point_cloud[keys.point])):
+            continue # Skip feature calc if it is already there and we do not overwrite
         extractor = FEATURES[feature]()
         providedfeatures = extractor.provides()
         numfeatures = len(providedfeatures)
-        featurevalues = [np.empty([target_indices],dtype = np.float64) for i in range(numfeatures)]
-        for target_index in range(target_point_cloud[keys.point]["x"]["data"]):
+        featurevalues = [np.empty(targetsize,dtype = np.float64) for i in range(numfeatures)]
+        for target_index in range(targetsize):
             pointvalues = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud, target_index)
-            for f in numfeatures:
-                featurevalues[f][target_index] = pointvalues[f]
+            if(numfeatures > 1):
+                for i in range(numfeatures):
+                    featurevalues[i][target_index] = pointvalues[i]
+            else:
+                featurevalues[0][target_index] = pointvalues
         for i in range(numfeatures):
-            if "features" not in target_point_cloud:
-                target_point_cloud["features"] = {}
             fname = providedfeatures[i]
-            target_point_cloud["features"][fname] = {"type" : np.float64, "data" : featurevalues[i]}
+            if(overwrite or (not fname in target_point_cloud[keys.point])):
+                # Set feature values if it is not there (or we want to overwrite)
+                target_point_cloud[keys.point][fname] = {"type" : np.float64, "data" : featurevalues[i]}
+        utils.add_metadata(target_point_cloud,type(extractor).__module__,extractor.get_params())
 
 
 def _make_feature_list(feature_names):
@@ -42,10 +50,9 @@ def _make_feature_list(feature_names):
     return [f for f in feature_list if not (f in seen or seen.add(f))]
 
 
-
 def _make_feature_list_helper(feature_names):
     feature_list = feature_names
-    for f in feature_names:
+    for feature_name in feature_names:
         extractor = FEATURES[feature_name]()
         dependencies = extractor.requires()
         feature_list.extend(dependencies)

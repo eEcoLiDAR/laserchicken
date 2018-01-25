@@ -37,7 +37,9 @@ def add_metadata(pc,module,params):
     """
     Adds module metadata to pointcloud provenance
     """
-    msg = {"time" : datetime.datetime.utcnow(),"module" : module.__name__, "parameters" : params}
+    msg = {"time" : datetime.datetime.utcnow()}
+    msg["module"] = module.__name__ if hasattr(module,"__name__") else str(module)
+    if(any(params)): msg["parameters"] = params
     msg["version"] = _version.__version__
     if(keys.provenance not in pc):
         pc[keys.provenance] = []
