@@ -89,11 +89,11 @@ class TestSelectAbove(unittest.TestCase):
 
 def get_test_data():
     return {'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
-            'pointcloud': {'offset': {'type': 'double', 'data': 12.1}},
+            'pointcloud': {'offset': {'type': 'float', 'data': 12.1}},
             point:
-                {'x': {'type': 'double', 'data': np.array([1.1, 1.2, 1.3])},
-                 'y': {'type': 'double', 'data': np.array([2.1, 2.2, 2.3])},
-                 'z': {'type': 'double', 'data': np.array([3.1, 3.2, 3.3])},
+                {'x': {'type': 'float', 'data': np.array([1.1, 1.2, 1.3])},
+                 'y': {'type': 'float', 'data': np.array([2.1, 2.2, 2.3])},
+                 'z': {'type': 'float', 'data': np.array([3.1, 3.2, 3.3])},
                  'return': {'type': 'int', 'data': np.array([1, 1, 2])}}}
 
 
