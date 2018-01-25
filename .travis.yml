@@ -24,7 +24,7 @@ before_install:
 - "pip install -q 'coverage'"
 - "pip install -q 'pytest-cov'"
 - "pip install -q 'codacy-coverage'"
-- "pip install -qr requirements.txt"
+- "pip install -r requirements.txt"
 - "pip install -q coveralls"
 
 install:
