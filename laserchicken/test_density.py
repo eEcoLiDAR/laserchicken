@@ -18,7 +18,7 @@ class TestAreaDensity(unittest.TestCase):
     @staticmethod
     def test_area_density_pc_rad_None():
         """ None input raises Value Error. """
-        assert_pc_none_rad_raises_value_error(area_density)
+        assert_pc_none_rad_raises_value_error(area_density_rad)
 
     @staticmethod
     def test_area_density_pc_rad_Neg():
@@ -42,7 +42,7 @@ class TestAreaDensity(unittest.TestCase):
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
         density = area_density_rad(pc_in, 75)
-        assert (density == 1212)
+        assert (density == 10.335196620948473)
 
 class TestVolumneDensity(unittest.TestCase):
     @staticmethod
@@ -53,7 +53,7 @@ class TestVolumneDensity(unittest.TestCase):
     @staticmethod
     def test_volume_density_pc_None_Rad():
         """ None input raises Value Error. """
-        assert_none_pc_rad_raises_value_error(volume_density)
+        assert_none_pc_rad_raises_value_error(volume_density_rad)
 
     @staticmethod
     def test_volume_density_pc_rad_None():
@@ -75,14 +75,14 @@ class TestVolumneDensity(unittest.TestCase):
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
         density = volume_density(pc_in)
-        assert(density == 6.868558718435157)
+        assert(density == 0.7986696184226926)
 
     @staticmethod
     def test_volume_density_pc_rad():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
         density = volume_density_rad(pc_in, 75)
-        assert (density == 1212)
+        assert (density == 1.201767048947497)
 
 
 def assert_none_pc_raises_value_error(function):
