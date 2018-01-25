@@ -13,7 +13,7 @@ class TestAreaDensity(unittest.TestCase):
     @staticmethod
     def test_area_density_pc_None_Rad():
         """ None input raises Value Error. """
-        assert_none_pc_rad_raises_value_error(area_density)
+        assert_none_pc_rad_raises_value_error(area_density_rad)
 
     @staticmethod
     def test_area_density_pc_rad_None():
@@ -23,12 +23,12 @@ class TestAreaDensity(unittest.TestCase):
     @staticmethod
     def test_area_density_pc_rad_Neg():
         """ None input raises Value Error. """
-        assert_pc_neg_rad_raises_value_error(area_density)
+        assert_pc_neg_rad_raises_value_error(area_density_rad)
 
     @staticmethod
     def test_area_density_pc_rad_Zero():
         """ None input raises Value Error. """
-        assert_pc_zero_rad_raises_value_error(area_density)
+        assert_pc_zero_rad_raises_value_error(area_density_rad)
 
     @staticmethod
     def test_area_density_pc():
@@ -58,17 +58,17 @@ class TestVolumneDensity(unittest.TestCase):
     @staticmethod
     def test_volume_density_pc_rad_None():
         """ None input raises Value Error. """
-        assert_pc_none_rad_raises_value_error(volume_density)
+        assert_pc_none_rad_raises_value_error(volume_density_rad)
 
     @staticmethod
     def test_volume_density_pc_rad_Neg():
         """ None input raises Value Error. """
-        assert_pc_neg_rad_raises_value_error(volume_density)
+        assert_pc_neg_rad_raises_value_error(volume_density_rad)
 
     @staticmethod
     def test_volume_density_pc_rad_Zero():
         """ None input raises Value Error. """
-        assert_pc_zero_rad_raises_value_error(volume_density)
+        assert_pc_zero_rad_raises_value_error(volume_density_rad)
 
     @staticmethod
     def test_volume_density_pc():
