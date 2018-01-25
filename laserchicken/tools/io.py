@@ -10,56 +10,65 @@ from ..read_las import read as read_las
 from ..read_ply import read as read_ply
 from ..write_ply import write as write_ply
 
+READERS = {
+    '.ply': read_ply,
+    '.las': read_las,
+}
+
+WRITERS = {
+    '.ply': write_ply,
+}
+
 
 def _load(filename, reader=None):
+    """Load point cloud from filename using reader."""
     print("Reading the input file", end='')
 
     if reader is None:
-        readers = {
-            '.ply': read_ply,
-            '.las': read_las,
-        }
-        ext = os.path.splitext(filename)[1]
-        if ext not in readers:
+        ext = os.path.splitext(filename)[1].lower()
+        if ext not in READERS:
             raise ToolException("Unable to guess the file type from the extension {}, "
-                                "please specify a loader argument".format(ext))
-        reader = readers[ext]
+                                "please specify a reader argument".format(ext))
+        reader = READERS[ext]
 
     point_cloud = reader(filename)
     print(Fore.GREEN + "  [DONE]")
     return point_cloud
 
 
-def _save(point_cloud, filename, saver=None):
+def _check_save_path(filename):
+    """Check that filename can be used to save the point cloud."""
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in WRITERS:
+        ToolException("Unknown output file format {}, choose from {}".format(ext, list(WRITERS)))
 
     if os.path.exists(filename):
-        raise ToolException("Output file already exists! --> {0}".format(filename))
+        raise ToolException("Output file already exists! --> {}".format(filename))
 
     output_directory = os.path.dirname(filename)
 
     if output_directory and not os.path.exists(output_directory):
-        raise ToolException("Output file path does not exist! --> {0}".format(output_directory))
+        raise ToolException("Output file path does not exist! --> {}".format(output_directory))
 
-    print("File will be saved as {0}".format(filename))
 
-    if saver is None:
-        savers = {
-            '.ply': write_ply,
-        }
-        ext = os.path.splitext(filename)[1]
-        if ext not in savers:
+def _save(point_cloud, filename, writer=None):
+    """Save point cloud to filename using writer."""
+    _check_save_path(filename)
+    print("File will be saved as {}".format(filename))
+
+    if writer is None:
+        ext = os.path.splitext(filename)[1].lower()
+        if ext not in WRITERS:
             raise ToolException("Unable to guess the file type from the extension {}, "
                                 "please specify a saver argument".format(ext))
-        saver = savers[ext]
+        writer = WRITERS[ext]
 
     print("Saving, please wait...", end='')
     try:
-        saver(point_cloud, filename)
+        writer(point_cloud, filename)
     except Exception as exc:
         print(Fore.RED + "  [ERROR]")
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(exc).__name__, exc.args)
-        print(message)
-        raise ToolException("Conversion has failed! \nCheck '{}' in laserchicken module.".format(saver))
+        print("An exception of type {} occurred. Arguments:\n{!r}".format(type(exc).__name__, exc.args))
+        raise ToolException("Conversion has failed! \nCheck '{}' in laserchicken module.".format(writer))
 
     print(Fore.GREEN + "  [DONE]")
