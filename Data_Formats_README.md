@@ -184,6 +184,26 @@ To stay close to the chosen file format the python data structure will look like
         'y': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
         'z': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
         'return': {'type': 'int', 'data': np.array([1, 1, 2])}}}
+        }
+ }
+ ```
+ After we compute some features we enrich the data structure with extra attributes:
+ ```
+ {'log': [{'time': '2018-01-18 16:01', 'module': 'load', 'parameters': [], 'version': '0.9.2'},
+         {'time': '2018-01-18 16:01', 'module': 'filter', 'parameters': [('z', 'gt', '1.5')], 'version': '0.9.2'}],
+   'pointcloud':
+       {'offset': {'type': 'double', 'data': 12.1}},
+   'vertex':
+       {'x': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
+        'y': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
+        'z': {'type': 'float', 'data': np.array([0.1, 0.2, 0.3])},
+        'return': {'type': 'int', 'data': np.array([1, 1, 2])}}},
+        'eigen_val_1': {'type': 'float', 'data': [0.1, 0.5,  0.25 ])},
+        'eigen_val_2': {'type': 'float', 'data': [0.02, 0.05,  0.025 ])},
+        ...
+        'echo_ratio': {'type': 'float', 'data': np.array([0.05, 0.04, 0.36])}
+  }     
+    
  ```
  
  This gives us the three data types that we want to store in the memory (and file):
