@@ -3,7 +3,7 @@ import importlib
 import re
 import numpy as np
 from laserchicken import keys,utils
-#from .gijs_elena_feature import MyFeatureExtractor
+from .eigenvalsFeatureExtractor import EigenValueFeatureExtractor
 
 
 def _feature_map(module_name = __name__):

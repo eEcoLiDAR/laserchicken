@@ -41,7 +41,3 @@ def compute_sphere_neighbourhoods(env_pc, target_pc, radius):
                 resultindices.append(j)
         result.append(utils.copy_pointcloud(env_pc,resultindices))
     return result
-
-
-
-    return #[utils.copy_pointcloud(env_pc,iarray) for iarray in neighb_points_indices]
