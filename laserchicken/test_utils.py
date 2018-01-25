@@ -72,3 +72,12 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(all(np.array([x1,x0]) == copypc[keys.point]["x"]["data"]))
         self.assertTrue(all(np.array([y1,y0]) == copypc[keys.point]["y"]["data"]))
         self.assertTrue(all(np.array([z1,z0]) == copypc[keys.point]["z"]["data"]))
+
+    def test_AddMetaDataToPointCloud(self):
+        """ Test adding info to the point cloud for test module """
+        pc = test_tools.generate_test_point_cloud()
+        from laserchicken import select as somemodule
+        utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
+        self.assertEqual(len(pc[keys.provenance]),1)
+        print(pc["log"])
+        raise Exception

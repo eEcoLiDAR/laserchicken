@@ -1,5 +1,6 @@
 import numpy as np
-from laserchicken import keys
+import datetime
+from laserchicken import keys,_version
 
 def get_point(pc,index):
     return pc[keys.point]["x"]["data"][index],pc[keys.point]["y"]["data"][index],pc[keys.point]["z"]["data"][index]
@@ -24,3 +25,14 @@ def copy_pointcloud(pc_in, array_mask = []):
             new_value = value
         result[key] = new_value
     return result
+
+
+def add_metadata(pc,module,params):
+    """
+    Adds module metadata to pointcloud provenance
+    """
+    msg = {"time" : datetime.datetime.utcnow(),"module" : module.__name__, "parameters" : params}
+    msg["version"] = _version.__version__
+    if(keys.provenance not in pc):
+        pc[keys.provenance] = []
+    pc[keys.provenance].append(msg)
