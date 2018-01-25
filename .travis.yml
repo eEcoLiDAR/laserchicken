@@ -8,11 +8,11 @@ python:
 - "3.5"
 - "3.6"
 
-before_install: 
-- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then       
-    wget http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;       
+before_install:
+- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+    wget http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
   else
-    wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh; 
+    wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   fi
 - bash miniconda.sh -b -p $HOME/miniconda
 - export PATH="$HOME/miniconda/bin:$PATH"
@@ -20,6 +20,7 @@ before_install:
 - conda update -q conda
 - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pip openblas numpy scipy
 - source activate test-environment
+- "pip install -q --upgrade 'pip'"
 - "pip install -q 'coverage'"
 - "pip install -q 'pytest-cov'"
 - "pip install -q 'codacy-coverage'"

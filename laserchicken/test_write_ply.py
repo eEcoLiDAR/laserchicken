@@ -4,9 +4,8 @@ import unittest
 
 import pytest
 
-from laserchicken.test_utils import SimpleTestData, ComplexTestData
+from laserchicken.test_tools import SimpleTestData, ComplexTestData
 from laserchicken.write_ply import write
-
 
 def read_header(ply):
     header = ''
@@ -27,6 +26,7 @@ def read_data(ply):
             if not in_header:
                 data = data + line
     return data
+
 
 
 class TestWritePly(unittest.TestCase):

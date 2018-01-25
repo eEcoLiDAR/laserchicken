@@ -1,6 +1,7 @@
 import numpy as np
-
+from laserchicken.utils import copy_pointcloud
 from laserchicken.keys import point
+
 
 
 def select_above(pc, attribute, threshold):
@@ -13,7 +14,7 @@ def select_above(pc, attribute, threshold):
     """
     _check_valid_arguments(attribute, pc)
     mask = pc[point][attribute]['data'] > threshold
-    return _copy_dict(pc, mask)
+    return copy_pointcloud(pc, mask)
 
 
 def select_below(pc, attribute, threshold):
@@ -26,7 +27,7 @@ def select_below(pc, attribute, threshold):
     """
     _check_valid_arguments(attribute, pc)
     mask = pc[point][attribute]['data'] < threshold
-    return _copy_dict(pc, mask)
+    return copy_pointcloud(pc, mask)
 
 
 def _check_valid_arguments(attribute, pc):
@@ -40,22 +41,3 @@ def _check_valid_arguments(attribute, pc):
         raise ValueError('Input point cloud cannot be None.')
     if attribute not in pc[point]:
         raise ValueError('Attribute key {} for selection not found in point cloud.'.format(attribute))
-
-
-def _copy_dict(pc_in, array_mask):
-    """
-    Makes a deep copy of a point cloud dict using the array mask when copying the points.
-    :param pc_in: Input point cloud
-    :param array_mask: A mask indicating which points to copy.
-    :return: The copy including only the masked points.
-    """
-    result = {}
-    for key, value in pc_in.items():
-        if isinstance(value, dict):
-            new_value = _copy_dict(value, array_mask)
-        elif isinstance(value, np.ndarray):
-            new_value = value[array_mask]
-        else:
-            new_value = value
-        result[key] = new_value
-    return result
