@@ -5,7 +5,43 @@ import pytest
 from numpy.testing import assert_equal, assert_almost_equal
 
 from laserchicken.keys import point
-from laserchicken.select import select_below, select_above
+from laserchicken.select import select_below, select_above, select_equal
+
+
+class TestSelectEqual(unittest.TestCase):
+    @staticmethod
+    def test_selectEqual_None():
+        """ None input raises Value Error. """
+        assert_none_pc_raises_value_error(select_equal)
+
+    @staticmethod
+    def test_selectEqual_unknownKey():
+        """ If key is not in point cloud, raise Value Error. """
+        assert_unknown_key_raises_value_error(select_equal)
+
+    @staticmethod
+    def test_selectEqual_noneKey():
+        """ If key is None, raise Value Error. """
+        assert_none_key_raises_value_error(select_equal)
+
+    @staticmethod
+    def test_selectEqual_outputIsNotInput():
+        """ Select change output, make sure that input hasn't changed. """
+        assert_output_is_not_input(select_equal)
+
+    @staticmethod
+    def test_selectEqual_outputEmpty():
+        """ Select everything equal to something that doesn't exist should result in empty output. """
+        pc_in = get_test_data()
+        pc_out = select_equal(pc_in, 'return', 5)
+        assert_equal(len(pc_out[point]['x']['data']), 0)
+
+    @staticmethod
+    def test_selectEqual_outputEmpty():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        pc_out = select_equal(pc_in, 'return', 1)
+        assert_equal(len(pc_out[point]['x']['data']), 2)
 
 
 class TestSelectBelow(unittest.TestCase):
@@ -27,10 +63,7 @@ class TestSelectBelow(unittest.TestCase):
     @staticmethod
     def test_selectBelow_outputIsNotInput():
         """ Select change output, make sure that input hasn't changed. """
-        pc_in = get_test_data()
-        pc_out = select_below(pc_in, 'z', 3.2)
-        pc_out[point]['x']['data'][0] += 1
-        assert_points_equal(pc_in, get_test_data())
+        assert_output_is_not_input(select_below)
 
     @staticmethod
     def test_selectBelow_everything():
@@ -67,6 +100,11 @@ class TestSelectAbove(unittest.TestCase):
     def test_selectAbove_noneKey():
         """ If key is None, raise Value Error. """
         assert_none_key_raises_value_error(select_above)
+
+    @staticmethod
+    def test_selectAbove_outputIsNotInput():
+        """ Select change output, make sure that input hasn't changed. """
+        assert_output_is_not_input(select_above)
 
     @staticmethod
     def test_selectAbove_everything():
@@ -125,3 +163,10 @@ def assert_none_key_raises_value_error(function):
     pc = get_test_data()
     with pytest.raises(ValueError):
         function(pc, None, 13)
+
+
+def assert_output_is_not_input(function):
+    pc_in = get_test_data()
+    pc_out = function(pc_in, 'z', 3.2)
+    pc_out[point]['x']['data'][0] += 1
+    assert_points_equal(pc_in, get_test_data())
