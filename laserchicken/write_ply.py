@@ -70,10 +70,10 @@ def get_ordered_props(elem_name,prop_list):
 def write_comment(pc,ply,csv):
     log = pc.get(keys.provenance,[])
     if(any(log)):
-        ply.write("comment [\n" * csv['enabled'])
+        ply.write("comment [\n" * (not csv['enabled']))
         for msg in log:
-            ply.write("comment " * (not csv['enabled']) + ('#' * csv['enabled'])  + str(msg) + '\n')
-        ply.write("comment ]\n" * csv['enabled'])
+            ply.write("comment " * (not csv['enabled']) + ('#' * csv['enabled']) +str(msg) + '\n')
+        ply.write("comment ]\n" * (not csv['enabled']))
 
 # Writes elements for the header
 def write_elements(pc,ply,elem_name,csv,get_num_elems=None):
@@ -83,5 +83,5 @@ def write_elements(pc,ply,elem_name,csv,get_num_elems=None):
         keylist = get_ordered_props(elem_name,pc[elem_name].keys())
         for key in keylist:
             property_type = pc[elem_name][key]["type"]
-            property_tuple = ('#' * csv['enabled'],"property",property_type,key)
+            property_tuple = ('# ' * csv['enabled'] + "property",property_type,key)
             ply.write(" ".join(property_tuple) + '\n')
