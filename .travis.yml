@@ -26,15 +26,13 @@ before_install:
 - "pip install -q 'codacy-coverage'"
 - "pip install -qr requirements.txt"
 - "pip install -q coveralls"
-- "pip install -q ."
-- "pip install --no-cache-dir --force-reinstall -q ./tools/friedchicken"
+
 install:
 - "echo done"
 
 # command to run tests, e.g. python setup.py test
 script:
-- pytest --cov=laserchicken --ignore=./tools --cov-report xml:coverage.xml
-- friedchicken --help
+- pytest --cov=laserchicken --cov-report xml:coverage.xml
 
 after_script:
 - python-codacy-coverage -r coverage.xml
