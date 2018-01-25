@@ -52,9 +52,9 @@ def _filter_above(attribute, threshold):
     return lambda point_cloud: select_above(point_cloud, attribute, threshold)
 
 
-@main.command('points_in_polygon')
+@main.command('filter_in_polygon')
 @click.argument('polygon')
-def _point_in_polygon(polygon):
+def _filter_in_polygon(polygon):
     if os.path.isfile(polygon):
         ext = os.path.splitext(polygon)[1].lower()
         functions = {
@@ -62,7 +62,8 @@ def _point_in_polygon(polygon):
             '.wkt': points_in_polygon_wkt_file,
         }
         if ext not in functions:
-            raise ToolException("Unable to determine type of shapefile, choose from types {}".format)
+            raise ToolException("Unable to determine type of shapefile, "
+                                "choose from types {}".format(list(functions)))
         return lambda point_cloud: functions[ext](point_cloud, polygon)
     else:
         print("polygon is not a file, assuming it is a WKT string")
