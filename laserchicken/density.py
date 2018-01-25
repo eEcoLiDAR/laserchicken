@@ -6,8 +6,8 @@ import math
 
 def area_density_(pc, r):
     rad = r
+    x = pc[point]['x']['data']
     if (rad == None):
-        x = pc[point]['x']['data']
         y = pc[point]['y']['data']
         points = []
         for i in range(len(x)):
@@ -27,8 +27,8 @@ def area_density_(pc, r):
 
 def volume_density_(pc, r):
     rad = r
+    x = pc[point]['x']['data']
     if (rad == None):
-        x = pc[point]['x']['data']
         y = pc[point]['y']['data']
         points = []
         for i in range(len(x)):
@@ -48,13 +48,25 @@ def volume_density_(pc, r):
     return len(x)/volume
 
 def area_density(pc):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
     return area_density_(pc, None)
 
 def area_density_rad(pc, rad):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
+    if rad is None:
+        raise ValueError('Input radious cannot be None.')
     return area_density_(pc, rad)
 
 def volume_density(pc):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
     return volume_density_(pc, None)
 
 def volume_density_rad(pc, rad):
+    if pc is None:
+        raise ValueError('Input point cloud cannot be None.')
+    if rad is None:
+        raise ValueError('Input radious cannot be None.')
     return volume_density_(pc, rad)

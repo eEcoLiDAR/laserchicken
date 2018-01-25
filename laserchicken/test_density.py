@@ -35,7 +35,7 @@ class TestAreaDensity(unittest.TestCase):
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
         density = area_density(pc_in)
-        assert(density == 1212)
+        assert(density == 6.868558718435157)
 
     @staticmethod
     def test_area_density_pc_rad():
@@ -75,7 +75,7 @@ class TestVolumneDensity(unittest.TestCase):
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
         density = volume_density(pc_in)
-        assert(density == 1212)
+        assert(density == 6.868558718435157)
 
     @staticmethod
     def test_volume_density_pc_rad():
