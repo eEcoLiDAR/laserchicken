@@ -1,6 +1,8 @@
 import numpy as np
+
 from laserchicken import utils
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+
 
 def structure_tensor(points):
     """
@@ -19,7 +21,7 @@ def structure_tensor(points):
         The eigenvectors of the covariance matrix.
     """
     if points.shape[0] > 3:
-        cov_mat = np.cov(points, rowvar = False)
+        cov_mat = np.cov(points, rowvar=False)
         eigenvalues, eigenvectors = np.linalg.eig(cov_mat)
         order = np.argsort(-eigenvalues)
         eigenvalues = eigenvalues[order]
@@ -27,6 +29,7 @@ def structure_tensor(points):
         return eigenvalues, eigenvectors
     else:
         raise ValueError('Not enough points to compute eigenvalues/vectors.')
+
 
 class EigenValueFeatureExtractor(AbstractFeatureExtractor):
     @classmethod
@@ -37,8 +40,8 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
     def provides(cls):
         return ['eigenv_1', 'eigenv_2', 'eigenv_3']
 
-    def extract(self,sourcepc,neighborhood,targetpc,targetindex):
-        nbptsX,nbptsY,nbptsZ = utils.get_point(sourcepc,neighborhood)
-        matrix = np.column_stack((nbptsX,nbptsY,nbptsZ))
-        eigenvals,eigenvecs = structure_tensor(matrix)
-        return [eigenvals[0],eigenvals[1],eigenvals[2]]
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex):
+        nbptsX, nbptsY, nbptsZ = utils.get_point(sourcepc, neighborhood)
+        matrix = np.column_stack((nbptsX, nbptsY, nbptsZ))
+        eigenvals, eigenvecs = structure_tensor(matrix)
+        return [eigenvals[0], eigenvals[1], eigenvals[2]]

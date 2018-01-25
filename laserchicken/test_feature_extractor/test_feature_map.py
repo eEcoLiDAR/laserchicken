@@ -1,8 +1,18 @@
 """Test that the map from feature names to extractor classes is correct."""
-from laserchicken.feature_extractor import _feature_map
+import pytest
+
+from laserchicken import feature_extractor
 
 from . import __name__ as test_module_name
 from . import Test1FeatureExtractor, Test2FeatureExtractor, Test3FeatureExtractor, TestBrokenFeatureExtractor
+
+
+@pytest.fixture(scope='module', autouse=True)
+def override_features():
+    """Overwrite the available feature extractors with test feature extractors."""
+    feature_extractor.FEATURES = feature_extractor._feature_map(test_module_name)
+    yield
+    feature_extractor.FEATURES = feature_extractor._feature_map(feature_extractor.__name__)
 
 
 def test__feature_map():
@@ -15,4 +25,4 @@ def test__feature_map():
         'test3_a': Test3FeatureExtractor,
         'test_broken': TestBrokenFeatureExtractor,
     }
-    assert feature_map == _feature_map(test_module_name)
+    assert feature_map == feature_extractor._feature_map(test_module_name)
