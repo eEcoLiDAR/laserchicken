@@ -5,6 +5,12 @@ from laserchicken import keys,_version
 def get_point(pc,index):
     return pc[keys.point]["x"]["data"][index],pc[keys.point]["y"]["data"][index],pc[keys.point]["z"]["data"][index]
 
+def get_feature(pc,index,featurename):
+    return pc[keys.point][featurename]["data"][index]
+
+def get_features(pc,index,featurenames):
+    return (pc[keys.point][f]["data"][index] for f in featurenames)
+
 def copy_pointcloud(pc_in, array_mask = []):
     """
     Makes a deep copy of a point cloud dict using the array mask when copying the points.

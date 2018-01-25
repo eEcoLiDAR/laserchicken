@@ -13,6 +13,27 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(3,y)
         self.assertEqual(4,z)
 
+    def test_GetPointCloudPointFeature(self):
+        """ Should not raise exception. """
+        pc = test_tools.generate_test_point_cloud()
+        cols = 0.5*(pc[keys.point]["x"]["data"] + pc[keys.point]["y"]["data"])
+        pc[keys.point]["color"] = {"type" : "double", "data" : cols}
+        x,y,z = utils.get_point(pc,1)
+        c = utils.get_feature(pc,1,"color")
+        self.assertEqual(c,0.5*(x + y))
+
+    def test_GetPointCloudPointFeatures(self):
+        """ Should not raise exception. """
+        pc = test_tools.generate_test_point_cloud()
+        cols = 0.5*(pc[keys.point]["x"]["data"] + pc[keys.point]["y"]["data"])
+        flavs = 0.5*(pc[keys.point]["x"]["data"] - pc[keys.point]["y"]["data"])
+        pc[keys.point]["color"] = {"type" : "double", "data" : cols}
+        pc[keys.point]["flavor"] = {"type" : "double", "data" : flavs}
+        x,y,z = utils.get_point(pc,2)
+        c,f = utils.get_features(pc,2,("color","flavor"))
+        self.assertEqual(c,0.5*(x + y))
+        self.assertEqual(f,0.5*(x - y))
+
     def test_CopyEmptyPointCloud(self):
         """ Should not raise exception. """
         pc = test_tools.generate_test_point_cloud()
@@ -79,5 +100,3 @@ class TestUtils(unittest.TestCase):
         from laserchicken import select as somemodule
         utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
         self.assertEqual(len(pc[keys.provenance]),1)
-        print(pc["log"])
-        raise Exception
