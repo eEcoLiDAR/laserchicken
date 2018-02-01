@@ -1,4 +1,5 @@
 import os
+
 from setuptools import setup
 
 with open(os.path.join(os.path.dirname(__file__), 'laserchicken/_version.py')) as versionpy:
@@ -19,11 +20,16 @@ setup(
     license='Apache 2.0',
     keywords=['Python', 'Point cloud'],
     url='https://github.com/eEcoLiDAR/eEcoLiDAR',
-    packages=[],
+    packages=['laserchicken'],
     install_requires=required,
     long_description=read('README.md'),
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
     ],
+    entry_points={
+        'console_scripts': [
+            'laserchicken = laserchicken.tools.cli:main',
+        ],
+    },
 )
