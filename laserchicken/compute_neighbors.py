@@ -15,17 +15,9 @@ def compute_cylinder_neighbourhood_indicies(env_pc, target_pc, radius):
 
     return neighb_points_indices
 
-def compute_cylinder_neighbourhoods(env_pc, target_pc, radius):
-    ''' Function to create a cylindrincal neighbourhood for a given point of
-    a target point cloud among the points from an environment point cloud'''
-
-    neighb_points_indices = compute_cylinder_neighbourhood_indicies(env_pc, target_pc, radius)
-
-    return [utils.copy_pointcloud(env_pc,iarray) for iarray in neighb_points_indices]
-
-def compute_sphere_neighbourhoods(env_pc, target_pc, radius):
-    ''' Function to create a spherical neighbourhood for a given point of
-    a target point cloud among the points from an environment point cloud'''
+def compute_sphere_neighbourhood_indicies(env_pc, target_pc, radius):
+    ''' Function to find the indicies of points within a spherical neighbourhood
+    for a given point of a target point cloud among the points from an environment point cloud'''
 
     neighb_points_indices = compute_cylinder_neighbourhood_indicies(env_pc, target_pc, radius)
 
@@ -39,9 +31,21 @@ def compute_sphere_neighbourhoods(env_pc, target_pc, radius):
             if(abs(targetz - envz) > radius): continue
             if((envx - targetx)**2 + (envy - targety)**2 + (envz - targetz)**2 <= radius**2):
                 resultindices.append(j)
-        result.append(utils.copy_pointcloud(env_pc,resultindices))
+        result.append(resultindices)
     return result
 
+def compute_cylinder_neighbourhoods(env_pc, target_pc, radius):
+    ''' Function to create a cylindrincal neighbourhood for a given point of
+    a target point cloud among the points from an environment point cloud'''
 
+    neighb_points_indices = compute_cylinder_neighbourhood_indicies(env_pc, target_pc, radius)
 
-    return #[utils.copy_pointcloud(env_pc,iarray) for iarray in neighb_points_indices]
+    return [utils.copy_pointcloud(env_pc,iarray) for iarray in neighb_points_indices]
+
+def compute_sphere_neighbourhoods(env_pc, target_pc, radius):
+    ''' Function to create a spherical neighbourhood for a given point of
+    a target point cloud among the points from an environment point cloud'''
+
+    neighb_points_indices = compute_sphere_neighbourhood_indicies(env_pc, target_pc, radius)
+
+    return [utils.copy_pointcloud(env_pc,iarray) for iarray in neighb_points_indices]
