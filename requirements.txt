@@ -9,3 +9,5 @@ python-dateutil
 shapely
 PyShp
 pandas
+click
+colorama
