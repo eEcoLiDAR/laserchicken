@@ -3,12 +3,17 @@ import pytest
 
 import numpy as np
 import pandas as pd
+from numpy.testing import assert_almost_equal, assert_equal
 
 from laserchicken.keys import point
 from laserchicken import read_las
-from laserchicken.spatial_selections import points_in_polygon_wkt, points_in_polygon_wkt_file, points_in_polygon_shp_file
+from laserchicken.spatial_selections import points_in_polygon_wkt, points_in_polygon_wkt_file, \
+    points_in_polygon_shp_file
+
 
 class TestSpatialSelectionWKT(unittest.TestCase):
+    polygon_around_1_point_ahn2 = "POLYGON(( 243627.840248 572073.439002, 243627.842248 572073.439002, 243627.842248 572073.441002, 243627.840248 572073.441002, 243627.840248 572073.439002))"
+
     @staticmethod
     def test_points_in_polygon_wkt_None():
         """ None input raises Value Error. """
@@ -47,7 +52,8 @@ class TestSpatialSelectionWKT(unittest.TestCase):
     def test_points_in_polygon_wkt_MultiPolygon():
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt(pc_in, "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))")
+            points_in_polygon_wkt(pc_in,
+                                  "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))")
 
     @staticmethod
     def test_points_in_polygon_wkt_Collection():
@@ -57,27 +63,52 @@ class TestSpatialSelectionWKT(unittest.TestCase):
 
     @staticmethod
     def test_points_in_polygon_wkt_invalidPolygon():
+        """Polygon is not closed so should raise error."""
         pc_in = read_las.read("testdata/AHN2.las")
         with pytest.raises(ValueError):
-            points_in_polygon_wkt(pc_in, "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0 ))")
+            points_in_polygon_wkt(pc_in,
+                                  "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0 ))")
 
     @staticmethod
     def test_wkt_polygons_contains():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
-        pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0, 243590.0 572110.0 ))")
+        pc_out = points_in_polygon_wkt(pc_in,
+                                       "POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0, 243590.0 572110.0 ))")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
-        df_out = pd.DataFrame({'x':x, 'y':y}, dtype=np.int32)
+        df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32)
         df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
-        assert(pd.DataFrame.equals(df, df_out))
+        assert (pd.DataFrame.equals(df, df_out))
+
+
+    def test_wkt_polygons_contains_single_point(self):
+        """Selecting a single point with a tiny polygon. Test for https://github.com/eEcoLiDAR/eEcoLiDAR/issues/64. """
+        pc_in = read_las.read("testdata/AHN2.las")
+        pc_out = points_in_polygon_wkt(pc_in, self.polygon_around_1_point_ahn2)
+        x = pc_out[point]['x']['data']
+        y = pc_out[point]['y']['data']
+        expected_x = 243627.841248
+        expected_y = 572073.440002
+        assert_equal(len(x), 1)
+        assert_almost_equal(x[0], expected_x, 4)
+        assert_almost_equal(y[0], expected_y, 4)
+
+    def test_wkt_polygons_contains_original_not_changed(self):
+        """Point cloud in should not change by filtering."""
+        pc_in = read_las.read("testdata/AHN2.las")
+        len_x_before = len(pc_in[point]['x']['data'])
+        _pc_out = points_in_polygon_wkt(pc_in, self.polygon_around_1_point_ahn2)
+        len_x_after = len(pc_in[point]['x']['data'])
+        assert_equal(len_x_after, len_x_before)
 
 
     @staticmethod
     def test_wkt_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
         pc_in = read_las.read("testdata/AHN2.las")
-        pc_out = points_in_polygon_wkt(pc_in, "POLYGON(( 253590.0 582110.0, 253640.0 582160.0, 253700.0 582110.0, 253640.0 582060.0, 253590.0 582110.0 ))")
+        pc_out = points_in_polygon_wkt(pc_in,
+                                       "POLYGON(( 253590.0 582110.0, 253640.0 582160.0, 253700.0 582110.0, 253640.0 582060.0, 253590.0 582110.0 ))")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
         assert (len(x) == 0)
@@ -149,9 +180,9 @@ class TestSpatialSelectionWKTFile(unittest.TestCase):
         pc_out = points_in_polygon_wkt_file(pc_in, "testdata/ahn2_geometries_wkt/ahn2_polygon.wkt")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
-        df_out = pd.DataFrame({'x':x, 'y':y}, dtype=np.int32)
+        df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32)
         df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
-        assert(pd.DataFrame.equals(df, df_out))
+        assert (pd.DataFrame.equals(df, df_out))
 
     @staticmethod
     def test_wkt_polygons_containsEmpty():
@@ -162,6 +193,7 @@ class TestSpatialSelectionWKTFile(unittest.TestCase):
         y = pc_out[point]['y']['data']
         assert (len(x) == 0)
         assert (len(y) == 0)
+
 
 class TestSpatialSelectionSHPFile(unittest.TestCase):
     @staticmethod
@@ -209,7 +241,6 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
         with pytest.raises(ValueError):
             points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/collection.shp")
 
-
     @staticmethod
     def test_points_in_polygon_shp_invalidPolygon():
         pc_in = read_las.read("testdata/AHN2.las")
@@ -227,7 +258,6 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
         df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
         assert (pd.DataFrame.equals(df, df_out))
 
-
     @staticmethod
     def test_shp_polygons_containsEmpty():
         """ Selecting all points within a Polygon. """
@@ -238,20 +268,24 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
         assert (len(x) == 0)
         assert (len(y) == 0)
 
+
 def assert_none_pc_raises_value_error(function):
     with pytest.raises(ValueError):
         pc_in = None
         function(pc_in, "testdata/ahn2_polygon_shp/ahn2_polygon.wkt")
+
 
 def assert_unknown_path_raises_value_error(function):
     pc_in = read_las.read("testdata/AHN2.las")
     with pytest.raises(ValueError):
         function(pc_in, 'unknown_path_123')
 
+
 def assert_none_path_raises_value_error(function):
     pc_in = read_las.read("testdata/AHN2.las")
     with pytest.raises(ValueError):
         function(pc_in, None)
+
 
 def assert_none_wkt_raises_value_error(function):
     pc_in = read_las.read("testdata/AHN2.las")
