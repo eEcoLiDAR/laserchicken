@@ -3,10 +3,10 @@ import random
 import unittest
 
 from laserchicken import read_las
-from laserchicken.feature_extractor.height_stats import HeightStatistics
+from laserchicken.feature_extractor.height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
 
 
-class TestHeightStats(unittest.TestCase):
+class TestHeightStatisticsFeatureExtractor(unittest.TestCase):
 
     def test_height_stats(self):
         print(os.getcwd())
@@ -14,7 +14,7 @@ class TestHeightStats(unittest.TestCase):
         pc_in = read_las.read("testdata/AHN2.las")
         indices = [89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018,
                    61494, 65194, 117931, 62971, 10474, 90322]
-        extractor = HeightStatistics()
+        extractor = HeightStatisticsFeatureExtractor()
         (max_z, min_z, mean_z, median_z, std_z, var_z, range_z, coeff_var_z, skew_z, kurto_z) = extractor.extract(
             pc_in, indices, None, None)
         print(max_z, min_z, mean_z, median_z, std_z, var_z, range_z, coeff_var_z, skew_z, kurto_z)

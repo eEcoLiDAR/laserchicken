@@ -5,7 +5,7 @@ from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
 
 
-class HeightStatistics(AbstractFeatureExtractor):
+class HeightStatisticsFeatureExtractor(AbstractFeatureExtractor):
     @classmethod
     def requires(cls):
         return []
