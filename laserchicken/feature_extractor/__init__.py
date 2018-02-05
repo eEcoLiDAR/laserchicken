@@ -1,8 +1,10 @@
 """Feature extractor module."""
 import importlib
+import itertools
 import re
 import numpy as np
 from laserchicken import keys, utils
+from .entropy_feature_extractor import EntropyFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
 
 
@@ -15,17 +17,19 @@ def _feature_map(module_name=__name__):
         for feature_name in extractor.provides()
     }
 
-
+  
 FEATURES = _feature_map()
 
 
-def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, overwrite=False):
+def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, overwrite = False, **kwargs):
     ordered_features = _make_feature_list(feature_names)
     targetsize = len(target_point_cloud[keys.point]["x"]["data"])
     for feature in ordered_features:
         if ((not overwrite) and (feature in target_point_cloud[keys.point])):
             continue  # Skip feature calc if it is already there and we do not overwrite
         extractor = FEATURES[feature]()
+        for k in kwargs:
+            setattr(extractor,k,kwargs[k])
         providedfeatures = extractor.provides()
         numfeatures = len(providedfeatures)
         featurevalues = [np.empty(targetsize, dtype=np.float64) for i in range(numfeatures)]
