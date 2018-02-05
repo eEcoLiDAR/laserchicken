@@ -2,8 +2,8 @@ import os
 import random
 import unittest
 
-from laserchicken.height_stats import HeightStatistics
-from laserchicken import read_las, keys
+from laserchicken import read_las
+from laserchicken.feature_extractor.height_stats import HeightStatistics
 
 
 class TestHeightStats(unittest.TestCase):
