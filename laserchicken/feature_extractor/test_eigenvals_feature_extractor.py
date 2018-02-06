@@ -18,7 +18,7 @@ class TestExtractEigenValues(unittest.TestCase):
         target_pointcloud = utils.copy_pointcloud(self.point_cloud, rand_indices)
         numtargets = len(target_pointcloud[keys.point]["x"]["data"])
         radius = 2.5
-        result_index_lists = compute_neighbors.compute_cylinder_neighbourhood_indicies(
+        result_index_lists = compute_neighbors.compute_cylinder_neighborhood_indices(
             self.point_cloud, target_pointcloud, radius)
         feature_extractor.compute_features(self.point_cloud, result_index_lists, target_pointcloud,
                                            ["eigenv_1", "eigenv_2", "eigenv_3"])

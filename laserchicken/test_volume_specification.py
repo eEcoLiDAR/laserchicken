@@ -8,7 +8,7 @@ from laserchicken.volume_specification import Sphere, InfiniteCylinder
 class VolumeTests(TestCase):
     @staticmethod
     def test_sphere_correctType():
-        assert_equal(Sphere(1).get_type(), Sphere._type_description)
+        assert_equal(Sphere(1).get_type(), Sphere.TYPE)
 
     @staticmethod
     def test_sphere_calculateVolume():
@@ -16,7 +16,7 @@ class VolumeTests(TestCase):
 
     @staticmethod
     def test_infiniteCylinder_type():
-        assert_equal(InfiniteCylinder(2).get_type(), InfiniteCylinder._type_description)
+        assert_equal(InfiniteCylinder(2).get_type(), InfiniteCylinder.TYPE)
 
     @staticmethod
     def test_infiniteCylinder_calculateArea():

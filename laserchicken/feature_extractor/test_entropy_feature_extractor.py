@@ -17,7 +17,7 @@ class TestExtractEntropy(unittest.TestCase):
         target_pointcloud = utils.copy_pointcloud(self.pointcloud, rand_indices)
         numtargets = len(target_pointcloud[keys.point]["x"]["data"])
         radius = 25
-        result_index_lists = compute_neighbors.compute_cylinder_neighbourhood_indicies(
+        result_index_lists = compute_neighbors.compute_cylinder_neighborhood_indices(
             self.pointcloud, target_pointcloud, radius)
         feature_extractor.compute_features(self.pointcloud, result_index_lists, target_pointcloud,
                                            ["z_entropy"],layer_thickness = 0.1)

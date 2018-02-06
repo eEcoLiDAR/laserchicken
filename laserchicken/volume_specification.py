@@ -19,13 +19,13 @@ class Volume(object):
 class Sphere(Volume):
     """Mathematical sphere."""
 
-    _type_description = 'sphere'
+    TYPE = 'sphere'
 
     def __init__(self, radius):
         self.radius = radius
 
     def get_type(self):
-        return self._type_description
+        return self.TYPE
 
     def calculate_volume(self):
         """
@@ -39,13 +39,13 @@ class Sphere(Volume):
 class InfiniteCylinder(Volume):
     """Cylinder with base in the xy plane and height that extends infinitely to both z and -z direction."""
 
-    _type_description = 'infinite cylinder'
+    TYPE = 'infinite cylinder'
 
     def __init__(self, radius):
         self.radius = radius
 
     def get_type(self):
-        return self._type_description
+        return self.TYPE
 
     def calculate_base_area(self):
         """
