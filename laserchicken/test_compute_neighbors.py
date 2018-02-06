@@ -3,7 +3,7 @@ import random
 import unittest
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import assert_equal
 
 from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighbourhoods, compute_cylinder_neighborhoods, \
