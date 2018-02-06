@@ -1,63 +1,80 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 23 17:09:33 2018
-
-@author: elena
-"""
-
 import os
-import unittest
 import random
+import unittest
+
 import numpy as np
-from laserchicken import keys, compute_neighbors, read_las, utils
+from numpy.testing import assert_equal
+
+from laserchicken import keys, read_las, utils
+from laserchicken.compute_neighbors import compute_neighbourhoods, compute_cylinder_neighborhoods, \
+    compute_sphere_neighborhoods
+from laserchicken.volume_specification import Sphere, InfiniteCylinder
 
 
 class TestComputeNeighbors(unittest.TestCase):
-
     _test_file_name = 'AHN3.las'
     _test_data_source = 'testdata'
-    pointcloud = None
+    point_cloud = None
 
-    def test_compute_cylinder_neighbours(self):
-       ''' Testing  computing of neighbors with KDtree '''
-       num_all_pc_points = len(self.pointcloud[keys.point]["x"]["data"])
-       rand_indices = [random.randint(0, num_all_pc_points) for p in range(20)]
-
-       target_pointcloud = utils.copy_pointcloud(self.pointcloud, rand_indices)
-       numtargets = len(target_pointcloud[keys.point]["x"]["data"])
-       radius = 0.5
-       resultpcs = compute_neighbors.compute_cylinder_neighbourhoods(self.pointcloud, target_pointcloud, radius)
-       self.assertEqual(numtargets,len(resultpcs))
-       for i in range(numtargets):
-           targetx = target_pointcloud[keys.point]["x"]["data"][i]
-           targety = target_pointcloud[keys.point]["y"]["data"][i]
-           for j in range(len(resultpcs[i][keys.point]["x"]["data"])):
-               nbptx = resultpcs[i][keys.point]["x"]["data"][j]
-               nbpty = resultpcs[i][keys.point]["y"]["data"][j]
-               dist = np.sqrt((nbptx - targetx)**2 + (nbpty - targety)**2)
-               self.assertTrue(dist <= radius)
-
+    def test_compute_cylinder_neighbors(self):
+        """Compute neighbors should only return points within the (xy) radius of the target."""
+        target_point_cloud = self._get_random_targets()
+        radius = 0.5
+        result_point_clouds = compute_cylinder_neighborhoods(self.point_cloud, target_point_cloud, radius)
+        self._assert_all_points_within_cylinder(result_point_clouds, target_point_cloud, radius)
 
     def test_compute_sphere_neighbours(self):
-       ''' Testing  computing of neighbors with KDtree '''
-       num_all_pc_points = len(self.pointcloud[keys.point]["x"]["data"])
-       rand_indices = [random.randint(0, num_all_pc_points) for p in range(20)]
+        """Compute neighbors should only return points within the (xyz) radius of the target."""
+        target_point_cloud = self._get_random_targets()
+        radius = 0.5
+        result_point_clouds = compute_sphere_neighborhoods(self.point_cloud, target_point_cloud, radius)
+        self._assert_all_points_within_sphere(result_point_clouds, target_point_cloud, radius)
 
-       target_pointcloud = utils.copy_pointcloud(self.pointcloud, rand_indices)
-       numtargets = len(target_pointcloud[keys.point]["x"]["data"])
-       radius = 0.5
-       resultpcs = compute_neighbors.compute_sphere_neighbourhoods(self.pointcloud, target_pointcloud, radius)
-       self.assertEqual(numtargets,len(resultpcs))
-       for i in range(numtargets):
-           targetx,targety,targetz = utils.get_point(target_pointcloud,i)
-           for j in range(len(resultpcs[i][keys.point]["x"]["data"])):
-               nbptx,nbpty,nbptz = utils.get_point(resultpcs[i],j)
-               dist = np.sqrt((nbptx - targetx)**2 + (nbpty - targety)**2 + (nbptz - targetz)**2)
-               self.assertTrue(dist <= radius)
+    def test_compute_neighbours_sphereVolume(self):
+        """Compute neighbors should detect sphere volume and find neighbors accordingly"""
+        target_point_cloud = self._get_random_targets()
+        sphere = Sphere(0.5)
+        result_point_clouds = compute_neighbourhoods(self.point_cloud, target_point_cloud, sphere)
+        self._assert_all_points_within_sphere(result_point_clouds, target_point_cloud, sphere.radius)
+
+    def test_compute_neighbours_cylinderVolume(self):
+        """Compute neighbors should detect cylinder volume and find neighbors accordingly"""
+        target_point_cloud = self._get_random_targets()
+        cylinder = InfiniteCylinder(0.5)
+        result_point_clouds = compute_neighbourhoods(self.point_cloud, target_point_cloud, cylinder)
+        self._assert_all_points_within_cylinder(result_point_clouds, target_point_cloud, cylinder.radius)
 
     def setUp(self):
-        self.pointcloud = read_las.read(os.path.join(self._test_data_source,self._test_file_name))
+        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
         random.seed(102938482634)
 
     def tearDown(self):
         pass
+
+    def _get_random_targets(self):
+        num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
+        rand_indices = [random.randint(0, num_all_pc_points) for p in range(20)]
+        return utils.copy_pointcloud(self.point_cloud, rand_indices)
+
+    def _assert_all_points_within_cylinder(self, result_point_clouds, target_point_cloud, radius):
+        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
+        assert_equal(n_targets, len(result_point_clouds))
+        for i in range(n_targets):
+            target_x = target_point_cloud[keys.point]["x"]["data"][i]
+            target_y = target_point_cloud[keys.point]["y"]["data"][i]
+            for j in range(len(result_point_clouds[i][keys.point]["x"]["data"])):
+                neighbor_x = result_point_clouds[i][keys.point]["x"]["data"][j]
+                neighbor_y = result_point_clouds[i][keys.point]["y"]["data"][j]
+                dist = np.sqrt((neighbor_x - target_x) ** 2 + (neighbor_y - target_y) ** 2)
+                self.assertTrue(dist <= radius)
+
+    def _assert_all_points_within_sphere(self, result_point_clouds, target_point_cloud, radius):
+        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
+        assert_equal(n_targets, len(result_point_clouds))
+        for i in range(n_targets):
+            target_x, target_y, target_z = utils.get_point(target_point_cloud, i)
+            for j in range(len(result_point_clouds[i][keys.point]["x"]["data"])):
+                neighbor_x, neighbor_y, neighbor_z = utils.get_point(result_point_clouds[i], j)
+                dist = np.sqrt(
+                    (neighbor_x - target_x) ** 2 + (neighbor_y - target_y) ** 2 + (neighbor_z - target_z) ** 2)
+                self.assertTrue(dist <= radius)

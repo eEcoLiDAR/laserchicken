@@ -13,5 +13,5 @@ class TestBrokenFeatureExtractor(AbstractFeatureExtractor):
     def provides(cls):
         return ['test_broken']
 
-    def extract(self,sourcepc,neighborhood,targetpc,targetindex):
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
         pass
