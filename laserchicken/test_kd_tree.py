@@ -12,7 +12,7 @@ class TestKDTree(unittest.TestCase):
 
     def test_build_kd_tree(self):
         """ Should build kd tree without exception """
-        kd_tree.build_kdtree(self.pointcloud)
+        kd_tree._build_kdtree(self.pointcloud)
 
     def test_kd_tree_cache(self):
         """ Tests the caching mechanism """
