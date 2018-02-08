@@ -6,7 +6,7 @@ import numpy as np
 from laserchicken import keys, utils
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
-
+from .percentile_feature_extractor import PercentileFeatureExtractor
 
 def _feature_map(module_name=__name__):
     """Construct a mapping from feature names to feature extractor classes."""
