@@ -40,7 +40,7 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
     def provides(cls):
         return ['eigenv_1', 'eigenv_2', 'eigenv_3']
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex):
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
         nbptsX, nbptsY, nbptsZ = utils.get_point(sourcepc, neighborhood)
         matrix = np.column_stack((nbptsX, nbptsY, nbptsZ))
         eigenvals, eigenvecs = structure_tensor(matrix)

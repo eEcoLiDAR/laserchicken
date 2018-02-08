@@ -14,7 +14,7 @@ class HeightStatisticsFeatureExtractor(AbstractFeatureExtractor):
     def provides(cls):
         return ['max_z', 'min_z', 'mean_z', 'median_z', 'std_z', 'var_z', 'range', 'coeff_var_z', 'skew_z', 'kurto_z']
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex):
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         z = sourcepc[point]['z']['data'][neighborhood]
         max_z = np.max(z)
         min_z = np.min(z)

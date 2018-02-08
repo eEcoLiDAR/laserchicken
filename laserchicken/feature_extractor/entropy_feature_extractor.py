@@ -27,7 +27,7 @@ class EntropyFeatureExtractor(AbstractFeatureExtractor):
             p.append(self.z_max)
         return p
 
-    def extract(self, source_pc, neighborhood, target_pc, target_index):
+    def extract(self, source_pc, neighborhood, target_pc, target_index, volume_description):
         z = source_pc[keys.point]["z"]["data"][neighborhood]
         _z_min = np.min(z) if self.z_min is None else self.z_min
         _z_max = np.max(z) if self.z_max is None else self.z_max

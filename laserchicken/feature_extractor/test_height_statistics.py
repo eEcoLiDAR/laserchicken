@@ -16,7 +16,7 @@ class TestHeightStatisticsFeatureExtractor(unittest.TestCase):
                    61494, 65194, 117931, 62971, 10474, 90322]
         extractor = HeightStatisticsFeatureExtractor()
         (max_z, min_z, mean_z, median_z, std_z, var_z, range_z, coeff_var_z, skew_z, kurto_z) = extractor.extract(
-            pc_in, indices, None, None)
+            pc_in, indices, None, None, None)
         print(max_z, min_z, mean_z, median_z, std_z, var_z, range_z, coeff_var_z, skew_z, kurto_z)
         assert (max_z == 5.979999973773956)
         assert (min_z == 0.47999997377395631)

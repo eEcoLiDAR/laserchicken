@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from laserchicken import feature_extractor, keys, test_tools
+from laserchicken.volume_specification import Sphere
 
 from . import __name__ as test_module_name
 
@@ -17,7 +18,7 @@ def override_features():
 
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
-    feature_extractor.compute_features({}, neighborhoods, target, feature_names, overwrite)
+    feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5), overwrite)
     return target
 
 
