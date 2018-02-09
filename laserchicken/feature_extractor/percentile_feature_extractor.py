@@ -1,15 +1,14 @@
-import numpy as np
 import scipy.stats.stats as stats
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
 
+
 class PercentileFeatureExtractor(AbstractFeatureExtractor):
-    """Height percentiles feature extractor class"""
+    """Height percentiles feature extractor class."""
 
     @classmethod
     def requires(cls):
-
         """
         Get a list of names of the point attributes that are needed for this feature extraction.
 
@@ -18,7 +17,6 @@ class PercentileFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-
         return []
 
     @classmethod
@@ -32,9 +30,9 @@ class PercentileFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['perc_'+str(i) for i in range(10,110,10)]
+        return ['perc_' + str(i) for i in range(10, 110, 10)]
 
-    def extract(self,sourcepc,neighborhood,targetpc,targetindex):
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
         :param point_cloud: environment (search space) point cloud
@@ -44,12 +42,13 @@ class PercentileFeatureExtractor(AbstractFeatureExtractor):
         :return: feature value
         """
         z = sourcepc[point]['z']['data'][neighborhood]
-        percentiles = range(10,110,10)
-        return [stats.scoreatpercentile(z,p) for p in percentiles]
+        percentiles = range(10, 110, 10)
+        return [stats.scoreatpercentile(z, p) for p in percentiles]
 
     def get_params(self):
         """
-        Returns a tuple of parameters involved in the current feature extractor
-        object. Needed for provenance.
+        Return a tuple of parameters involved in the current feature extractor object.
+
+        Needed for provenance.
         """
         return ()
