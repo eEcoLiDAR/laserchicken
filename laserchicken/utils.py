@@ -11,7 +11,8 @@ def get_point(point_cloud, index):
     :param index: index of the point within the point cloud
     :return: x, y, z as a tuple of floats
     """
-    return point_cloud[keys.point]["x"]["data"][index], point_cloud[keys.point]["y"]["data"][index], point_cloud[keys.point]["z"]["data"][index]
+    return point_cloud[keys.point]["x"]["data"][index], point_cloud[keys.point]["y"]["data"][index], \
+           point_cloud[keys.point]["z"]["data"][index]
 
 
 def get_attribute_value(point_cloud, index, attribute_name):
@@ -78,3 +79,24 @@ def add_metadata(point_cloud, module, params):
     if keys.provenance not in point_cloud:
         point_cloud[keys.provenance] = []
     point_cloud[keys.provenance].append(msg)
+
+
+def fit_plane(x, y, a):
+    """
+    Fit a plane and return a function that returns a for every given x and y.
+
+    Solves Ax = b where A is the matrix of (x,y) combinations, x are the plane parameters, and b the values.
+    Example:
+    >>> points = np.random.rand(100, 3)
+    >>> f = fit_plane(points[:, 0], points[:, 1], points[:, 2])
+    >>> new_points = np.random.rand(10, 3)
+    >>> f(new_points[0], new_points [1])
+
+    :param x: x coordinates
+    :param y: y coordinates
+    :param a: value (for instance height)
+    :return: plane parameters
+    """
+    matrix = np.column_stack((np.ones(x.size), x, y))
+    parameters, _, _, _ = np.linalg.lstsq(matrix, a)
+    return lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters)
