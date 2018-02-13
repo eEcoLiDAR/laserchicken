@@ -6,7 +6,7 @@ import numpy as np
 from laserchicken import keys, utils
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
-from .percentile_feature_extractor import PercentileFeatureExtractor
+
 
 def _feature_map(module_name=__name__):
     """Construct a mapping from feature names to feature extractor classes."""
@@ -15,37 +15,37 @@ def _feature_map(module_name=__name__):
         feature_name: extractor
         for name, extractor in vars(module).items() if re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name)
         for feature_name in extractor.provides()
-    }
+        }
 
 
 FEATURES = _feature_map()
 
 
-def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, overwrite = False, **kwargs):
+def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, volume, overwrite=False,
+                     **kwargs):
     ordered_features = _make_feature_list(feature_names)
-    targetsize = len(target_point_cloud[keys.point]["x"]["data"])
+    n_targets = len(target_point_cloud[keys.point]["x"]["data"])
     for feature in ordered_features:
-        if ((not overwrite) and (feature in target_point_cloud[keys.point])):
+        if (not overwrite) and (feature in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
         extractor = FEATURES[feature]()
         for k in kwargs:
-            setattr(extractor,k,kwargs[k])
-        providedfeatures = extractor.provides()
-        numfeatures = len(providedfeatures)
-        featurevalues = [np.empty(targetsize, dtype=np.float64) for i in range(numfeatures)]
-        for target_index in range(targetsize):
-            pointvalues = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
-                                            target_index)
-            if numfeatures > 1:
-                for i in range(numfeatures):
-                    featurevalues[i][target_index] = pointvalues[i]
+            setattr(extractor, k, kwargs[k])
+        provided_features = extractor.provides()
+        n_features = len(provided_features)
+        feature_values = [np.empty(n_targets, dtype=np.float64) for i in range(n_features)]
+        for target_index in range(n_targets):
+            point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
+                                             target_index, volume)
+            if n_features > 1:
+                for i in range(n_features):
+                    feature_values[i][target_index] = point_values[i]
             else:
-                featurevalues[0][target_index] = pointvalues
-        for i in range(numfeatures):
-            fname = providedfeatures[i]
-            if (overwrite or (fname not in target_point_cloud[keys.point])):
-                # Set feature values if it is not there (or we want to overwrite)
-                target_point_cloud[keys.point][fname] = {"type": np.float64, "data": featurevalues[i]}
+                feature_values[0][target_index] = point_values
+        for i in range(n_features):
+            feature = provided_features[i]
+            if overwrite or (feature not in target_point_cloud[keys.point]):
+                target_point_cloud[keys.point][feature] = {"type": np.float64, "data": feature_values[i]}
         utils.add_metadata(target_point_cloud, type(extractor).__module__, extractor.get_params())
 
 
