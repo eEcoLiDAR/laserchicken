@@ -19,7 +19,7 @@ class TestUtils(unittest.TestCase):
         cols = 0.5*(pc[keys.point]["x"]["data"] + pc[keys.point]["y"]["data"])
         pc[keys.point]["color"] = {"type" : "double", "data" : cols}
         x,y,z = utils.get_point(pc,1)
-        c = utils.get_feature(pc,1,"color")
+        c = utils.get_attribute_value(pc, 1, "color")
         self.assertEqual(c,0.5*(x + y))
 
     def test_GetPointCloudPointFeatures(self):

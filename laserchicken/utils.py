@@ -1,28 +1,53 @@
 import numpy as np
 import datetime
-from laserchicken import keys,_version
-
-def get_point(pc,index):
-    return pc[keys.point]["x"]["data"][index],pc[keys.point]["y"]["data"][index],pc[keys.point]["z"]["data"][index]
+from laserchicken import keys, _version
 
 
-def get_feature(pc,index,featurename):
-    return pc[keys.point][featurename]["data"][index]
+def get_point(point_cloud, index):
+    """
+    Get x, y, z tuple of a single point in a point cloud.
+
+    :param point_cloud: point cloud containing the point of interest
+    :param index: index of the point within the point cloud
+    :return: x, y, z as a tuple of floats
+    """
+    return point_cloud[keys.point]["x"]["data"][index], point_cloud[keys.point]["y"]["data"][index], point_cloud[keys.point]["z"]["data"][index]
 
 
-def get_features(pc,index,featurenames):
-    return (pc[keys.point][f]["data"][index] for f in featurenames)
+def get_attribute_value(point_cloud, index, attribute_name):
+    """
+    Get value of a single attribute of a single point in a point cloud.
+
+    :param point_cloud: point cloud containing the point of interest
+    :param index: index of the point within the point cloud
+    :param attribute_name: attribute name
+    :return: value of the attribute of the point
+    """
+    return point_cloud[keys.point][attribute_name]["data"][index]
 
 
-def copy_pointcloud(pc_in, array_mask = None):
+def get_features(point_cloud, index, attribute_names):
+    """
+    Get value of each attribute in a list for a single point in a point cloud.
+
+    :param point_cloud: point cloud containing the point of interest
+    :param index: index of the point within the point cloud
+    :param attribute_names: attribute names
+    :return: list of values of the attributes of the point
+    """
+    return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
+
+
+def copy_pointcloud(source_point_cloud, array_mask=None):
     """
     Makes a deep copy of a point cloud dict using the array mask when copying the points.
-    :param pc_in: Input point cloud
+
+    :param source_point_cloud: Input point cloud
     :param array_mask: A mask indicating which points to copy.
     :return: The copy including only the masked points.
     """
     result = {}
-    for key, value in pc_in.items():
+    for key, value in source_point_cloud.items():
         if isinstance(value, dict):
             new_value = copy_pointcloud(value, array_mask)
         elif isinstance(value, np.ndarray):
@@ -36,14 +61,20 @@ def copy_pointcloud(pc_in, array_mask = None):
     return result
 
 
-def add_metadata(pc,module,params):
+def add_metadata(point_cloud, module, params):
     """
-    Adds module metadata to pointcloud provenance
+    Adds module metadata to point cloud provenance
+
+    :param point_cloud:
+    :param module:
+    :param params:
+    :return:
     """
-    msg = {"time" : datetime.datetime.utcnow()}
-    msg["module"] = module.__name__ if hasattr(module,"__name__") else str(module)
-    if(any(params)): msg["parameters"] = params
+    msg = {"time": datetime.datetime.utcnow(),
+           "module": module.__name__ if hasattr(module, "__name__") else str(module)}
+    if any(params):
+        msg["parameters"] = params
     msg["version"] = _version.__version__
-    if(keys.provenance not in pc):
-        pc[keys.provenance] = []
-    pc[keys.provenance].append(msg)
+    if keys.provenance not in point_cloud:
+        point_cloud[keys.provenance] = []
+    point_cloud[keys.provenance].append(msg)
