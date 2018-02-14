@@ -100,3 +100,14 @@ class TestUtils(unittest.TestCase):
         from laserchicken import select as somemodule
         utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
         self.assertEqual(len(pc[keys.provenance]),1)
+
+
+    def test_FitPlaneSVD(self):
+        n = np.array([1.,2.,3.])
+        n /= np.linalg.norm(n)
+        x,y,z = utils.generate_random_points_inplane(n)
+        nfit = utils.fit_plane_svd(x,y,z)
+        self.assertTrue(np.allclose(nfit,n))
+
+if __name__ == '__main__':
+    unittest.main()
