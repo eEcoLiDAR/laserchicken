@@ -48,51 +48,49 @@ def add_metadata(pc,module,params):
         pc[keys.provenance] = []
     pc[keys.provenance].append(msg)
 
-def fit_plane_svd(x,y,z):
 
+def fit_plane_svd(xpts, ypts, zpts):
     """
-    Fit a plane to a series of points given as x,y,z coordinates
-    return the normal vector to the plane
+    Fit a plane to a series of points given as x,y,z coordinates.
+
+    r=Return the normal vector to the plane
     Use the SVD methods described for example here
     https://www.ltu.se/cms_fs/1.51590!/svd-fitting.pdf
-
-    Example:
-    >>> nfit = fit_plane_svd(generate_random_points_inplane([1,2,3]))
 
     :param x: x coordinate of the points
     :param y: y coordinate of the points
     :param z: z coordinate of the points
     :return: normal vector of the plane
     """
-
     # check size consistency
-    if x.size != y.size or x.size != z.size or y.size != z.size:
+    if xpts.size != ypts.size or xpts.size != zpts.size or ypts.size != zpts.size:
         raise AssertionError("coordinate size don't match")
-    npts = x.size
+    npts = xpts.size
 
     # form the A matrix of the coordinate
-    A = np.column_stack((x,y,z))
-    A -= np.sum(A,0)/npts
+    a = np.column_stack((xpts, ypts, zpts))
+    a -= np.sum(a, 0) / npts
 
     # compute the SVD
-    U,_,_ = np.linalg.svd(A.T)
+    u, _, _ = np.linalg.svd(a.T)
 
     # return the normal vector
-    return U[:,2]
+    return u[:, 2]
 
-def generate_random_points_inplane(nvect,d=0,npts=100,eps=0.0):
+
+def generate_random_points_inplane(nvect, dparam=0, npts=100, eps=0.0):
     """
-    Generate a series of point all belonging to a plane
+    Generate a series of point all belonging to a plane.
 
     :param nvect: normal vector of the plane
-    :param d: zero point value of the plane
+    :param dparam: zero point value of the plane
     :param npts: number of points
     :param eps: std of the gaussian noise added to the z values of the planes
     :return: x,y,z coordinate of the points
     """
-    if isinstance(nvect,list):
+    if isinstance(nvect, list):
         nvect = np.array(nvect)
-    a,b,c = nvect/np.linalg.norm(nvect)
-    x,y = np.random.rand(npts),np.random.rand(npts)
-    z = (d-a*x-b*y)/c + np.random.normal(loc=0.,scale=eps,size=npts)
-    return x,y,z
+    a, b, c = nvect / np.linalg.norm(nvect)
+    x, y = np.random.rand(npts), np.random.rand(npts)
+    z = (dparam - a * x - b * y) / c + np.random.normal(loc=0., scale=eps, size=npts)
+    return x, y, z
