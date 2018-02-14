@@ -43,9 +43,9 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
         :return: feature value
         """
 
-        x = sourcepc[point]['data']['x'][neighborhood]
-        y = sourcepc[point]['data']['y'][neighborhood]
-        z = sourcepc[point]['data']['z'][neighborhood]
+        x = sourcepc[point]['x']['data'][neighborhood]
+        y = sourcepc[point]['y']['data'][neighborhood]
+        z = sourcepc[point]['z']['data'][neighborhood]
 
         nvect = fit_plane_svd(x,y,z)
 
