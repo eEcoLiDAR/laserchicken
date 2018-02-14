@@ -92,5 +92,7 @@ def generate_random_points_inplane(nvect, dparam=0, npts=100, eps=0.0):
         nvect = np.array(nvect)
     a, b, c = nvect / np.linalg.norm(nvect)
     x, y = np.random.rand(npts), np.random.rand(npts)
-    z = (dparam - a * x - b * y) / c + np.random.normal(loc=0., scale=eps, size=npts)
+    z = (dparam - a * x - b * y) / c
+    if eps > 0:
+        z += np.random.normal(loc=0., scale=eps, size=npts)
     return x, y, z
