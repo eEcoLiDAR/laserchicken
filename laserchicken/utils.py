@@ -1,11 +1,13 @@
-import numpy as np
 import datetime
+
+import numpy as np
+
 from laserchicken import keys, _version
 
 
 def get_point(point_cloud, index):
     """
-    Get x, y, z tuple of a single point in a point cloud.
+    Get x, y, z tuple of one or more points in a point cloud.
 
     :param point_cloud: point cloud containing the point of interest
     :param index: index of the point within the point cloud
@@ -95,7 +97,7 @@ def fit_plane(x, y, a):
     :param x: x coordinates
     :param y: y coordinates
     :param a: value (for instance height)
-    :return: plane parameters
+    :return: function that returns a for every given x and y
     """
     matrix = np.column_stack((np.ones(x.size), x, y))
     parameters, _, _, _ = np.linalg.lstsq(matrix, a)
