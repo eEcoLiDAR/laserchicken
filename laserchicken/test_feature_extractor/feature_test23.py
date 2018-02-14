@@ -13,7 +13,7 @@ class Test2FeatureExtractor(AbstractFeatureExtractor):
         return ['test2_a', 'test2_b', 'test2_c']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
-        t1b = utils.get_feature(targetpc, targetindex, self.requires()[0])
+        t1b = utils.get_attribute_value(targetpc, targetindex, self.requires()[0])
         x, y, z = utils.get_point(targetpc, targetindex)
         return [x + t1b, y + t1b, z + t1b]  # x + 3z/2, y + 3z/2, 5z/2
 
