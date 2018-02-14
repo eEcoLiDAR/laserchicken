@@ -11,6 +11,9 @@ class TestPercentileFeatureExtractor(unittest.TestCase):
     @staticmethod
     def test_percentile():
         """Compute the percentile of a given selection."""
+
+        print(os.getcwd())
+        print(os.path.exists("testdata/AHN2.las"))
         pc_in = read_las.read("testdata/AHN2.las")
         indices = [
             89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018, 61494,
