@@ -4,7 +4,7 @@ from laserchicken import utils
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 
 
-def structure_tensor(points):
+def _structure_tensor(points):
     """
     Computes the structure tensor of points by computing the eigenvalues
     and eigenvectors of the covariance matrix of a point cloud.
@@ -43,5 +43,5 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
         nbptsX, nbptsY, nbptsZ = utils.get_point(sourcepc, neighborhood)
         matrix = np.column_stack((nbptsX, nbptsY, nbptsZ))
-        eigenvals, eigenvecs = structure_tensor(matrix)
+        eigenvals, eigenvecs = _structure_tensor(matrix)
         return [eigenvals[0], eigenvals[1], eigenvals[2]]

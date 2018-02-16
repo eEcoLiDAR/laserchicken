@@ -1,11 +1,13 @@
 """Feature extractor module."""
 import importlib
-import itertools
 import re
+
 import numpy as np
+
 from laserchicken import keys, utils
-from .entropy_feature_extractor import EntropyFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
+from .entropy_feature_extractor import EntropyFeatureExtractor
+from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
@@ -23,30 +25,46 @@ FEATURES = _feature_map()
 
 def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, volume, overwrite=False,
                      **kwargs):
+    """
+    Compute features for each target and store result as attributes in target point cloud
+
+    :param env_point_cloud: environment point cloud
+    :param neighborhoods: list of neighborhoods which are themselves lists of indices referring to the environment
+    :param target_point_cloud: point cloud of targets
+    :param feature_names: list of features that are to be calculated
+    :param volume: object describing the volume that contains the neighborhood points
+    :param overwrite: if true, even features that are already in the targets point cloud will be calculated and stored
+    :param kwargs: keyword arguments for the individual feature extractors
+    :return: None, results are stored in attributes of the target point cloud
+    """
     ordered_features = _make_feature_list(feature_names)
-    n_targets = len(target_point_cloud[keys.point]["x"]["data"])
     for feature in ordered_features:
         if (not overwrite) and (feature in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
         extractor = FEATURES[feature]()
-        for k in kwargs:
-            setattr(extractor, k, kwargs[k])
-        provided_features = extractor.provides()
-        n_features = len(provided_features)
-        feature_values = [np.empty(n_targets, dtype=np.float64) for i in range(n_features)]
-        for target_index in range(n_targets):
-            point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
-                                             target_index, volume)
-            if n_features > 1:
-                for i in range(n_features):
-                    feature_values[i][target_index] = point_values[i]
-            else:
-                feature_values[0][target_index] = point_values
-        for i in range(n_features):
-            feature = provided_features[i]
-            if overwrite or (feature not in target_point_cloud[keys.point]):
-                target_point_cloud[keys.point][feature] = {"type": np.float64, "data": feature_values[i]}
+        _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs)
         utils.add_metadata(target_point_cloud, type(extractor).__module__, extractor.get_params())
+
+
+def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs):
+    n_targets = len(target_point_cloud[keys.point]["x"]["data"])
+    for k in kwargs:
+        setattr(extractor, k, kwargs[k])
+    provided_features = extractor.provides()
+    n_features = len(provided_features)
+    feature_values = [np.empty(n_targets, dtype=np.float64) for i in range(n_features)]
+    for target_index in range(n_targets):
+        point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
+                                         target_index, volume)
+        if n_features > 1:
+            for i in range(n_features):
+                feature_values[i][target_index] = point_values[i]
+        else:
+            feature_values[0][target_index] = point_values
+    for i in range(n_features):
+        feature = provided_features[i]
+        if overwrite or (feature not in target_point_cloud[keys.point]):
+            target_point_cloud[keys.point][feature] = {"type": np.float64, "data": feature_values[i]}
 
 
 def _make_feature_list(feature_names):

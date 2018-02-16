@@ -4,13 +4,15 @@ from laserchicken import keys
 
 
 def generate_test_point_cloud():
-    pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3],dtype = np.float64)},
-                       'y': {'type': 'double', 'data': np.array([2, 3, 4],dtype = np.float64)},
-                       'z': {'type': 'double', 'data': np.array([3, 4, 5],dtype = np.float64)}}}
+    pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
+                       'y': {'type': 'double', 'data': np.array([2, 3, 4], dtype=np.float64)},
+                       'z': {'type': 'double', 'data': np.array([3, 4, 5], dtype=np.float64)}}}
     return pc
+
 
 class SimpleTestData(object):
     """ Test data within this class should all be in sync (reflect the same data)."""
+
     @staticmethod
     def get_point_cloud():
         # This simple_test_point cloud and the simple_test_header should be in sync. Some tests depend on it.
@@ -42,6 +44,7 @@ property float z
 
 class ComplexTestData(object):
     """ Test data within this class should all be in sync (reflect the same data)."""
+
     @staticmethod
     def get_point_cloud():
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
@@ -49,7 +52,7 @@ class ComplexTestData(object):
                            'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6])},
                            'z': {'type': 'float', 'data': np.array([3, 4, 5, 6, 7])},
                            'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1])}
-                      },
+                           },
               keys.point_cloud: {'offset': {'type': 'double', 'data': 12.1}},
               keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]
               }
@@ -84,3 +87,19 @@ property double offset
 12.1
 """
         return data
+
+
+def create_point_cloud(x, y, z):
+    """
+    Create a point cloud object given only the x y z values
+    :param x: x attribute values
+    :param y: y attribute values
+    :param z: z attribute values
+    :return: point cloud object
+    """
+    return {keys.point: {'x': {'type': 'float', 'data': np.array(x)},
+                         'y': {'type': 'float', 'data': np.array(y)},
+                         'z': {'type': 'float', 'data': np.array(z)}},
+            keys.point_cloud: {},
+            keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]
+            }
