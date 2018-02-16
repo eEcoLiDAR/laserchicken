@@ -47,3 +47,30 @@ def add_metadata(pc,module,params):
     if(keys.provenance not in pc):
         pc[keys.provenance] = []
     pc[keys.provenance].append(msg)
+
+
+def fit_plane_svd(xpts, ypts, zpts):
+    """
+    Fit a plane to a series of points given as x,y,z coordinates.
+    r=Return the normal vector to the plane
+    Use the SVD methods described for example here
+    https://www.ltu.se/cms_fs/1.51590!/svd-fitting.pdf
+    :param x: x coordinate of the points
+    :param y: y coordinate of the points
+    :param z: z coordinate of the points
+    :return: normal vector of the plane
+    """
+    # check size consistency
+    if xpts.size != ypts.size or xpts.size != zpts.size or ypts.size != zpts.size:
+        raise AssertionError("coordinate size don't match")
+    npts = xpts.size
+
+    # form the A matrix of the coordinate
+    a = np.column_stack((xpts, ypts, zpts))
+    a -= np.sum(a, 0) / npts
+
+    # compute the SVD
+    u, _, _ = np.linalg.svd(a.T)
+
+    # return the normal vector
+    return u[:, 2]
