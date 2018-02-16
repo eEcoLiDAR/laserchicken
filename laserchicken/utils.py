@@ -78,9 +78,9 @@ def add_metadata(point_cloud, module, params):
     if any(params):
         msg["parameters"] = params
     msg["version"] = _version.__version__
-    if(keys.provenance not in pc):
-        pc[keys.provenance] = []
-    pc[keys.provenance].append(msg)
+    if(keys.provenance not in point_cloud):
+        point_cloud[keys.provenance] = []
+    point_cloud[keys.provenance].append(msg)
 
 
 def fit_plane_svd(xpts, ypts, zpts):
