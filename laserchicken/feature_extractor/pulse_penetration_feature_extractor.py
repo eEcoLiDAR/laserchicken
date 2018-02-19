@@ -6,7 +6,7 @@ from laserchicken.volume_specification import Sphere, InfiniteCylinder
 class PulsePenetraionFeatureExtractor(AbstractFeatureExtractor):
     """Feature extractor for the point density."""
 
-    #classification ccording to
+    #classification according to
     #http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
 
     points_class = {'ground':[2],'vegetation':[3,4,5]}
