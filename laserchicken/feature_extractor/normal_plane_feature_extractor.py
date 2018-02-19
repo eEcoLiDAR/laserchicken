@@ -1,9 +1,10 @@
+import numpy as np
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
 from laserchicken.utils import fit_plane_svd
 
 class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
-    """Feature extractor for the normal of a plane."""
+    """Feature extractor for the normal and slope of a plane."""
 
     @classmethod
     def requires(cls):
@@ -28,7 +29,7 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['normal_vector']
+        return ['normal_vector','slope']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
 
@@ -48,8 +49,9 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
         z = sourcepc[point]['z']['data'][neighborhood]
 
         nvect = fit_plane_svd(x,y,z)
+        slope = np.dot(nvect,np.array([0.,0.,1.]))
 
-        return nvect
+        return nvect,slope
 
     def get_params(self):
         """

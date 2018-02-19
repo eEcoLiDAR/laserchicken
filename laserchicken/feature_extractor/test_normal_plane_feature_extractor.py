@@ -14,9 +14,9 @@ class TestNormalPlaneFeatureExtractor(unittest.TestCase):
     def test_normal_plane(self):
         """Do the test."""
         extractor = NormalPlaneFeatureExtractor()
-        nfit = extractor.extract(self.pc, self.neighborhood, None, None, None)
+        nfit,slope_fit = extractor.extract(self.pc, self.neighborhood, None, None, None)
         self.assertTrue(np.allclose(self.nvect, nfit))
-
+        self.assertTrue(np.allclose(slope_fit, self.slope))
 
     def generate_random_points_inplane(self,nvect, dparam=0, npts=100, eps=0.0):
         """
@@ -38,8 +38,10 @@ class TestNormalPlaneFeatureExtractor(unittest.TestCase):
 
     def setUp(self):
         """Set up of the test."""
+        self.zaxis = np.array([0.,0.,1.])
         self.nvect = np.array([1., 2., 3.])
         self.nvect /= np.linalg.norm(self.nvect)
+        self.slope = np.dot(self.nvect,self.zaxis)
         point = self.generate_random_points_inplane(self.nvect, npts=10)
         self.pc = {keys.point: {'x': {'type': 'double', 'data': point[:,0]},
                            'y': {'type': 'double', 'data': point[:,1]},
