@@ -44,7 +44,7 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
         nbptsX, nbptsY, nbptsZ = utils.get_point(sourcepc, neighborhood)
         matrix = np.column_stack((nbptsX, nbptsY, nbptsZ))
         eigenvals, eigenvecs = _structure_tensor(matrix)
-        return [eigenvals[0],eigenvals[1],eigenvals[2]]
+        return [eigenvals[0], eigenvals[1], eigenvals[2]]
 
 class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
 
@@ -57,26 +57,26 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         return ['eigenvalues']
 
     @staticmethod
-    def _get_xyz(pc,neighborhood):
+    def _get_xyz(sourcepc, neighborhood):
         xyz_grp = []
         for n in neighborhood:
-            x,y,z = utils.get_point(pc,n)
-            xyz_grp.append(np.column_stack((x,y,z)).T)
+            x, y, z = utils.get_point(sourcepc, n)
+            xyz_grp.append(np.column_stack((x, y, z)).T)
         return np.array(xyz_grp)
 
     @staticmethod
     def _get_cov(xyz):
-        N = xyz.shape[2]
-        m = xyz - xyz.sum(2,keepdims=1)/N
-        return np.einsum('ijk,ilk->ijl',m,m) / (N - 1)
+        n = xyz.shape[2]
+        m = xyz - xyz.sum(2, keepdims=1) / n
+        return np.einsum('ijk,ilk->ijl', m, m) / (n - 1)
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
 
-        if not isinstance(neighborhood[0],list):
+        if not isinstance(neighborhood[0], list):
             neighborhood = [neighborhood]
 
-        xyz_grp = self._get_xyz(sourcepc,neighborhood)
+        xyz_grp = self._get_xyz(sourcepc, neighborhood)
         cov_mat = self._get_cov(xyz_grp)
-        eigval, eigvect = np.linalg.eig(cov_mat)
+        eigval, _ = np.linalg.eig(cov_mat)
 
-        return np.sort(eigval,axis=1)[:,::-1]
+        return np.sort(eigval, axis=1)[:, ::-1]

@@ -41,62 +41,79 @@ class TestExtractEigenValues(unittest.TestCase):
     def tearDown(self):
         pass
 
+
 class TestExtractEigenvaluesVector(unittest.TestCase):
 
     point_cloud = None
 
     def test_eig(self):
-        """Test and compare the serial and vectorized eigenvalues."""
+        """
+        Test and compare the serial and vectorized eigenvalues.
+
+        Eigenvalues are computed for multiple cubic neighborhoods of points
+        The serial and vectorized versions are compared and timed
+        """
 
         # vectorized version
         t0 = time.time()
         extract_vect = EigenValueVectorizeFeatureExtractor()
-        eigvals_vect = extract_vect.extract(self.point_cloud,self.neigh,None,None,None)
-        print('Timing Vectorize : %f' %(time.time()-t0))
+        eigvals_vect = extract_vect.extract(self.point_cloud, self.neigh, None, None, None)
+        print('Timing Vectorize : %f' % (time.time() - t0))
 
         # serial version
         eigvals = []
         t0 = time.time()
         for n in self.neigh:
             extract = EigenValueFeatureExtractor()
-            eigvals.append(extract.extract(self.point_cloud,n,None,None,None))
-        print('Timing Serial : %f' %(time.time()-t0))
+            eigvals.append(extract.extract(self.point_cloud, n, None, None, None))
+        print('Timing Serial : %f' % (time.time() - t0))
         eigvals = np.array(eigvals)
 
-        self.assertTrue(np.allclose(eigvals_vect,eigvals))
-    def _get_index_cube(self,ix,iy,iz):
-        ind = []
+        self.assertTrue(np.allclose(eigvals_vect, eigvals))
 
-        for i in [ix-1,ix,ix+1]:
-            for j in [iy-1,iy,iy+1]:
-                for k in [iz-1,iz,iz+1]:
-                    ind.append(i*self.dim**2+j*self.dim+k)
+    def _get_index_cube(self, ix, iy, iz):
+        """Get the index of a given cube neighborhood."""
+
+        ind = []
+        half = int(self.lengthcube / 2)
+        for i in range(ix - half, ix + half + 1):
+            for j in range(iy - half, iy + half + 1):
+                for k in range(iz - half, iz + half + 1):
+                    ind.append(i * self.dim ** 2 + j * self.dim + k)
         return ind
 
     def _get_neighborhoods(self):
+        """Get the neighborhoods index of all the cubes."""
+
         neigh = []
-        first = int(self.lengthcube/2)
-        for ix in range(first,self.dim,self.lengthcube):
-            for iy in range(first,self.dim,self.lengthcube):
-                for iz in range(first,self.dim,self.lengthcube):
-                    neigh.append(self._get_index_cube(ix,iy,iz))
+        first = int(self.lengthcube / 2)
+        idx = range(first, self.dim, self.lengthcube)
+        for ix in idx:
+            for iy in idx:
+                for iz in idx:
+                    neigh.append(self._get_index_cube(ix, iy, iz))
         return neigh
 
     def setUp(self):
+        """
+        Set up the test.
 
-        self.ncube, self.lengthcube = 7,7
-        self.dim = self.ncube*self.lengthcube
-        x = np.linspace(-1,1,self.dim)
+        Create a grid of random points. In each direction the grid
+        contains ncube X lengthcube points so that we can extract
+        easily cubic neighborhoods for testing
+        """
+        self.ncube, self.lengthcube = 9, 9
+        self.dim = self.ncube * self.lengthcube
         x = np.random.rand(self.dim)
-        pts_xyz = np.array(list(itertools.product(x,repeat=3)))
+        pts_xyz = np.array(list(itertools.product(x, repeat=3)))
         self.point_cloud = {keys.point: {'x': {'type': 'double', 'data': pts_xyz[:, 0]},
                            'y': {'type': 'double', 'data': pts_xyz[:, 1]},
                            'z': {'type': 'double', 'data': pts_xyz[:, 2]}}}
         self.neigh = self._get_neighborhoods()
 
-
     def tearDown(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()
