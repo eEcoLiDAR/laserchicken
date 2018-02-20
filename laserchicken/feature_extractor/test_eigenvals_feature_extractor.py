@@ -1,9 +1,14 @@
 import os
 import random
 import unittest
+import itertools
+import numpy as np
+import time
 
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
 from laserchicken.volume_specification import InfiniteCylinder
+
+from laserchicken.feature_extractor .eigenvals_feature_extractor import EigenValueFeatureExtractor, EigenValueVectorizeFeatureExtractor
 
 
 class TestExtractEigenValues(unittest.TestCase):
@@ -35,3 +40,63 @@ class TestExtractEigenValues(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+class TestExtractEigenvaluesVector(unittest.TestCase):
+
+    point_cloud = None
+
+    def test_eig(self):
+        """Test and compare the serial and vectorized eigenvalues."""
+
+        # vectorized version
+        t0 = time.time()
+        extract_vect = EigenValueVectorizeFeatureExtractor()
+        eigvals_vect = extract_vect.extract(self.point_cloud,self.neigh,None,None,None)
+        print('Timing Vectorize : %f' %(time.time()-t0))
+
+        # serial version
+        eigvals = []
+        t0 = time.time()
+        for n in self.neigh:
+            extract = EigenValueFeatureExtractor()
+            eigvals.append(extract.extract(self.point_cloud,n,None,None,None))
+        print('Timing Serial : %f' %(time.time()-t0))
+        eigvals = np.array(eigvals)
+
+        self.assertTrue(np.allclose(eigvals_vect,eigvals))
+    def _get_index_cube(self,ix,iy,iz):
+        ind = []
+
+        for i in [ix-1,ix,ix+1]:
+            for j in [iy-1,iy,iy+1]:
+                for k in [iz-1,iz,iz+1]:
+                    ind.append(i*self.dim**2+j*self.dim+k)
+        return ind
+
+    def _get_neighborhoods(self):
+        neigh = []
+        first = int(self.lengthcube/2)
+        for ix in range(first,self.dim,self.lengthcube):
+            for iy in range(first,self.dim,self.lengthcube):
+                for iz in range(first,self.dim,self.lengthcube):
+                    neigh.append(self._get_index_cube(ix,iy,iz))
+        return neigh
+
+    def setUp(self):
+
+        self.ncube, self.lengthcube = 7,7
+        self.dim = self.ncube*self.lengthcube
+        x = np.linspace(-1,1,self.dim)
+        x = np.random.rand(self.dim)
+        pts_xyz = np.array(list(itertools.product(x,repeat=3)))
+        self.point_cloud = {keys.point: {'x': {'type': 'double', 'data': pts_xyz[:, 0]},
+                           'y': {'type': 'double', 'data': pts_xyz[:, 1]},
+                           'z': {'type': 'double', 'data': pts_xyz[:, 2]}}}
+        self.neigh = self._get_neighborhoods()
+
+
+    def tearDown(self):
+        pass
+
+if __name__ == '__main__':
+    unittest.main()
