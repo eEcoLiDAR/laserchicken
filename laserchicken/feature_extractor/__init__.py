@@ -9,16 +9,16 @@ from .eigenvals_feature_extractor import EigenValueFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
+from .percentile_feature_extractor import PercentileFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
     """Construct a mapping from feature names to feature extractor classes."""
     module = importlib.import_module(module_name)
-    return {
-        feature_name: extractor
-        for name, extractor in vars(module).items() if re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name)
-        for feature_name in extractor.provides()
-        }
+    return {feature_name: extractor
+            for name, extractor in vars(module).items() if re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name)
+            for feature_name in extractor.provides()
+            }
 
 
 FEATURES = _feature_map()
@@ -27,7 +27,7 @@ FEATURES = _feature_map()
 def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, volume, overwrite=False,
                      **kwargs):
     """
-    Compute features for each target and store result as point attributes in target point cloud
+    Compute features for each target and store result as point attributes in target point cloud.
 
     Example:
     >>> point_cloud = read_ply.read('data1.ply')
@@ -36,7 +36,7 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     >>> neighborhoods = compute_neighborhoods(point_cloud, target_point_cloud, volume)
     >>> compute_features(point_cloud, neighborhoods, target_point_cloud, ['eigenv_1', 'kurto_z'], volume)
 
-    Results of the example above are stored in the target point cloud as extra point attributes
+    Results of the example above are stored in the target point cloud as extra point attributes.
 
     :param env_point_cloud: environment point cloud
     :param neighborhoods: list of neighborhoods which are themselves lists of indices referring to the environment
