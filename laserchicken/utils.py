@@ -85,7 +85,7 @@ def add_metadata(point_cloud, module, params):
 def fit_plane_svd(xpts, ypts, zpts):
     """
     Fit a plane to a series of points given as x,y,z coordinates.
-
+    
     r=Return the normal vector to the plane
     Use the SVD methods described for example here
     https://www.ltu.se/cms_fs/1.51590!/svd-fitting.pdf
