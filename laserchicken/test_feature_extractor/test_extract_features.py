@@ -44,7 +44,7 @@ class TestExtractFeatures(unittest.TestCase):
 
     @staticmethod
     def test_extract_unknown_feature():
-        # with raises(ValueError):
+        with raises(ValueError):
             target = test_tools.ComplexTestData.get_point_cloud()
             _compute_features(target, ['some_unknown_feature'])
 
