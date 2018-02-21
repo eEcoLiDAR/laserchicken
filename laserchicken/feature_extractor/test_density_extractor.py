@@ -91,6 +91,7 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
         """Get the central point."""
         return utils.copy_pointcloud(self.point_cloud, [0])
 
+
     def _set_cylinder_data(self):
 
         # generate a pc of points regularly
