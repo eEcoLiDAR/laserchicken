@@ -15,7 +15,7 @@ class TestDensityFeatureExtractorSphere(unittest.TestCase):
 
     point_cloud = None
 
-    def test_sphere_index(self):
+    def test_sphere(self):
         """Compute the density for a sphere given as index of the source pc."""
         neighbors_index = compute_neighborhoods(self.point_cloud,
                                                 self.targetpc,
@@ -30,7 +30,7 @@ class TestDensityFeatureExtractorSphere(unittest.TestCase):
         """Get the central point."""
         return utils.copy_pointcloud(self.point_cloud, [0])
 
-    def _get_points_on_sphere(self):
+    def _set_sphere_data(self):
         """Generate a pc of points regularly positionned on a two spheres of radius 1 and 2."""
         nteta, nphi = 11, 11
         self.teta = np.linspace(0.1, 2 * np.pi, nteta)
@@ -55,7 +55,7 @@ class TestDensityFeatureExtractorSphere(unittest.TestCase):
     def setUp(self):
         """Set up the test."""
         # get the points
-        self._get_points_on_sphere()
+        self._set_sphere_data()
 
         # get the central point as targetpc
         self.targetpc = self._get_central_point()
@@ -76,7 +76,7 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
 
     point_cloud = None
 
-    def test_cylinder_index(self):
+    def test_cylinder(self):
         """Compute the density for a cylinder given as index of source pc."""
         neighbors_index = compute_neighborhoods(self.point_cloud,
                                                 self.targetpc,
@@ -91,7 +91,7 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
         """Get the central point."""
         return utils.copy_pointcloud(self.point_cloud, [0])
 
-    def _get_point_on_cylinder(self):
+    def _set_cylinder_data(self):
 
         # generate a pc of points regularly
         # positionned on two concentric cylinders
@@ -119,7 +119,7 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
     def setUp(self):
         """Set up the test."""
         # generate the points
-        self._get_point_on_cylinder()
+        self._set_cylinder_data()
 
         # get the central point as targetpc
         self.targetpc = self._get_central_point()
@@ -136,7 +136,7 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
 
 
 class TestDensityFeatureOnRealData(unittest.TestCase):
-    """Test density extractor on real data."""
+    """Test density extractor on real data and make sure it doesn't crash."""
 
     _test_file_name = 'AHN3.las'
     _test_data_source = 'testdata'
