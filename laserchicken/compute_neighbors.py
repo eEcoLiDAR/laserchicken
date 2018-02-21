@@ -10,6 +10,7 @@ def compute_cylinder_neighborhood(environment_pc, target_pc, radius):
     :param target_pc: point cloud that contains the points at which neighborhoods are to be calculated
     :param radius: search radius for neighbors
     :return: indices of neighboring points from the environment point cloud for each target point
+             the returned indices also contains the index of the target point.
     """
 
     env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
@@ -39,7 +40,7 @@ def compute_sphere_neighborhood(environment_pc, target_pc, radius):
             env_x, env_y, env_z = utils.get_point(environment_pc, j)
             if abs(target_z - env_z) > radius:
                 continue
-            if (env_x - target_x) ** 2 + (env_y - target_y) ** 2 + (env_z - target_z) ** 2 <= radius ** 2:
+            if (env_x - target_x) ** 2 + (env_y - target_y) ** 2 + (env_z - target_z) ** 2 <=  radius ** 2 :
                 result_indices.append(j)
         result.append(result_indices)
     return result
