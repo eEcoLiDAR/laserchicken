@@ -8,6 +8,7 @@ from laserchicken import keys, utils
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
+from .height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
@@ -37,13 +38,22 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     :param kwargs: keyword arguments for the individual feature extractors
     :return: None, results are stored in attributes of the target point cloud
     """
+    _verify_feature_names(feature_names)
     ordered_features = _make_feature_list(feature_names)
+
     for feature in ordered_features:
         if (not overwrite) and (feature in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
         extractor = FEATURES[feature]()
         _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs)
         utils.add_metadata(target_point_cloud, type(extractor).__module__, extractor.get_params())
+
+
+def _verify_feature_names(feature_names):
+    unknown_features = [f for f in feature_names if f not in FEATURES]
+    if any(unknown_features):
+        raise ValueError('Unknown features selected: {}. Available feature are: {}'
+                         .format(', '.join(unknown_features), ', '.join(FEATURES.keys())))
 
 
 def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs):
