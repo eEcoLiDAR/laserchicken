@@ -20,7 +20,7 @@ class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
         self.assertTrue(np.allclose(per,test_values))
 
     def _get_data(self):
-        """Create a 3D grid of equally spaved points."""
+        """Create a 3D grid of equally spaced points."""
 
         x = np.linspace(0, 1, 11)
         self.xyz = np.array([ list(p) for p in list(itertools.product(x,repeat=3))])
@@ -31,7 +31,6 @@ class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
 
     def setUp(self):
         """Set up the test."""
-
         self._get_data()
         self.index = range(len(self.xyz))
 
@@ -61,6 +60,7 @@ class TestPercentileFeatureExtractorRealData(unittest.TestCase):
             89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018, 61494,
             65194, 117931, 62971, 10474, 90322
         ]
+
     def tearDowm(self):
         """Tear it down."""
         pass
