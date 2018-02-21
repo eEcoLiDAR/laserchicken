@@ -14,8 +14,8 @@ class TestNormalPlaneFeatureExtractor(unittest.TestCase):
     def test_normal_plane(self):
         """Do the test."""
         extractor = NormalPlaneFeatureExtractor()
-        nfit,slope_fit = extractor.extract(self.pc, self.neighborhood, None, None, None)
-        self.assertTrue(np.allclose(self.nvect, nfit))
+        n1,n2,n3,slope_fit = extractor.extract(self.pc, self.neighborhood, None, None, None)
+        self.assertTrue(np.allclose(self.nvect, [n1,n2,n3]))
         self.assertTrue(np.allclose(slope_fit, self.slope))
 
     def generate_random_points_inplane(self,nvect, dparam=0, npts=100, eps=0.0):
@@ -52,3 +52,6 @@ class TestNormalPlaneFeatureExtractor(unittest.TestCase):
     def tearDown(self):
         """Tear it down."""
         pass
+
+if __name__ == '__main__':
+    unittest.main()

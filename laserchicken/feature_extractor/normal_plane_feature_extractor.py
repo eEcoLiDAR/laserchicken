@@ -29,7 +29,7 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['normal_vector','slope']
+        return ['normal_vector_1','normal_vector_2','normal_vector_3','slope']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
 
@@ -51,7 +51,7 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
         nvect = fit_plane_svd(x,y,z)
         slope = np.dot(nvect,np.array([0.,0.,1.]))
 
-        return nvect,slope
+        return nvect[0],nvect[1],nvect[2],slope
 
     def get_params(self):
         """
