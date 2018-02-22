@@ -1,8 +1,9 @@
 import unittest
+
 import numpy as np
 from numpy.testing import assert_allclose
 
-from laserchicken import keys, utils
+from laserchicken import keys
 from laserchicken.feature_extractor.normal_plane_feature_extractor import NormalPlaneFeatureExtractor
 
 
@@ -49,7 +50,3 @@ def _generate_random_points_in_plane(nvect, dparam=0, npts=100, eps=0.0):
     if eps > 0:
         z += np.random.normal(loc=0., scale=eps, size=npts)
     return np.column_stack((x, y, z))
-
-
-if __name__ == '__main__':
-    unittest.main()
