@@ -45,7 +45,11 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         :return: feature value
         """
 
-        if len(neighborhood) != 2:
+        if not isinstance(neighborhood[0],list) or not isinstance(neighborhood[1],list):
+            raise TypeError('Neighborhood must be cotains index of the sphere and the cylinder')
+
+
+        if len(neighborhood) > 2:
             raise ValueError('Neighborhood must contains sphere and cylinder neighboors')
 
         # number of points
@@ -57,7 +61,7 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
             nSphere = len(neighborhood[1])
             nCyl = len(neighborhood[0])
 
-        return nSphere/nCyl * 100.
+        return nSphere / nCyl * 100.
 
     def get_params(self):
         """

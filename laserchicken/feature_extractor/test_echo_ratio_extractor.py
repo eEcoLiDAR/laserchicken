@@ -32,21 +32,22 @@ class TestEchoRatioFeatureExtractor(unittest.TestCase):
         self.assertTrue(np.allclose(per,self.theo_val))
 
     def test_invalid(self):
-        """ Must raise ValueError as we do not provide correct indexes."""
+        """ Must raise TypeError as we do not provide correct indexes."""
 
         extractor = EchoRatioFeatureExtractor()
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             extractor.extract(self.point_cloud, [1,2,3], None,None,None)
 
-    def _make_pc(self,xyz):
+    def _get_pc(self,xyz):
         return {keys.point: {'x': {'type': 'double', 'data': xyz[:, 0]},
-                                   'y': {'type': 'double', 'data': xyz[:, 1]},
-                                   'z': {'type': 'double', 'data': xyz[:, 2]}}}, len(xyz)
+                             'y': {'type': 'double', 'data': xyz[:, 1]},
+                             'z': {'type': 'double', 'data': xyz[:, 2]}}}, len(xyz)
 
-    def _get_sphere(self):
+    def _set_sphere_data(self):
         """Create a sphere of point."""
 
         nteta,nphi = 11,11
+        self.npt_sphere = nteta*nphi
         teta = np.linspace(0.1,2*np.pi,nteta)
         phi = np.linspace(0.1,np.pi,nphi)
         r = self.radius
@@ -56,14 +57,15 @@ class TestEchoRatioFeatureExtractor(unittest.TestCase):
                 y = r * np.sin(t) * np.sin(p)
                 z = r * np.cos(p)
                 self.xyz.append([x, y, z])
-        return nteta * nphi
 
-    def _get_cylinder(self):
+
+    def _set_cylinder_data(self):
         """Create a cylinder of point."""
 
         # nheight must be even so that the cylinder has no point
         # on the equator of the sphere
         nteta,nheight = 11,10
+        self.npt_cyl = nteta*nheight
         r = self.radius
         teta = np.linspace(0.1, 2 * np.pi, nteta)
         height = np.linspace(-2*r, 2*r, nheight)
@@ -72,7 +74,7 @@ class TestEchoRatioFeatureExtractor(unittest.TestCase):
             for t in teta:
                 x,y,z = r * np.cos(t), r * np.sin(t), h
                 self.xyz.append([x, y, z])
-        return nteta * nheight
+
 
     def _get_central_point(self,index):
         """Get the central point."""
@@ -90,9 +92,9 @@ class TestEchoRatioFeatureExtractor(unittest.TestCase):
         # radius pf the cylinder and sphere
         self.radius = 0.5
         self.xyz = [[0.,0.,0.]]
-        self.npt_sphere = self._get_sphere()
-        self.npt_cyl = self._get_cylinder()
-        self.point_cloud,self.npts = self._make_pc(np.array(self.xyz))
+        self._set_sphere_data()
+        self._set_cylinder_data()
+        self.point_cloud,self.npts = self._get_pc(np.array(self.xyz))
         self.targetpc = self._get_central_point(0)
         self.theo_val = (self.npt_sphere + 1) / (self.npt_sphere + self.npt_cyl + 1) * 100
 
