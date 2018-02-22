@@ -4,7 +4,6 @@ import numpy as np
 
 from laserchicken import keys, _version
 
-
 def get_point(point_cloud, index):
     """
     Get x, y, z tuple of one or more points in a point cloud.
@@ -86,9 +85,11 @@ def add_metadata(point_cloud, module, params):
 def fit_plane_svd(xpts, ypts, zpts):
     """
     Fit a plane to a series of points given as x,y,z coordinates.
+    
     r=Return the normal vector to the plane
     Use the SVD methods described for example here
     https://www.ltu.se/cms_fs/1.51590!/svd-fitting.pdf
+
     :param x: x coordinate of the points
     :param y: y coordinate of the points
     :param z: z coordinate of the points
@@ -108,6 +109,7 @@ def fit_plane_svd(xpts, ypts, zpts):
 
     # return the normal vector
     return u[:, 2]
+
 
 def fit_plane(x, y, a):
     """

@@ -1,10 +1,10 @@
+import numpy as np
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
-from laserchicken.volume_specification import Sphere, InfiniteCylinder
+from laserchicken.utils import fit_plane_svd
 
-
-class PointDensityFeatureExtractor(AbstractFeatureExtractor):
-    """Feature extractor for the point density."""
+class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
+    """Feature extractor for the normal and slope of a plane."""
 
     @classmethod
     def requires(cls):
@@ -29,9 +29,10 @@ class PointDensityFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['point_density']
+        return ['normal_vector_1','normal_vector_2','normal_vector_3','slope']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
+
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
@@ -43,24 +44,14 @@ class PointDensityFeatureExtractor(AbstractFeatureExtractor):
         :return: feature value
         """
 
-        if sourcepc is not None and isinstance(neighborhood, list):
-            npts = float(len(sourcepc[point]['x']['data'][neighborhood]))
+        x = sourcepc[point]['x']['data'][neighborhood]
+        y = sourcepc[point]['y']['data'][neighborhood]
+        z = sourcepc[point]['z']['data'][neighborhood]
 
-        elif targetpc is not None:
-            npts = float(len(targetpc[point]['x']['data']))
-        else:
-            raise ValueError("You can either specify a sourcepc and a neighborhhod or a targetpc\n\
-                              example\nextractror.extract(sourcepc,index,None,None,volume)\n\
-                              extractror.extract(None,None,targetpc,None,volume)")
+        nvect = fit_plane_svd(x,y,z)
+        slope = np.dot(nvect,np.array([0.,0.,1.]))
 
-        # sphere/cylinder cases
-        if volume.get_type() == Sphere.TYPE:
-            vol = volume.calculate_volume()
-            return npts / vol
-
-        elif volume.get_type() == InfiniteCylinder.TYPE:
-            area = volume.calculate_base_area()
-            return npts / area
+        return nvect[0],nvect[1],nvect[2],slope
 
     def get_params(self):
         """

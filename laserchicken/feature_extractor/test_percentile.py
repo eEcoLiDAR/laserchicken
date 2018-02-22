@@ -7,7 +7,6 @@ from laserchicken import read_las, keys
 from laserchicken.feature_extractor.percentile_feature_extractor import PercentileFeatureExtractor
 
 
-
 class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
     """Test percentile feature extractor on artificial data."""
 
