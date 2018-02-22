@@ -58,7 +58,7 @@ class PulsePenetraionFeatureExtractor(AbstractFeatureExtractor):
         # size
         nveg,ngrd,ntot = len(index_veg), len(index_grd), len(classdata)
 
-        # puls penetration ratio
+        # pulse penetration ratio
         pulse_penetration_ratio = ngrd/ntot
 
         # ground heights
