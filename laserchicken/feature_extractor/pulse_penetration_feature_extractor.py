@@ -1,15 +1,14 @@
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
-from laserchicken.volume_specification import Sphere, InfiniteCylinder
 
+import numpy as np
 
-class PulsePenetraionFeatureExtractor(AbstractFeatureExtractor):
+class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
     """Feature extractor for the point density."""
 
-    #classification according to
-    #http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
-
-    points_class = {'ground':[2],'vegetation':[3,4,5]}
+    # classification according to
+    # http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
+    ground_tags = [2]
 
     @classmethod
     def requires(cls):
@@ -34,7 +33,7 @@ class PulsePenetraionFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['pulse_penetration_ratio','density_absolute_mean']
+        return ['pulse_penetration_ratio', 'density_absolute_mean']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
         """
@@ -49,21 +48,26 @@ class PulsePenetraionFeatureExtractor(AbstractFeatureExtractor):
         """
 
         # get the raw classification
-        classdata = sourcepc[point]['raw_classification']['data']
+        classdata = np.array(sourcepc[point]['raw_classification']["data"])
+        classdata = classdata[neighborhood]
+        ntot = len(classdata)
 
-        # get the indexes
-        index_veg = [ c for c in classdata for veg in self.points_class['vegetation'] if c == veg ]
-        index_grd = [ c for c in classdata for veg in self.points_class['ground'] if c == veg ]
-
-        # size
-        nveg,ngrd,ntot = len(index_veg), len(index_grd), len(classdata)
+        # get the number/index ofvgrd points
+        index_grd = []
+        for ipt, c in enumerate(classdata):
+            if c in self.ground_tags:
+                index_grd.append(ipt)
+        ngrd = len(index_grd)
 
         # pulse penetration ratio
-        pulse_penetration_ratio = ngrd/ntot
+        pulse_penetration_ratio = ngrd / ntot
 
         # ground heights
-        zgrd = sourcepc[point]['z']['data'][index_grd]
-        density_absolute_mean = len(zgrd[zgrd>np.mean(zgrd)]) / ngrd * 100.
+        zgrd = sourcepc[point]['z']["data"][index_grd]
+        if ngrd != 0:
+            density_absolute_mean = len(zgrd[zgrd>np.mean(zgrd)]) / ngrd * 100.
+        else:
+            density_absolute_mean = 0.
 
         return pulse_penetration_ratio, density_absolute_mean
 
