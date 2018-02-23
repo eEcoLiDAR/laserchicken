@@ -60,12 +60,13 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         ngrd = len(index_grd)
 
         # pulse penetration ratio
-        pulse_penetration_ratio = ngrd / ntot
+        pulse_penetration_ratio = float(ngrd) / ntot
+
 
         # ground heights
         zgrd = sourcepc[point]['z']["data"][index_grd]
         if ngrd != 0:
-            density_absolute_mean = len(zgrd[zgrd>np.mean(zgrd)]) / ngrd * 100.
+            density_absolute_mean = float(len(zgrd[zgrd>np.mean(zgrd)])) / ngrd * 100.
         else:
             density_absolute_mean = 0.
 

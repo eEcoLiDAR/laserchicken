@@ -67,7 +67,7 @@ class TestPulsePenetratioFeatureExtractorArtifificalData(unittest.TestCase):
         self.neighbhorhood = list(range(npts))
 
         # theo val
-        self.theoval = self.npt_plane / npts
+        self.theoval = float(self.npt_plane) / npts
 
     def tearDown(self):
         pass
