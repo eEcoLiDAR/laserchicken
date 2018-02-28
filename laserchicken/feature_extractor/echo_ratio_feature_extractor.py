@@ -1,6 +1,14 @@
+"""Calculate echo ratio.
+
+See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/21
+"""
+
+import numpy as np
+
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
-import numpy as np
+
+
 class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
     """Feature extractor for the point density."""
 
@@ -29,44 +37,47 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         """
         return ['echo_ratio']
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
+    def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param point_cloud: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
-        :param target_index: index of the target point in the target pointcloud
+        :param target_index: index of the target point in the target point cloud
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
-
-        if volume.TYPE != 'infinite cylinder':
+        if volume_description.TYPE != 'infinite cylinder':
             raise ValueError('The volume must be a cylinder')
 
-        if targetpc is None:
+        if target_point_cloud is None:
             raise ValueError('Target point cloud required')
 
-        if targetindex is None:
+        if target_index is None:
             raise ValueError('Target point index required')
 
-        # get the xyz of the cylinder neighborhood
-        x = sourcepc[point]['x']['data'][neighborhood]
-        y = sourcepc[point]['y']['data'][neighborhood]
-        z = sourcepc[point]['z']['data'][neighborhood]
-        xyz = np.column_stack((x,y,z))
-        ncyl = xyz.shape[0]
+        xyz = self.get_neighborhood_positions(point_cloud, neighborhood)
+        n_cylinder = xyz.shape[0]
 
-        # get the position of the target point
-        x0 = targetpc[point]['x']['data'][targetindex]
-        y0 = targetpc[point]['y']['data'][targetindex]
-        z0 = targetpc[point]['z']['data'][targetindex]
-        xyz0 = np.array([x0,y0,z0])
+        xyz0 = self.get_target_position(target_point_cloud, target_index)
 
-        # get the number of point in the sphere
-        nsphere = np.sum(np.sum((xyz-xyz0)**2,1)<=volume.radius**2)
+        n_sphere = np.sum(np.sum((xyz - xyz0) ** 2, 1) <= volume_description.radius ** 2)
+        return n_sphere / n_cylinder * 100.
 
-        return nsphere / ncyl * 100.
+    @staticmethod
+    def get_target_position(target_point_cloud, target_index):
+        x0 = target_point_cloud[point]['x']['data'][target_index]
+        y0 = target_point_cloud[point]['y']['data'][target_index]
+        z0 = target_point_cloud[point]['z']['data'][target_index]
+        return np.array([x0, y0, z0])
+
+    @staticmethod
+    def get_neighborhood_positions(point_cloud, neighborhood):
+        x = point_cloud[point]['x']['data'][neighborhood]
+        y = point_cloud[point]['y']['data'][neighborhood]
+        z = point_cloud[point]['z']['data'][neighborhood]
+        return np.column_stack((x, y, z))
 
     def get_params(self):
         """

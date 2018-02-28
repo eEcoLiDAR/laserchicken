@@ -5,12 +5,15 @@ import re
 import numpy as np
 
 from laserchicken import keys, utils
+from .density_feature_extractor import PointDensityFeatureExtractor
+from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
-from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
+from .normal_plane_feature_extractor import NormalPlaneFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
+from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
