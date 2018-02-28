@@ -39,6 +39,7 @@ def read(path):
         if hasattr(file, name):
             data = getattr(file, name)
             points[name] = _get_attribute(data, data.dtype.name)
+
     return {keys.point: points}
 
 

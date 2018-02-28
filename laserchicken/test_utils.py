@@ -3,7 +3,7 @@ import unittest
 import datetime
 from laserchicken import utils, test_tools, keys
 from laserchicken.utils import fit_plane
-
+from time import time
 
 class TestUtils(unittest.TestCase):
     def test_GetPointCloudPoint(self):
@@ -96,18 +96,60 @@ class TestUtils(unittest.TestCase):
         """ Test adding info to the point cloud for test module """
         pc = test_tools.generate_test_point_cloud()
         from laserchicken import select as somemodule
-        utils.add_metadata(pc, somemodule, params=(0.5, "cylinder", 4))
-        self.assertEqual(len(pc[keys.provenance]), 1)
-
+        utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
+        self.assertEqual(len(pc[keys.provenance]),1)
 
 class TestPlaneFit(unittest.TestCase):
-    def test_(self):
-        n_points = 100
-        points = np.zeros((n_points, 3))
-        for i in range(n_points):
-            z = 5 + i % np.sqrt(n_points)
-            points[i] = np.array(((i % np.sqrt(n_points)), (np.floor(i / np.sqrt(n_points))), z))
 
-        f = fit_plane(points[:, 0], points[:, 1], points[:, 2])
-        estimates = f(points[:, 0], points[:, 1])
-        np.testing.assert_allclose(estimates, points[:, 2])
+    def test_leastsqr(self):
+        # n_points = 100
+        # points = np.zeros((n_points, 3))
+        # for i in range(n_points):
+        #     z = 5 + i % np.sqrt(n_points)
+        #     points[i] = np.array(((i % np.sqrt(n_points)), (np.floor(i / np.sqrt(n_points))), z))
+        #t0 = time()
+        f = fit_plane(self.points[:, 0], self.points[:, 1], self.points[:, 2])
+        #print('LSQR : %f' %(time()-t0))
+        estimates = f(self.points[:, 0], self.points[:, 1])
+        np.testing.assert_allclose(estimates, self.points[:, 2])
+
+
+    def test_FitPlaneSVD(self):
+        """Test the normal vector extraction with SVD."""
+        #t0 = time()
+        nfit = utils.fit_plane_svd(self.points[:,0], self.points[:,1], self.points[:,2])
+        #print('SVD  : %f' %(time()-t0))
+        self.assertTrue(np.allclose(nfit, self.n))
+
+
+    def generate_random_points_inplane(self,nvect, dparam=0, npts=100, eps=0.0):
+        """
+        Generate a series of point all belonging to a plane.
+
+        :param nvect: normal vector of the plane
+        :param dparam: zero point value of the plane
+        :param npts: number of points
+        :param eps: std of the gaussian noise added to the z values of the planes
+        :return: x,y,z coordinate of the points
+        """
+        a, b, c = nvect / np.linalg.norm(nvect)
+        x, y = np.random.rand(npts), np.random.rand(npts)
+        z = (dparam - a * x - b * y) / c
+        if eps > 0:
+            z += np.random.normal(loc=0., scale=eps, size=npts)
+        return np.column_stack((x, y, z))
+
+
+    def setUp(self):
+        """Set up the data points."""
+
+        self.n = np.array([1., 2., 3.])
+        self.n /= np.linalg.norm(self.n)
+        self.points = self.generate_random_points_inplane(self.n,eps=0)
+
+    def tearDown(self):
+        """Tear it down."""
+        pass
+
+if __name__ == '__main__':
+    unittest.main()
