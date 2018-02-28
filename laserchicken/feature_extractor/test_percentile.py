@@ -1,38 +1,68 @@
 import os
 import random
 import unittest
-
-from laserchicken import read_las
+import itertools
+import numpy as np
+from laserchicken import read_las, keys
 from laserchicken.feature_extractor.percentile_feature_extractor import PercentileFeatureExtractor
 
 
-class TestPercentileFeatureExtractor(unittest.TestCase):
 
-    @staticmethod
-    def test_percentile():
+class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
+    """Test percentile feature extractor on artificial data."""
+
+    point_cloud = None
+
+    def test_percentile(self):
+        extractor = PercentileFeatureExtractor()
+        per = extractor.extract(self.point_cloud, self.index, None, None, None)
+        test_values = np.linspace(0.1,1.0,10)
+        self.assertTrue(np.allclose(per,test_values))
+
+    def _get_data(self):
+        """Create a 3D grid of equally spaced points."""
+
+        x = np.linspace(0, 1, 11)
+        self.xyz = np.array([ list(p) for p in list(itertools.product(x,repeat=3))])
+        self.point_cloud = {keys.point: {'x': {'type': 'double', 'data': self.xyz[:, 0]},
+                           'y': {'type': 'double', 'data': self.xyz[:, 1]},
+                           'z': {'type': 'double', 'data': self.xyz[:, 2]}}}
+
+
+    def setUp(self):
+        """Set up the test."""
+        self._get_data()
+        self.index = range(len(self.xyz))
+
+    def tearDowm(self):
+        """Tear it down."""
+        pass
+
+
+
+class TestPercentileFeatureExtractorRealData(unittest.TestCase):
+    """Test percentile feature extractor on real data."""
+
+    _test_file_name = 'AHN3.las'
+    _test_data_source = 'testdata'
+    point_cloud = None
+
+    def test_percentile(self):
         """Compute the percentile of a given selection."""
-        print(os.getcwd())
-        print(os.path.exists("testdata/AHN2.las"))
-        pc_in = read_las.read("testdata/AHN2.las")
-        indices = [
+
+        extractor = PercentileFeatureExtractor()
+        extractor.extract(self.point_cloud , self.index, None, None, None)
+
+    def setUp(self):
+        """Set up the test."""
+        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
+        self.index = [
             89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018, 61494,
             65194, 117931, 62971, 10474, 90322
         ]
-        extractor = PercentileFeatureExtractor()
-        per = extractor.extract(pc_in, indices, None, None, None)
-
-        test_values = [
-            0.5199999737739562, 0.5639999737739563, 0.5899999737739563, 0.6519999737739564, 0.6999999737739563,
-            0.9239999737739564, 1.0169999737739561, 2.417999973773957, 2.9339999737739566, 5.979999973773956
-        ]
-
-        for _, val, tar in zip(extractor.provides(), per, test_values):
-            assert val == tar
-
-    def setUp(self):
-        random.seed(20)
 
     def tearDowm(self):
+        """Tear it down."""
         pass
 
 
