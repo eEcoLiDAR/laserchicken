@@ -10,6 +10,7 @@ from .entropy_feature_extractor import EntropyFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
+from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 
 
