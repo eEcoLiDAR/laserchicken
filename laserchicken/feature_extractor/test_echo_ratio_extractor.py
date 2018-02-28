@@ -29,7 +29,6 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         """ Must raise TypeError as we do not provide correct indexes."""
 
         extractor = EchoRatioFeatureExtractor()
-
         # target point cloud must not be None
         with pytest.raises(ValueError):
             extractor.extract(self.point_cloud, self.index_cyl, None, self.indexpc, self.cyl)

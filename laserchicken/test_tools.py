@@ -88,6 +88,10 @@ property double offset
 """
         return data
 
+    @staticmethod
+    def get_wkt_polygon_around_first_point_only():
+        return "POLYGON(( 1.5 10.0, 1.5 -10.0, -1.5 -10.0, -1.5 1.0, 1.5 10.0 ))"
+
 
 def create_point_cloud(x, y, z):
     """
