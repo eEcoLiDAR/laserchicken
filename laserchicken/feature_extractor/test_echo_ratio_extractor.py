@@ -16,13 +16,13 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
     """Test echo ratio extractor on artificial spherical and cylindric data."""
 
     point_cloud = None
-    targetpc = None
+    target_point_cloud = None
 
     def test_valid(self):
         """Must pass as we provide everything needed."""
 
         extractor = EchoRatioFeatureExtractor()
-        per = extractor.extract(self.point_cloud, self.index_cyl, self.targetpc, self.indexpc, self.cyl)
+        per = extractor.extract(self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, self.cyl)
         self.assertTrue(np.allclose(per, self.theo_val))
 
     def test_invalid(self):
@@ -30,61 +30,57 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
 
         extractor = EchoRatioFeatureExtractor()
 
-        # targetpc must not be None
+        # target point cloud must not be None
         with pytest.raises(ValueError):
             extractor.extract(self.point_cloud, self.index_cyl, None, self.indexpc, self.cyl)
 
-        #targetpc index must not be None
+        # target index must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl, self.targetpc, None, self.cyl)
+            extractor.extract(self.point_cloud, self.index_cyl, self.target_point_cloud, None, self.cyl)
 
         # volume must be a cylinder
         with pytest.raises(ValueError):
             sphere = Sphere(self.radius)
-            extractor.extract(self.point_cloud, self.index_cyl, self.targetpc, self.indexpc, sphere)
+            extractor.extract(self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, sphere)
 
-    def _get_pc(self, xyz):
+    @staticmethod
+    def _get_pc(xyz):
         return {keys.point: {'x': {'type': 'double', 'data': xyz[:, 0]},
                              'y': {'type': 'double', 'data': xyz[:, 1]},
                              'z': {'type': 'double', 'data': xyz[:, 2]}}}, len(xyz)
 
     def _set_sphere_data(self):
         """Create a sphere of point."""
-
-        nteta, nphi = 11, 11
-        self.npt_sphere = nteta * nphi
-        teta = np.linspace(0.1, 2 * np.pi, nteta)
-        phi = np.linspace(0.1, np.pi, nphi)
+        n_theta, n_phi = 11, 11
+        self.npt_sphere = n_theta * n_phi
+        theta = np.linspace(0.1, 2 * np.pi, n_theta)
+        phi = np.linspace(0.1, np.pi, n_phi)
         r = self.radius
-        for t in teta:
+        for t in theta:
             for p in phi:
                 x = r * np.cos(t) * np.sin(p)
                 y = r * np.sin(t) * np.sin(p)
                 z = r * np.cos(p)
                 self.xyz.append([x, y, z])
 
-
     def _set_cylinder_data(self):
         """Create a cylinder of point."""
-
-        # nheight must be even so that the cylinder has no point
+        # n_height must be even so that the cylinder has no point
         # on the equator of the sphere
-        nteta, nheight = 11, 10
-        self.npt_cyl = nteta * nheight
+        n_theta, n_height = 11, 10
+        self.npt_cyl = n_theta * n_height
         r = self.radius
-        teta = np.linspace(0.1, 2 * np.pi, nteta)
-        height = np.linspace(-2 * r, 2 * r, nheight)
+        theta = np.linspace(0.1, 2 * np.pi, n_theta)
+        height = np.linspace(-2 * r, 2 * r, n_height)
 
         for h in height:
-            for t in teta:
+            for t in theta:
                 x, y, z = r * np.cos(t), r * np.sin(t), h
                 self.xyz.append([x, y, z])
-
 
     def _get_central_point(self, index):
         """Get the central point."""
         return utils.copy_pointcloud(self.point_cloud, [index])
-
 
     def setUp(self):
         """
@@ -102,12 +98,12 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
 
         # create the pc
         self.point_cloud, self.npts = self._get_pc(np.array(self.xyz))
-        self.targetpc = self._get_central_point(0)
+        self.target_point_cloud = self._get_central_point(0)
         self.indexpc = 0
 
         # create the volume/neighborhood
         self.cyl = InfiniteCylinder(self.radius + 1E-3)
-        self.index_cyl = compute_neighborhoods(self.point_cloud, self.targetpc, self.cyl)
+        self.index_cyl = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
 
         # theoretical value of the echo ratio
         self.theo_val = (self.npt_sphere + 1) / (self.npt_sphere + self.npt_cyl + 1) * 100
@@ -153,7 +149,6 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points) for p in range(20)]
         return utils.copy_pointcloud(self.point_cloud, rand_indices)
-
 
 
 if __name__ == '__main__':
