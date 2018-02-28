@@ -14,11 +14,9 @@ from laserchicken.utils import copy_pointcloud
 
 
 def read_wkt_file(path):
-    try:
-        with open(path) as f:
-            content = f.readlines()
-    except:
-        raise ValueError('Incorrect path.')
+    with open(path) as f:
+        content = f.readlines()
+
     content = [x.strip() for x in content]
     return content
 
