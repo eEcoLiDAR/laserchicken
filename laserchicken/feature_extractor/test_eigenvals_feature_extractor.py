@@ -15,16 +15,16 @@ class TestExtractEigenValues(unittest.TestCase):
         test_file_name = 'AHN3.las'
         test_data_source = 'testdata'
         random.seed(102938482634)
-        self.point_cloud = read_las.read(os.path.join(test_data_source, test_file_name))
-        num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
+        point_cloud = read_las.read(os.path.join(test_data_source, test_file_name))
+        num_all_pc_points = len(point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points) for _ in range(20)]
-        target_point_cloud = utils.copy_pointcloud(self.point_cloud, rand_indices)
+        target_point_cloud = utils.copy_pointcloud(point_cloud, rand_indices)
         n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         radius = 2.5
         result_index_lists = compute_neighbors.compute_cylinder_neighborhood(
-            self.point_cloud, target_point_cloud, radius)
+            point_cloud, target_point_cloud, radius)
 
-        feature_extractor.compute_features(self.point_cloud, result_index_lists, target_point_cloud,
+        feature_extractor.compute_features(point_cloud, result_index_lists, target_point_cloud,
                                            ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
         for i in range(n_targets):
@@ -33,7 +33,8 @@ class TestExtractEigenValues(unittest.TestCase):
         self.assertEqual("laserchicken.feature_extractor.eigenvals_feature_extractor",
                          target_point_cloud[keys.provenance][0]["module"])
 
-    def test_eigenvalues_of_too_few_points_results_in_0(self):
+    @staticmethod
+    def test_eigenvalues_of_too_few_points_results_in_0():
         """If there are too few points to calculate the eigen values we output 0 (as opposed to NaN for example)."""
         a = np.array([5])
         pc = create_point_cloud(a, a, a)
