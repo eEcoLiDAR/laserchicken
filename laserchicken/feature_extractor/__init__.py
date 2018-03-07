@@ -3,6 +3,9 @@ import importlib
 import re
 
 import numpy as np
+import sys
+
+import time
 
 from laserchicken import keys, utils
 from .density_feature_extractor import PointDensityFeatureExtractor
@@ -29,7 +32,7 @@ FEATURES = _feature_map()
 
 
 def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, volume, overwrite=False,
-                     **kwargs):
+                     verbose=True, **kwargs):
     """
     Compute features for each target and store result as point attributes in target point cloud.
 
@@ -50,6 +53,7 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     :param volume: object describing the volume that contains the neighborhood points
     :param overwrite: if true, even features that are already in the targets point cloud will be calculated and stored
     :param kwargs: keyword arguments for the individual feature extractors
+    :param verbose: if true, output extra information
     :return: None, results are stored in attributes of the target point cloud
     """
     _verify_feature_names(feature_names)
@@ -58,9 +62,20 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     for feature in ordered_features:
         if (not overwrite) and (feature in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
+
+        if verbose:
+            sys.stdout.write('Feature "{}"'.format(feature))
+            sys.stdout.flush()
+            start = time.time()
+
         extractor = FEATURES[feature]()
         _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs)
         utils.add_metadata(target_point_cloud, type(extractor).__module__, extractor.get_params())
+
+        if verbose:
+            elapsed = time.time() - start
+            sys.stdout.write(' took {:.2f} seconds\n'.format(elapsed))
+            sys.stdout.flush()
 
 
 def _verify_feature_names(feature_names):
@@ -88,7 +103,7 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, e
     for i in range(n_features):
         feature = provided_features[i]
         if overwrite or (feature not in target_point_cloud[keys.point]):
-            target_point_cloud[keys.point][feature] = {"type": np.float64, "data": feature_values[i]}
+            target_point_cloud[keys.point][feature] = {"type": 'float64', "data": feature_values[i]}
 
 
 def _make_feature_list(feature_names):
