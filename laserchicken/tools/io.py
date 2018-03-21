@@ -20,7 +20,7 @@ WRITERS = {
 }
 
 
-def _load(filename, reader=None):
+def load(filename, reader=None):
     """Load point cloud from filename using reader."""
     print("Reading the input file", end='')
 
@@ -36,7 +36,7 @@ def _load(filename, reader=None):
     return point_cloud
 
 
-def _check_save_path(filename):
+def check_save_path(filename):
     """Check that filename can be used to save the point cloud."""
     ext = os.path.splitext(filename)[1].lower()
     if ext not in WRITERS:
@@ -51,9 +51,9 @@ def _check_save_path(filename):
         raise ToolException("Output file path does not exist! --> {}".format(output_directory))
 
 
-def _save(point_cloud, filename, writer=None):
+def save(point_cloud, filename, writer=None):
     """Save point cloud to filename using writer."""
-    _check_save_path(filename)
+    check_save_path(filename)
     print("File will be saved as {}".format(filename))
 
     if writer is None:

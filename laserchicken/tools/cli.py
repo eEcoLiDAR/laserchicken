@@ -10,81 +10,82 @@ from . import ToolException
 from .._version import __version__
 from ..select import select_above, select_below
 from ..spatial_selections import points_in_polygon_shp_file, points_in_polygon_wkt, points_in_polygon_wkt_file
-from .io import _check_save_path, _load, _save
+from .io import check_save_path, load, save
 
 
 @click.group(chain=True)
 @click.version_option(version=__version__)
-@click.argument('input_file', nargs=1, type=click.Path(exists=True, readable=True))
-@click.argument('output_file', nargs=1, type=click.Path(writable=True))
-def main(input_file, output_file):
-    """Various commmands for selecting points from a point cloud.
-
-    Note that commands can be chained.
+def main():
+    """Operate on point clouds using various commands.
 
     Example:
 
-    laserchicken testdata/AHN3.las test.ply filter_below intensity 100 filter_above intensity 60
+    laserchicken import testdata/AHN2.las test.ply
+    laserchicken filter_below testdata/AHN3.las test.ply intensity 100
+    laserchicken filter_below testdata/AHN3.las test.ply intensity 60
+    laserchicken filter_above --help
     """
-
-
-@main.resultcallback()
-def process_pipeline(processors, input_file, output_file):
     init(autoreset=True)
+
+
+@main.command('import')
+@click.argument('input_file', nargs=1, type=click.Path(exists=True, readable=True))
+@click.argument('output_file', nargs=1, type=click.Path(writable=True))
+def _import(input_file, output_file):
+    """Read data from input file and save to output file.
+
+    Examples:
+
+    laserchicken import testdata/AHN2.las test.ply
+    """
+    _process(lambda point_cloud: point_cloud, input_file, output_file)
+
+
+def _process(func, input_file, output_file):
     try:
-        _check_save_path(output_file)
-        point_cloud = _load(input_file)
-        for processor in processors:
-            point_cloud = processor(point_cloud)
-        _save(point_cloud, output_file)
+        check_save_path(output_file)
+        point_cloud_in = load(input_file)
+        point_cloud_out = func(point_cloud_in)
+        save(point_cloud_out, output_file)
     except ToolException as exc:
         print(Back.RED + "Error: " + str(exc))
 
 
-@main.command('import')
-def _import():
-    """Read data from input file and save to output file.
-
-    Actually the word import can be omitted, as this is the default operation.
-
-    Examples:
-
-    laserchicken testdata/AHN2.las test.ply
-
-    laserchicken testdata/AHN2.las test.ply import
-    """
-    return lambda point_cloud: point_cloud
-
-
 @main.command('filter_below')
+@click.argument('input_file', nargs=1, type=click.Path(exists=True, readable=True))
+@click.argument('output_file', nargs=1, type=click.Path(writable=True))
 @click.argument('attribute')
 @click.argument('threshold', type=click.FLOAT)
-def _filter_below(attribute, threshold):
+def _filter_below(input_file, output_file, attribute, threshold):
     """Select those points where the value of attribute is below threshold.
 
     Example:
 
-    laserchicken testdata/AHN3.las test.ply filter_below intensity 100
+    laserchicken filter_below testdata/AHN3.las test.ply intensity 100
     """
-    return lambda point_cloud: select_below(point_cloud, attribute, threshold)
+    _process(lambda point_cloud: select_below(point_cloud, attribute, threshold), input_file, output_file)
 
 
 @main.command('filter_above')
+@click.argument('input_file', nargs=1, type=click.Path(exists=True, readable=True))
+@click.argument('output_file', nargs=1, type=click.Path(writable=True))
 @click.argument('attribute')
 @click.argument('threshold', type=click.FLOAT)
-def _filter_above(attribute, threshold):
+def _filter_above(input_file, output_file, attribute, threshold):
     """Select those points where the value of attribute is above threshold.
 
     Example:
 
     laserchicken testdata/AHN3.las test.ply filter_above intensity 100
     """
-    return lambda point_cloud: select_above(point_cloud, attribute, threshold)
+    _process(lambda point_cloud: select_above(point_cloud, attribute, threshold), input_file, output_file)
 
 
 @main.command('filter_in_polygon')
+@click.argument('input_file', nargs=1, type=click.Path(exists=True, readable=True))
+@click.argument('output_file', nargs=1, type=click.Path(writable=True))
 @click.argument('polygon')
-def _filter_in_polygon(polygon):
+def _filter_in_polygon(input_file, output_file, polygon):
     """Select those points that are inside polygon.
 
     Polygon can be a shape file (with extension .shp or .wkt) or a WKT string.
@@ -106,7 +107,7 @@ def _filter_in_polygon(polygon):
         if ext not in functions:
             raise ToolException("Unable to determine type of shapefile, "
                                 "choose from types {}".format(list(functions)))
-        return lambda point_cloud: functions[ext](point_cloud, polygon)
+        _process(lambda point_cloud: functions[ext](point_cloud, polygon), input_file, output_file)
     else:
         print("polygon is not a file, assuming it is a WKT string")
-        return lambda point_cloud: points_in_polygon_wkt(point_cloud, polygon)
+        _process(lambda point_cloud: points_in_polygon_wkt(point_cloud, polygon), input_file, output_file)
