@@ -13,7 +13,7 @@ from ..spatial_selections import points_in_polygon_shp_file, points_in_polygon_w
 from .io import _check_save_path, _load, _save
 
 
-@click.group(chain=True, invoke_without_command=True)
+@click.group(chain=True)
 @click.version_option(version=__version__)
 @click.argument('input_file', nargs=1, type=click.Path(exists=True, readable=True))
 @click.argument('output_file', nargs=1, type=click.Path(writable=True))
