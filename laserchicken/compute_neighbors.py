@@ -160,12 +160,13 @@ def compute_neighborhoods_(env_pc, target_pc, volume_description):
     """
     volume_type = volume_description.get_type()
     if volume_type == Sphere.TYPE:
-      compute_neighborhoods = compute_sphere_neighborhood(env_pc, target_pc, volume_description.radius)
+      compute_neighborhoods = compute_sphere_neighborhood_(env_pc, target_pc, volume_description.radius)
     elif volume_type == InfiniteCylinder.TYPE:
-      compute_neighborhoods = compute_cylinder_neighborhood(env_pc, target_pc, volume_description.radius)
+      compute_neighborhoods = compute_cylinder_neighborhood_(env_pc, target_pc, volume_description.radius)
+    else:
+      raise ValueError('Neighborhood computation error because volume type "{}" is unknown.'.format(volume_type))
     for x in compute_neighborhoods:
       yield x
-    raise ValueError('Neighborhood computation error because volume type "{}" is unknown.'.format(volume_type))
 
 
 def compute_neighborhoods(env_pc, target_pc, volume_description):
