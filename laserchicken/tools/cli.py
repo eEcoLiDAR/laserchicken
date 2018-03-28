@@ -111,3 +111,19 @@ def _filter_in_polygon(input_file, output_file, polygon):
     else:
         print("polygon is not a file, assuming it is a WKT string")
         _process(lambda point_cloud: points_in_polygon_wkt(point_cloud, polygon), input_file, output_file)
+
+
+@main.command('features')
+@click.argument('environment_file', nargs=1, type=click.Path(exists=True, readable=True))
+@click.argument('target_file', nargs=1, type=click.Path(exists=True, readable=True))
+@click.argument('output_file', nargs=1, type=click.Path(writable=True))
+@click.argument('attribute')
+@click.argument('threshold', type=click.FLOAT)
+def _extract_features(environment_file, target_file, output_file, ):
+    """Select those points where the value of attribute is above threshold.
+
+    Example:
+
+    laserchicken testdata/AHN3.las test.ply filter_above intensity 100
+    """
+    pass
