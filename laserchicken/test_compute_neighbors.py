@@ -20,10 +20,10 @@ class TestComputeNeighbors(unittest.TestCase):
         """Compute neighbors should only return points within the (xy) radius of the target."""
         target_point_cloud = self._get_random_targets()
         radius = 0.5
-        compute_cylinder_neighborhood = compute_cylinder_neighborhood(self.point_cloud, target_point_cloud, radius)
+        neighbors = compute_cylinder_neighborhood(self.point_cloud, target_point_cloud, radius)
 
         result_index_sets = []
-        for x in compute_cylinder_neighborhood:
+        for x in neighbors:
           result_index_sets += x
         self._assert_all_points_within_cylinder(result_index_sets, target_point_cloud, radius)
 
@@ -31,9 +31,9 @@ class TestComputeNeighbors(unittest.TestCase):
         """Compute neighbors should only return points within the (xyz) radius of the target."""
         target_point_cloud = self._get_random_targets()
         radius = 0.5
-        compute_sphere_neighborhood = compute_sphere_neighborhood(self.point_cloud, target_point_cloud, radius)
+        neighbors = compute_sphere_neighborhood(self.point_cloud, target_point_cloud, radius)
         result_point_clouds = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           result_point_clouds += x
 
         self._assert_all_points_within_sphere(result_point_clouds, target_point_cloud, radius)
@@ -42,9 +42,9 @@ class TestComputeNeighbors(unittest.TestCase):
         """Compute neighbors should detect sphere volume and find neighbors accordingly"""
         target_point_cloud = self._get_random_targets()
         sphere = Sphere(0.5)
-        compute_neighborhoods = compute_neighborhoods(self.point_cloud, target_point_cloud, sphere)
+        neighbors = compute_neighborhoods(self.point_cloud, target_point_cloud, sphere)
         result_point_clouds = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           result_point_clouds += x
         self._assert_all_points_within_sphere(result_point_clouds, target_point_cloud, sphere.radius)
 
@@ -52,9 +52,9 @@ class TestComputeNeighbors(unittest.TestCase):
         """Compute neighbors should detect cylinder volume and find neighbors accordingly"""
         target_point_cloud = self._get_random_targets()
         cylinder = InfiniteCylinder(0.5)
-        compute_neighborhoods = compute_neighborhoods(self.point_cloud, target_point_cloud, cylinder)
+        neighbors = compute_neighborhoods(self.point_cloud, target_point_cloud, cylinder)
         result_point_clouds = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           result_point_clouds += x
         self._assert_all_points_within_cylinder(result_point_clouds, target_point_cloud, cylinder.radius)
 
