@@ -4,7 +4,12 @@ import numpy as np
 from dateutil import parser
 
 
-def read(path, verbose=False):
+def read(path):
+    """
+    Read point cloud data from a ply file.
+    :param path: path to the ply file
+    :return: dictionary containing the point cloud data
+    """
     if not os.path.exists(path):
         raise IOError('File not found: {}'.format(path))
 
@@ -17,28 +22,11 @@ def read(path, verbose=False):
         if 'ply' not in first_line:
             raise ValueError('Not a valid ply file: {}'.format(path))
 
-        index = read_header(ply)
-        result = {block['type']: read_block(block, ply) for block in index}
-        if verbose:
-            print('Header:')
-            print('-' * 10)
-            for i, header_field in enumerate(index):
-                print(header_field)
-                print(index[i])
-                print
-            print('\nData:')
-            print('-' * 10)
-            for data_field in result:
-                print(data_field)
-                print(result['%s' % data_field])
-
-            print('***************************')
-            print(result)
-
-        return result
+        index = _read_header(ply)
+        return {block['type']: _read_block(block, ply) for block in index}
 
 
-def read_header(ply):
+def _read_header(ply):
     index = []
     comments = []
     line = ply.readline()
@@ -60,30 +48,32 @@ def read_header(ply):
 
         line = ply.readline()
 
-    log = ast.literal_eval(''.join(comments))
-    if len(log) > 0:
-        for i, entry in enumerate(log):
-            if 'time' in entry:
-                entry['time'] = parser.parse(entry['time'])
-        index.append({'type': 'log', 'log': log})
-
+    index.append({'type': 'log', 'log': (_read_log(comments))})
     return index
 
 
-def read_block(block, ply_body):
+def _read_log(comments):
+    log = ast.literal_eval(''.join(comments))
+    for i, entry in enumerate(log):
+        if 'time' in entry:
+            entry['time'] = parser.parse(entry['time'])
+    return log
+
+
+def _read_block(block, ply_body):
     if block['type'] == 'log':
         return block['log']
     else:
-        properties, property_names = get_properties(block)
+        properties, property_names = _get_properties(block)
         block_type = block['type']
         number_of_elements = block['number_of_elements']
 
-        read_elements(ply_body, properties, property_names, block_type, number_of_elements)
+        _read_elements(ply_body, properties, property_names, block_type, number_of_elements)
 
         return properties
 
 
-def cast(value, value_type):
+def _cast(value, value_type):
     if value_type == 'float':
         dtype = np.float32
     elif value_type == 'double':
@@ -95,7 +85,7 @@ def cast(value, value_type):
     return dtype(value)
 
 
-def read_elements(ply_body, properties, property_names, block_type, number_of_elements):
+def _read_elements(ply_body, properties, property_names, block_type, number_of_elements):
     for i in range(number_of_elements):
         line = ply_body.readline()
         values = line.split(' ')
@@ -103,11 +93,11 @@ def read_elements(ply_body, properties, property_names, block_type, number_of_el
             raise ValueError('Error reading line {} of {} list.'.format(i, block_type))
         for p, property_name in enumerate(property_names):
             property_type = properties[property_name]['type']
-            value = cast(values[p], property_type)
+            value = _cast(values[p], property_type)
             properties[property_name]['data'][i] = value
 
 
-def get_properties(block):
+def _get_properties(block):
     properties = {}
     property_names = []
     for prop in block['properties']:

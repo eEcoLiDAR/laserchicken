@@ -1,3 +1,4 @@
+dateutil
 laspy
 numpy
 scikit-learn>=0.15.0
