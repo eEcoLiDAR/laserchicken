@@ -61,7 +61,7 @@ class ComplexTestData(object):
     @staticmethod
     def get_header():
         # This complex_test_header cloud and the complex_test_point should be in sync. Some tests depend on it.
-        comment = {"time": dt.datetime(2018, 1, 18, 16, 1, 0), "module": "filter"}
+        comment = {"time": str(dt.datetime(2018, 1, 18, 16, 1, 0)), "module": "filter"}
         header = """ply
 format ascii 1.0
 comment [
