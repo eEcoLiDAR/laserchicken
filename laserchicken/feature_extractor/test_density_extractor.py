@@ -17,11 +17,11 @@ class TestDensityFeatureExtractorSphere(unittest.TestCase):
 
     def test_sphere(self):
         """Compute the density for a sphere given as index of the source pc."""
-        compute_neighborhoods = compute_neighborhoods(self.point_cloud,
+        neighbors = compute_neighborhoods(self.point_cloud,
                                                 self.targetpc,
                                                 self.sphere)
         neighbors_index = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           neighbors_index += x
         extractor = PointDensityFeatureExtractor()
         for index in neighbors_index:
@@ -80,11 +80,11 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
 
     def test_cylinder(self):
         """Compute the density for a cylinder given as index of source pc."""
-        compute_neighborhoods = compute_neighborhoods(self.point_cloud,
+        neighbors = compute_neighborhoods(self.point_cloud,
                                                 self.targetpc,
                                                 self.cyl)
         neighbors_index = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           neighbors_index += x
         extractor = PointDensityFeatureExtractor()
         for index in neighbors_index:
@@ -149,11 +149,11 @@ class TestDensityFeatureOnRealData(unittest.TestCase):
 
     def test_sphere_index(self):
         """Compute the density for a sphere given as index of the source pc."""
-        compute_neighborhoods = compute_neighborhoods(self.point_cloud,
+        neighbors = compute_neighborhoods(self.point_cloud,
                                                 self.targetpc,
                                                 self.sphere)
         neighbors_index = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           neighbors_index += x
 
         extractor = PointDensityFeatureExtractor()
@@ -163,11 +163,11 @@ class TestDensityFeatureOnRealData(unittest.TestCase):
 
     def test_cylinder_index(self):
         """Compute the density for a cylinder given as index of source pc."""
-        compute_neighborhoods = compute_neighborhoods(self.point_cloud,
+        neighbors = compute_neighborhoods(self.point_cloud,
                                                 self.targetpc,
                                                 self.cyl)
         neighbors_index = []
-        for x in compute_neighborhoods:
+        for x in neighbors:
           neighbors_index += x
 
         extractor = PointDensityFeatureExtractor()
