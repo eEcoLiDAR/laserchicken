@@ -18,7 +18,6 @@ def frange(x, y, jump):
 MEMORY_THRESHOLD = 0.5
 POINTCLOUD_DIST = 10
 
-
 def compute_cylinder_neighborhood_(environment_pc, target_pc, radius):
     """Find the indices of points within a cylindrical neighbourhood (using KD Tree)
     for a given point of a target point cloud among the points from an environment point cloud.
@@ -50,20 +49,43 @@ def compute_cylinder_neighborhood_(environment_pc, target_pc, radius):
 
       x_step = (x_max - x_min)/num_fragments
       y_step = (y_max - y_min)/num_fragments
+      print ("x_min:%f x_max:%f x_step=%f" % (x_min, x_max, x_step))
+      print ("y_min:%f y_max:%f y_step=%f" % (y_min, y_max, y_step))
 
       points_in = []
       env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
-      target_tree = kd_tree.get_kdtree_for_pc(target_pc)
       for x_curr in frange(x_min, x_max, x_step):
         for y_curr in frange(y_min, y_max, y_step):
-          target_box = box(x_curr, y_curr, (x_curr + x_step - 1), (y_curr + y_step - 1))
-          target_box_ind = _contains(target_pc,target_box)
-          target_box_x = target_pc[point]["x"].get("data", [])
-          target_box_y = target_pc[point]["y"].get("data", [])
+          print ("x_curr:%f y_curr:%f" % (x_curr, y_curr))
+          min_x = x_curr
+          max_x = (x_curr + x_step)
+          min_y = y_curr
+          max_y = (y_curr + y_step)
 
-          box_points = np.column_stack(([target_box_x[i] for i in target_box_ind], [target_box_y[i] for i in target_box_ind]))
-          target_box_tree = cKDTree(box_points, compact_nodes=False, balanced_tree=False)
-          yield target_box_tree.query_ball_tree(env_tree, radius)
+          #Make sure the boundaries do not overlap.
+          #Shift the right and the upper boundary 0.0001 meters.
+          if (min_x != x_min):
+            min_x = min_x + 0.0001
+          if (min_y != y_min):
+            min_y = min_y + 0.0001
+
+          target_box = box(min_x, min_y, max_x, max_y)
+
+          #_contains does not return the points overlaping polygon's boundaries.
+          #To get all points you should also use Point.intersects(Polygon).
+          target_box_ind = _contains(target_pc,target_box)
+          if (len(target_box_ind) == 0):
+            yield []
+          else:
+            target_box_x = target_pc[point]["x"].get("data", [])
+            target_box_y = target_pc[point]["y"].get("data", [])
+            print("taget_box_ind size: %d" % len(target_box_ind))
+            print("taget_box_x size: %d" % len(target_box_x))
+            print("taget_box_y size: %d" % len(target_box_y))
+
+            box_points = np.column_stack(([target_box_x[i] for i in target_box_ind], [target_box_y[i] for i in target_box_ind]))
+            target_box_tree = cKDTree(box_points, compact_nodes=False, balanced_tree=False)
+            yield target_box_tree.query_ball_tree(env_tree, radius)
     else:
       print("Start tree creation")
       env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
@@ -165,7 +187,10 @@ def compute_neighborhoods_(env_pc, target_pc, volume_description):
       compute_neighborhoods = compute_cylinder_neighborhood_(env_pc, target_pc, volume_description.radius)
     else:
       raise ValueError('Neighborhood computation error because volume type "{}" is unknown.'.format(volume_type))
+    print ("Start yielding neighbors!!!")
     for x in compute_neighborhoods:
+      print("Size of x: %d" % len(x))
+      print(x[:10])
       yield x
 
 
