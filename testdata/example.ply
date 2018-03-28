@@ -1,7 +1,9 @@
 ply
 format ascii 1.0
-comment {'time': '2018-01-18 16:01', 'module': 'load', 'parameters': [], 'version': '0.9.2'}
-comment {'time': '2018-01-18 16:01', 'module': 'filter', 'parameters': [('z', 'gt', '1.5')], 'version': '0.9.2'}
+comment [
+comment {'time': '2018-01-18 16:01', 'module': 'load', 'parameters': [], 'version': '0.9.2'},
+comment {'time': '2018-01-18 16:03', 'module': 'filter', 'parameters': [('z', 'gt', '1.5')], 'version': '0.9.2'}
+comment ]
 element vertex 3
 property float x
 property float y

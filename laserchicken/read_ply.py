@@ -3,6 +3,7 @@ import ast
 import numpy as np
 from dateutil import parser
 
+
 def read(path, verbose=False):
     if not os.path.exists(path):
         raise IOError('File not found: {}'.format(path))
@@ -20,13 +21,13 @@ def read(path, verbose=False):
         result = {block['type']: read_block(block, ply) for block in index}
         if verbose:
             print('Header:')
-            print('-'*10)
+            print('-' * 10)
             for i, header_field in enumerate(index):
                 print(header_field)
                 print(index[i])
                 print
             print('\nData:')
-            print('-'*10)
+            print('-' * 10)
             for data_field in result:
                 print(data_field)
                 print(result['%s' % data_field])
@@ -59,13 +60,12 @@ def read_header(ply):
 
         line = ply.readline()
 
-    if len(comments) > 0:
-        for i, comment_line in enumerate(comments):
-            comments[i] = ast.literal_eval(comment_line)
-            if comments[i]['time']:
-                comments[i]['time'] = parser.parse(comments[i]['time'])
-
-        index.append({'type': 'log', 'log': comments})
+    log = ast.literal_eval(''.join(comments))
+    if len(log) > 0:
+        for i, entry in enumerate(log):
+            if 'time' in entry:
+                entry['time'] = parser.parse(entry['time'])
+        index.append({'type': 'log', 'log': log})
 
     return index
 

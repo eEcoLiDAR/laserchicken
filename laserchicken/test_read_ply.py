@@ -16,8 +16,6 @@ class TestReadPly(unittest.TestCase):
     _test_data_source = 'testdata'
     las_file_path = os.path.join(_test_dir, _las_file_name)
     test_file_path = os.path.join(_test_dir, _test_file_name)
-    _real_data_file_name = '06en2_merged_kiv3._ground_height_kiv_kiv._cylinder2.5.ply'
-    real_data_path = os.path.join(_test_dir, _real_data_file_name)
 
     def test_nonexistentFile_error(self):
         # Catch most specific subclass of FileNotFoundException (3.6) and IOError (2.7).
@@ -30,10 +28,6 @@ class TestReadPly(unittest.TestCase):
 
     def test_existentPly_noError(self):
         read(self.test_file_path)
-
-    def test_existentRealPly_noError(self):
-        """Regression test."""
-        read(self.real_data_path)
 
     def test_containsPointsElement(self):
         data = read(self.test_file_path)
@@ -82,7 +76,6 @@ class TestReadPly(unittest.TestCase):
     def setUp(self):
         os.mkdir(self._test_dir)
         shutil.copyfile(os.path.join(self._test_data_source, self._test_file_name), self.test_file_path)
-        shutil.copyfile(os.path.join(self._test_data_source, self._real_data_file_name), self.real_data_path)
         shutil.copyfile(os.path.join(self._test_data_source, self._las_file_name), self.las_file_path)
 
     def tearDown(self):

@@ -74,8 +74,18 @@ def _write_comment(pc, ply):
 
     head = 'comment [\n'
     tail = 'comment ]\n'
-    formatted_entries = ','.join(['comment ' + str(entry) + '\n' for entry in log])
+    formatted_entries = ','.join(['comment ' + _stringify(entry) + '\n' for entry in log])
     ply.write(head + formatted_entries + tail)
+
+
+def _stringify(entry):
+    copy = {}
+    for key, value in entry.items():
+        if key == 'time':
+            copy['time'] = str(value)
+        else:
+            copy[key] = value
+    return str(copy)
 
 
 def _write_header_elements(pc, ply, element_name, get_num_elements=None):
