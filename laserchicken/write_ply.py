@@ -68,13 +68,14 @@ def _get_ordered_properties(elem_name, prop_list):
 
 
 def _write_comment(pc, ply):
-    # TODO: Use json for this
     log = pc.get(keys.provenance, [])
-    if any(log):
-        ply.write("comment [" + '\n')
-        for msg in log:
-            ply.write("comment " + str(msg) + '\n')
-        ply.write("comment ]" + '\n')
+    if not any(log):
+        return
+
+    head = 'comment [\n'
+    tail = 'comment ]\n'
+    formatted_entries = ','.join(['comment ' + str(entry) + '\n' for entry in log])
+    ply.write(head + formatted_entries + tail)
 
 
 def _write_header_elements(pc, ply, element_name, get_num_elements=None):
