@@ -35,7 +35,8 @@ def read_shp_file(path):
 
 def _contains(pc, polygon):
     """
-    Return indices of points in point cloud that are contained by a polygon.
+    Return indices of points in point cloud that are contained by a polygon, i.e., all points within the boundaries of
+    Polygon excluding the ones overlaping Polygon's boundaries.
     :param pc: point cloud in
     :param polygon: containing polygon
     :return: point indices
