@@ -102,7 +102,11 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
 
         # create the volume/neighborhood
         self.cyl = InfiniteCylinder(self.radius + 1E-3)
-        self.index_cyl = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
+        compute_neighborhoods = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
+
+        self.index_cyl = []
+        for x in compute_neighborhoods:
+          self.index_cyl += x
 
         # theoretical value of the echo ratio
         self.theo_val = (self.npt_sphere + 1) / (self.npt_sphere + self.npt_cyl + 1) * 100
@@ -136,7 +140,11 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         # volume descriptions
         radius = 0.5
         self.cyl = InfiniteCylinder(radius)
-        cylinder_index = compute_neighborhoods(self.point_cloud, self.targetpc, self.cyl)
+        compute_neighborhoods = compute_neighborhoods(self.point_cloud, self.targetpc, self.cyl)
+
+        cylinder_index = []
+        for x in compute_neighborhoods:
+          cylinder_index += x
 
         # extractor
         extractor = EchoRatioFeatureExtractor()

@@ -34,14 +34,20 @@ class TestComputeNeighbors(unittest.TestCase):
         """Compute neighbors should detect sphere volume and find neighbors accordingly"""
         target_point_cloud = self._get_random_targets()
         sphere = Sphere(0.5)
-        result_point_clouds = compute_neighborhoods(self.point_cloud, target_point_cloud, sphere)
+        compute_neighborhoods = compute_neighborhoods(self.point_cloud, target_point_cloud, sphere)
+        result_point_clouds = []
+        for x in compute_neighborhoods:
+          result_point_clouds += x
         self._assert_all_points_within_sphere(result_point_clouds, target_point_cloud, sphere.radius)
 
     def test_compute_neighbors_cylinderVolume(self):
         """Compute neighbors should detect cylinder volume and find neighbors accordingly"""
         target_point_cloud = self._get_random_targets()
         cylinder = InfiniteCylinder(0.5)
-        result_point_clouds = compute_neighborhoods(self.point_cloud, target_point_cloud, cylinder)
+        compute_neighborhoods = compute_neighborhoods(self.point_cloud, target_point_cloud, cylinder)
+        result_point_clouds = []
+        for x in compute_neighborhoods:
+          result_point_clouds += x
         self._assert_all_points_within_cylinder(result_point_clouds, target_point_cloud, cylinder.radius)
 
     def setUp(self):

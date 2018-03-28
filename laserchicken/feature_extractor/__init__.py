@@ -40,7 +40,10 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     >>> point_cloud = read_ply.read('data1.ply')
     >>> target_point_cloud = read_ply.read('data2.ply')
     >>> volume = volume_specification.InfiniteCylinder(4)
-    >>> neighborhoods = compute_neighborhoods(point_cloud, target_point_cloud, volume)
+    >>> compute_neighborhoods = compute_neighborhoods(point_cloud, target_point_cloud, volume)
+    >>> neighborhoods = []
+    >>> for x in compute_neighborhoods:
+    >>>   neighborhoods += x
     >>> compute_features(point_cloud, neighborhoods, target_point_cloud, ['eigenv_1', 'kurto_z'], volume)
     >>> eigenv_1 = target_point_cloud[point]['eigenv_1']['data']
 

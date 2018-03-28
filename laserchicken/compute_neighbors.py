@@ -107,6 +107,4 @@ def compute_neighborhoods(env_pc, target_pc, volume_description):
       raise ValueError('Neighborhood computation error because volume type "{}" is unknown.'.format(volume_type))
     print ("Start yielding neighbors!!!")
     for x in compute_neighborhoods:
-      print("Size of x: %d" % len(x))
-      print(x[:10])
       yield x

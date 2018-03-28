@@ -91,7 +91,11 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
         # volume descriptions
         radius = 0.5
         self.cyl = InfiniteCylinder(radius)
-        cylinder_index = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
+        compute_neighborhoods = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
+
+        cylinder_index = []
+        for x in compute_neighborhoods:
+          cylinder_index += x
 
         # extractor
         extractor = PulsePenetrationFeatureExtractor()
