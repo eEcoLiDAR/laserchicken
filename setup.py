@@ -2,9 +2,7 @@ import os
 
 from setuptools import setup
 
-with open(os.path.join(os.path.dirname(__file__), 'laserchicken/_version.py')) as versionpy:
-    exec(versionpy.read())
-
+from laserchicken._version import __version__
 
 def read(file_name):
     return open(os.path.join(os.path.dirname(__file__), file_name)).read()
