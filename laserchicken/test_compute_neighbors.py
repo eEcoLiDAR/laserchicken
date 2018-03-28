@@ -20,14 +20,22 @@ class TestComputeNeighbors(unittest.TestCase):
         """Compute neighbors should only return points within the (xy) radius of the target."""
         target_point_cloud = self._get_random_targets()
         radius = 0.5
-        result_index_sets = compute_cylinder_neighborhood(self.point_cloud, target_point_cloud, radius)
+        compute_cylinder_neighborhood = compute_cylinder_neighborhood(self.point_cloud, target_point_cloud, radius)
+
+        result_index_sets = []
+        for x in compute_cylinder_neighborhood:
+          result_index_sets += x
         self._assert_all_points_within_cylinder(result_index_sets, target_point_cloud, radius)
 
     def test_compute_sphere_neighbors(self):
         """Compute neighbors should only return points within the (xyz) radius of the target."""
         target_point_cloud = self._get_random_targets()
         radius = 0.5
-        result_point_clouds = compute_sphere_neighborhood(self.point_cloud, target_point_cloud, radius)
+        compute_sphere_neighborhood = compute_sphere_neighborhood(self.point_cloud, target_point_cloud, radius)
+        result_point_clouds = []
+        for x in compute_neighborhoods:
+          result_point_clouds += x
+
         self._assert_all_points_within_sphere(result_point_clouds, target_point_cloud, radius)
 
     def test_compute_neighbors_sphereVolume(self):
