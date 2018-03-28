@@ -39,53 +39,18 @@ def compute_cylinder_neighborhood_(environment_pc, target_pc, radius):
 
     if (cyl_size > mem_size*MEMORY_THRESHOLD):
       y = target_pc[point]['y']['data']
-      x_min = np.min(x)
-      x_max = np.max(x)
-      y_min = np.min(y)
-      y_max = np.max(y)
 
-      num_fragments = math.ceil(math.sqrt(cyl_size / (mem_size*MEMORY_THRESHOLD)))
-      print("Number of fragments: %d" % num_fragments)
-
-      x_step = (x_max - x_min)/num_fragments
-      y_step = (y_max - y_min)/num_fragments
-      print ("x_min:%f x_max:%f x_step=%f" % (x_min, x_max, x_step))
-      print ("y_min:%f y_max:%f y_step=%f" % (y_min, y_max, y_step))
+      num_points = math.floor(mem_size*MEMORY_THRESHOLD)/(avg_points_cyl*sys.getsizeof(int))
+      print("Number of points: %d" % num_points)
 
       points_in = []
       env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
-      for x_curr in frange(x_min, x_max, x_step):
-        for y_curr in frange(y_min, y_max, y_step):
-          print ("x_curr:%f y_curr:%f" % (x_curr, y_curr))
-          min_x = x_curr
-          max_x = (x_curr + x_step)
-          min_y = y_curr
-          max_y = (y_curr + y_step)
 
-          #Make sure the boundaries do not overlap.
-          #Shift the right and the upper boundary 0.0001 meters.
-          if (min_x != x_min):
-            min_x = min_x + 0.0001
-          if (min_y != y_min):
-            min_y = min_y + 0.0001
+      for i in range(0, np.size(x), num_points):
+        box_points = np.column_stack((x[i:min(i+num_points,np.size(x))], y[i:min(i+num_points,np.size(x))]))
+        target_box_tree = cKDTree(box_points, compact_nodes=False, balanced_tree=False)
+        yield target_box_tree.query_ball_tree(env_tree, radius)
 
-          target_box = box(min_x, min_y, max_x, max_y)
-
-          #_contains does not return the points overlaping polygon's boundaries.
-          #To get all points you should also use Point.intersects(Polygon).
-          target_box_ind = _contains(target_pc,target_box)
-          if (len(target_box_ind) == 0):
-            yield []
-          else:
-            target_box_x = target_pc[point]["x"].get("data", [])
-            target_box_y = target_pc[point]["y"].get("data", [])
-            print("taget_box_ind size: %d" % len(target_box_ind))
-            print("taget_box_x size: %d" % len(target_box_x))
-            print("taget_box_y size: %d" % len(target_box_y))
-
-            box_points = np.column_stack(([target_box_x[i] for i in target_box_ind], [target_box_y[i] for i in target_box_ind]))
-            target_box_tree = cKDTree(box_points, compact_nodes=False, balanced_tree=False)
-            yield target_box_tree.query_ball_tree(env_tree, radius)
     else:
       print("Start tree creation")
       env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
