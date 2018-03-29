@@ -1,4 +1,6 @@
 import os
+from collections import OrderedDict
+
 import numpy as np
 
 from laserchicken import keys
@@ -80,12 +82,18 @@ def _write_comment(pc, ply):
 
 def _stringify(entry):
     copy = {}
-    for key, value in entry.items():
+    for key, value in _sort_by_key(entry):
         if key == 'time':
-            copy['time'] = str(value)
+            copy[key] = str(value)
         else:
             copy[key] = value
     return str(copy)
+
+
+def _sort_by_key(entry):
+    key_value_pairs = list(entry.items())
+    key_value_pairs.sort(key=lambda key_value_pair: key_value_pair[0])
+    return key_value_pairs
 
 
 def _write_header_elements(pc, ply, element_name, get_num_elements=None):
