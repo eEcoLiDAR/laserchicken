@@ -16,7 +16,8 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
     def test_pulse(self):
         """Pulse extractor on artificial data should yield expected feature values."""
         extractor = PulsePenetrationFeatureExtractor()
-        pp_ratio, density_absolute_mean = extractor.extract(self.point_cloud, self.neighborhood, None, None, None)
+        pp_ratio, density_absolute_mean = extractor.extract(
+            self.point_cloud, self.neighborhood, None, None, None)
         self.assertEqual(pp_ratio, self.expected_pp_ratio)
         self.assertEqual(density_absolute_mean, 50.)
 
@@ -81,7 +82,8 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
     def test_valid(self):
         """Compute the echo ratio for a sphere/cylinder at different target points without crashing."""
         # read the data
-        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
+        self.point_cloud = read_las.read(os.path.join(
+            self._test_data_source, self._test_file_name))
 
         # get the target point clouds
         random.seed(102938482634)
@@ -91,11 +93,12 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
         # volume descriptions
         radius = 0.5
         self.cyl = InfiniteCylinder(radius)
-        neighbors = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
+        neighbors = compute_neighborhoods(
+            self.point_cloud, self.target_point_cloud, self.cyl)
 
         cylinder_index = []
         for x in neighbors:
-          cylinder_index += x
+            cylinder_index += x
 
         # extractor
         extractor = PulsePenetrationFeatureExtractor()
@@ -105,7 +108,8 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
     def _get_random_targets(self):
         """Get a random target pc."""
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
-        rand_indices = [random.randint(0, num_all_pc_points) for _ in range(20)]
+        rand_indices = [random.randint(0, num_all_pc_points)
+                        for _ in range(20)]
         return utils.copy_pointcloud(self.point_cloud, rand_indices)
 
 

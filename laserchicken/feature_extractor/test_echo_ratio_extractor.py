@@ -22,7 +22,8 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         """Must pass as we provide everything needed."""
 
         extractor = EchoRatioFeatureExtractor()
-        per = extractor.extract(self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, self.cyl)
+        per = extractor.extract(
+            self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, self.cyl)
         self.assertTrue(np.allclose(per, self.theo_val))
 
     def test_invalid(self):
@@ -31,16 +32,19 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         extractor = EchoRatioFeatureExtractor()
         # target point cloud must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl, None, self.indexpc, self.cyl)
+            extractor.extract(self.point_cloud, self.index_cyl,
+                              None, self.indexpc, self.cyl)
 
         # target index must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl, self.target_point_cloud, None, self.cyl)
+            extractor.extract(self.point_cloud, self.index_cyl,
+                              self.target_point_cloud, None, self.cyl)
 
         # volume must be a cylinder
         with pytest.raises(ValueError):
             sphere = Sphere(self.radius)
-            extractor.extract(self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, sphere)
+            extractor.extract(self.point_cloud, self.index_cyl,
+                              self.target_point_cloud, self.indexpc, sphere)
 
     @staticmethod
     def _get_pc(xyz):
@@ -102,14 +106,16 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
 
         # create the volume/neighborhood
         self.cyl = InfiniteCylinder(self.radius + 1E-3)
-        neighbors = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
+        neighbors = compute_neighborhoods(
+            self.point_cloud, self.target_point_cloud, self.cyl)
 
         self.index_cyl = []
         for x in neighbors:
-          self.index_cyl += x
+            self.index_cyl += x
 
         # theoretical value of the echo ratio
-        self.theo_val = (self.npt_sphere + 1) / (self.npt_sphere + self.npt_cyl + 1) * 100
+        self.theo_val = (self.npt_sphere + 1) / \
+            (self.npt_sphere + self.npt_cyl + 1) * 100
 
     def tearDown(self):
         """Tear it down."""
@@ -130,7 +136,8 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         """Compute the echo ratio for a sphere/cylinder at different target points."""
 
         # read the data
-        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
+        self.point_cloud = read_las.read(os.path.join(
+            self._test_data_source, self._test_file_name))
 
         # get the target point clouds
         random.seed(102938482634)
@@ -140,21 +147,24 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         # volume descriptions
         radius = 0.5
         self.cyl = InfiniteCylinder(radius)
-        neighbors = compute_neighborhoods(self.point_cloud, self.targetpc, self.cyl)
+        neighbors = compute_neighborhoods(
+            self.point_cloud, self.targetpc, self.cyl)
 
         cylinder_index = []
         for x in neighbors:
-          cylinder_index += x
+            cylinder_index += x
 
         # extractor
         extractor = EchoRatioFeatureExtractor()
         for index in zip(cylinder_index):
-            extractor.extract(self.point_cloud, index, self.targetpc, self.targetpc_index, self.cyl)
+            extractor.extract(self.point_cloud, index,
+                              self.targetpc, self.targetpc_index, self.cyl)
 
     def _get_random_targets(self):
         """Get a random target pc."""
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
-        rand_indices = [random.randint(0, num_all_pc_points) for p in range(20)]
+        rand_indices = [random.randint(0, num_all_pc_points)
+                        for p in range(20)]
         return utils.copy_pointcloud(self.point_cloud, rand_indices)
 
 

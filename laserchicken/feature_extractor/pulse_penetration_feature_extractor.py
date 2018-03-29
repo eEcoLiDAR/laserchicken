@@ -52,11 +52,15 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
-        class_neighbors = np.array(point_cloud[point]['raw_classification']["data"])[neighborhood]
-        ground_indices = self._get_ground_indices(class_neighbors, self.ground_tags)
+        class_neighbors = np.array(point_cloud[point]['raw_classification']["data"])[
+            neighborhood]
+        ground_indices = self._get_ground_indices(
+            class_neighbors, self.ground_tags)
 
-        pulse_penetration_ratio = self._get_pulse_penetration_ratio(ground_indices, class_neighbors)
-        density_absolute_mean = self._get_density_absolute_mean(ground_indices, point_cloud)
+        pulse_penetration_ratio = self._get_pulse_penetration_ratio(
+            ground_indices, class_neighbors)
+        density_absolute_mean = self._get_density_absolute_mean(
+            ground_indices, point_cloud)
 
         return pulse_penetration_ratio, density_absolute_mean
 
@@ -81,7 +85,8 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         if n_ground == 0:
             density_absolute_mean = 0.
         else:
-            density_absolute_mean = float(len(z_ground[z_ground > np.mean(z_ground)])) / n_ground * 100.
+            density_absolute_mean = float(
+                len(z_ground[z_ground > np.mean(z_ground)])) / n_ground * 100.
         return density_absolute_mean
 
     def get_params(self):
