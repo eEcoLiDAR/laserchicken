@@ -1,14 +1,13 @@
-from shapely.geometry import Point
-from shapely.errors import WKTReadingError
-
-from shapely.wkt import loads
-import numpy as np
-from laserchicken.keys import point
+import math
 import shapefile
 import shapely
-import math
+from shapely.geometry import Point
+from shapely.errors import WKTReadingError
+from shapely.wkt import loads
 from shapely.geometry import box
+import numpy as np
 
+from laserchicken.keys import point
 from laserchicken import kd_tree
 from laserchicken.utils import copy_pointcloud
 
