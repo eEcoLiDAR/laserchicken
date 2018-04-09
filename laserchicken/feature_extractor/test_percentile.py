@@ -15,18 +15,18 @@ class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
     def test_percentile(self):
         extractor = PercentileFeatureExtractor()
         per = extractor.extract(self.point_cloud, self.index, None, None, None)
-        test_values = np.linspace(0.1,1.0,10)
-        self.assertTrue(np.allclose(per,test_values))
+        test_values = np.linspace(0.1, 1.0, 10)
+        self.assertTrue(np.allclose(per, test_values))
 
     def _get_data(self):
         """Create a 3D grid of equally spaced points."""
 
         x = np.linspace(0, 1, 11)
-        self.xyz = np.array([ list(p) for p in list(itertools.product(x,repeat=3))])
+        self.xyz = np.array([list(p)
+                             for p in list(itertools.product(x, repeat=3))])
         self.point_cloud = {keys.point: {'x': {'type': 'double', 'data': self.xyz[:, 0]},
-                           'y': {'type': 'double', 'data': self.xyz[:, 1]},
-                           'z': {'type': 'double', 'data': self.xyz[:, 2]}}}
-
+                                         'y': {'type': 'double', 'data': self.xyz[:, 1]},
+                                         'z': {'type': 'double', 'data': self.xyz[:, 2]}}}
 
     def setUp(self):
         """Set up the test."""
@@ -36,7 +36,6 @@ class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
     def tearDowm(self):
         """Tear it down."""
         pass
-
 
 
 class TestPercentileFeatureExtractorRealData(unittest.TestCase):
@@ -50,11 +49,12 @@ class TestPercentileFeatureExtractorRealData(unittest.TestCase):
         """Compute the percentile of a given selection."""
 
         extractor = PercentileFeatureExtractor()
-        extractor.extract(self.point_cloud , self.index, None, None, None)
+        extractor.extract(self.point_cloud, self.index, None, None, None)
 
     def setUp(self):
         """Set up the test."""
-        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
+        self.point_cloud = read_las.read(os.path.join(
+            self._test_data_source, self._test_file_name))
         self.index = [
             89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018, 61494,
             65194, 117931, 62971, 10474, 90322

@@ -62,7 +62,8 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
 
         xyz0 = self.get_target_position(target_point_cloud, target_index)
 
-        n_sphere = np.sum(np.sum((xyz - xyz0) ** 2, 1) <= volume_description.radius ** 2)
+        n_sphere = np.sum(np.sum((xyz - xyz0) ** 2, 1) <=
+                          volume_description.radius ** 2)
         return n_sphere / n_cylinder * 100.
 
     @staticmethod

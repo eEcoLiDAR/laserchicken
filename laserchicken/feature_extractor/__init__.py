@@ -40,7 +40,10 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     >>> point_cloud = read_ply.read('data1.ply')
     >>> target_point_cloud = read_ply.read('data2.ply')
     >>> volume = volume_specification.InfiniteCylinder(4)
-    >>> neighborhoods = compute_neighborhoods(point_cloud, target_point_cloud, volume)
+    >>> neighbors = compute_neighborhoods(point_cloud, target_point_cloud, volume)
+    >>> neighborhoods = []
+    >>> for x in neighbors:
+    >>>   neighborhoods += x
     >>> compute_features(point_cloud, neighborhoods, target_point_cloud, ['eigenv_1', 'kurto_z'], volume)
     >>> eigenv_1 = target_point_cloud[point]['eigenv_1']['data']
 
@@ -69,8 +72,10 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
             start = time.time()
 
         extractor = FEATURES[feature]()
-        _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs)
-        utils.add_metadata(target_point_cloud, type(extractor).__module__, extractor.get_params())
+        _add_or_update_feature(env_point_cloud, neighborhoods,
+                               target_point_cloud, extractor, volume, overwrite, kwargs)
+        utils.add_metadata(target_point_cloud, type(
+            extractor).__module__, extractor.get_params())
 
         if verbose:
             elapsed = time.time() - start
@@ -91,7 +96,8 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, e
         setattr(extractor, k, kwargs[k])
     provided_features = extractor.provides()
     n_features = len(provided_features)
-    feature_values = [np.empty(n_targets, dtype=np.float64) for i in range(n_features)]
+    feature_values = [np.empty(n_targets, dtype=np.float64)
+                      for i in range(n_features)]
     for target_index in range(n_targets):
         point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
                                          target_index, volume)
@@ -103,7 +109,8 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, e
     for i in range(n_features):
         feature = provided_features[i]
         if overwrite or (feature not in target_point_cloud[keys.point]):
-            target_point_cloud[keys.point][feature] = {"type": 'float64', "data": feature_values[i]}
+            target_point_cloud[keys.point][feature] = {
+                "type": 'float64', "data": feature_values[i]}
 
 
 def _make_feature_list(feature_names):

@@ -17,7 +17,8 @@ class TestNormalPlaneFeatureExtractor(unittest.TestCase):
     def test_normal_plane(self):
         """Feature extractor finds correct normal vector and slope values for artificial data in a plane."""
         extractor = NormalPlaneFeatureExtractor()
-        n1, n2, n3, slope_fit = extractor.extract(self.pc, self.neighborhood, None, None, None)
+        n1, n2, n3, slope_fit = extractor.extract(
+            self.pc, self.neighborhood, None, None, None)
         assert_allclose(self.nvect, [n1, n2, n3])
         assert_allclose(slope_fit, self.slope)
 
