@@ -34,7 +34,8 @@ class EntropyFeatureExtractor(AbstractFeatureExtractor):
         if (_z_min == _z_max):
           return 0
         n_bins = int(np.ceil((_z_max - _z_min) / self.layer_thickness))
-        data = np.histogram(z, bins=n_bins, range=(_z_min, _z_max), density=True)[0]
+        data = np.histogram(z, bins=n_bins, range=(
+            _z_min, _z_max), density=True)[0]
         entropy_func = np.vectorize(_x_log_2x)
         norm = np.sum(data)
         return -(entropy_func(data / norm)).sum()
