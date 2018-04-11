@@ -52,7 +52,7 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
-        class_neighbors = point_cloud[point]['raw_classification']["data"][neighborhood]
+        class_neighbors = [point_cloud[point]['raw_classification']["data"][n] for n in neighborhood]
 
         ground_indices = self._get_ground_indices(
             class_neighbors, self.ground_tags)
