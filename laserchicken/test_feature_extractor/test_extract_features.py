@@ -59,5 +59,5 @@ def override_features():
 
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
-    feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5), overwrite)
+    feature_extractor.compute_features({}, neighborhoods, 0, target, feature_names, Sphere(5), overwrite)
     return target
