@@ -101,6 +101,8 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, iteration, target_poi
     n_features = len(provided_features)
     feature_values = [np.empty(n_targets, dtype=np.float64)
                       for i in range(n_features)]
+
+    print("The number of targets %d and number of features %d for extraction!!!" % (n_targets, n_features))
     for target_index in range(n_targets):
         point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
                                          target_index+n_targets_iteration, volume)
