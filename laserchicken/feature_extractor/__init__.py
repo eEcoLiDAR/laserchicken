@@ -113,9 +113,7 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
     for i in range(n_features):
         feature = provided_features[i]
         if (target_idx_base != 0):
-            print("The length of the values is: %d" % len(target_point_cloud[keys.point][feature]["data"]))
             target_point_cloud[keys.point][feature]["data"] = np.append(target_point_cloud[keys.point][feature]["data"], feature_values[i])
-            print("The length of the values is: %d" % len(target_point_cloud[keys.point][feature]["data"]))
         elif (overwrite or (feature not in target_point_cloud[keys.point])) and (target_idx_base == 0):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
