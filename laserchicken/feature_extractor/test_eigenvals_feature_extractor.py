@@ -26,11 +26,11 @@ class TestExtractEigenValues(unittest.TestCase):
         neighbors = compute_neighbors.compute_cylinder_neighborhood(
             point_cloud, target_point_cloud, radius)
 
-        iteration = 0
+        target_idx_base = 0
         for x in neighbors:
-          feature_extractor.compute_features(point_cloud, x, iteration, target_point_cloud,
+          feature_extractor.compute_features(point_cloud, x, target_idx_base, target_point_cloud,
                                           ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
-          iteration += 1
+          target_idx_base += len(x)
 
         for i in range(n_targets):
             lambda1, lambda2, lambda3 = utils.get_features(

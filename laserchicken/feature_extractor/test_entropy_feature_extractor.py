@@ -23,11 +23,11 @@ class TestExtractEntropy(unittest.TestCase):
         neighbors = compute_neighbors.compute_cylinder_neighborhood(
             self.point_cloud, target_point_cloud, radius)
 
-        iteration = 0
+        target_idx_base = 0
         for x in neighbors:
-          feature_extractor.compute_features(self.point_cloud, x, iteration, target_point_cloud,
+          feature_extractor.compute_features(self.point_cloud, x, target_idx_base, target_point_cloud,
                                            ["z_entropy"], InfiniteCylinder(5), layer_thickness=0.1)
-          iteration += 1
+          target_idx_base += len(x)
 
         for i in range(n_targets):
             H = utils.get_attribute_value(target_point_cloud, i, "z_entropy")
