@@ -41,9 +41,9 @@ def compute_cylinder_neighborhood(environment_pc, target_pc, radius):
     if cyl_size > mem_size * MEMORY_THRESHOLD:
         y = target_pc[point]['y']['data']
 
-        num_points = math.floor(mem_size * MEMORY_THRESHOLD) / \
-            (avg_points_cyl * sys.getsizeof(int))
-        print("Number of points: %d" % num_points)
+        num_points = math.floor(mem_size * MEMORY_THRESHOLD / \
+            (avg_points_cyl * sys.getsizeof(int)))
+        print("Number of points: %f" % num_points)
 
         env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
 
