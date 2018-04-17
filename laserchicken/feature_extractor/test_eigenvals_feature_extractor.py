@@ -26,12 +26,11 @@ class TestExtractEigenValues(unittest.TestCase):
         neighbors = compute_neighbors.compute_cylinder_neighborhood(
             point_cloud, target_point_cloud, radius)
 
-        result_index_lists = []
+        target_idx_base = 0
         for x in neighbors:
-            result_index_lists += x
-
-        feature_extractor.compute_features(point_cloud, result_index_lists, target_point_cloud,
-                                           ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
+          feature_extractor.compute_features(point_cloud, x, target_idx_base, target_point_cloud,
+                                          ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
+          target_idx_base += len(x)
 
         for i in range(n_targets):
             lambda1, lambda2, lambda3 = utils.get_features(
@@ -47,7 +46,7 @@ class TestExtractEigenValues(unittest.TestCase):
         pc = create_point_cloud(a, a, a)
 
         feature_extractor.compute_features(
-            pc, [[0]], pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
+            pc, [[0]], 0, pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
         eigen_val_123 = np.array(
             [pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])

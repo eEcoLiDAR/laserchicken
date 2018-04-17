@@ -37,7 +37,7 @@ def assert_std_for_z_function_in_xy_grid(z_checkered, expected):
     n_points, points = create_points_in_xy_grid(z_checkered)
     point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])
     targets = create_point_cloud([0], [0], [0])
-    compute_features(point_cloud, [range(n_points)], targets, [
+    compute_features(point_cloud, [range(n_points)], 0, targets, [
                      'sigma_z'], InfiniteCylinder(10))
     np.testing.assert_almost_equal(
         targets[keys.point]['sigma_z']['data'][0], expected)

@@ -31,7 +31,7 @@ def _feature_map(module_name=__name__):
 FEATURES = _feature_map()
 
 
-def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, volume, overwrite=False,
+def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, feature_names, volume, overwrite=False,
                      verbose=True, **kwargs):
     """
     Compute features for each target and store result as point attributes in target point cloud.
@@ -63,16 +63,16 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     ordered_features = _make_feature_list(feature_names)
 
     for feature in ordered_features:
-        if (not overwrite) and (feature in target_point_cloud[keys.point]):
+        if (target_idx_base == 0) and (not overwrite) and (feature in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
 
         if verbose:
-            sys.stdout.write('Feature "{}"'.format(feature))
+            sys.stdout.write('Feature "{}"\n'.format(feature))
             sys.stdout.flush()
             start = time.time()
 
         extractor = FEATURES[feature]()
-        _add_or_update_feature(env_point_cloud, neighborhoods,
+        _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base,
                                target_point_cloud, extractor, volume, overwrite, kwargs)
         utils.add_metadata(target_point_cloud, type(
             extractor).__module__, extractor.get_params())
@@ -90,8 +90,10 @@ def _verify_feature_names(feature_names):
                          .format(', '.join(unknown_features), ', '.join(FEATURES.keys())))
 
 
-def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs):
-    n_targets = len(target_point_cloud[keys.point]["x"]["data"])
+def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, extractor, volume, overwrite, kwargs):
+    #n_targets = len(target_point_cloud[keys.point]["x"]["data"])
+    n_targets = len(neighborhoods)
+
     for k in kwargs:
         setattr(extractor, k, kwargs[k])
     provided_features = extractor.provides()
@@ -99,10 +101,10 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, e
     feature_values = [np.empty(n_targets, dtype=np.float64)
                       for i in range(n_features)]
 
-    print("The number of targets %d and number of features %d for extraction!!!" % (n_targets, n_features))
+    print("Number of targets: %d, number of features: %d" % (n_targets, n_features))
     for target_index in range(n_targets):
         point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
-                                         target_index, volume)
+                                         target_index+target_idx_base, volume)
         if n_features > 1:
             for i in range(n_features):
                 feature_values[i][target_index] = point_values[i]
@@ -110,7 +112,9 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, e
             feature_values[0][target_index] = point_values
     for i in range(n_features):
         feature = provided_features[i]
-        if overwrite or (feature not in target_point_cloud[keys.point]):
+        if (target_idx_base != 0):
+            target_point_cloud[keys.point][feature]["data"] = np.append(target_point_cloud[keys.point][feature]["data"], feature_values[i])
+        elif (overwrite or (feature not in target_point_cloud[keys.point])) and (target_idx_base == 0):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
 
