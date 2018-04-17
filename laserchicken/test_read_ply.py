@@ -54,6 +54,25 @@ class TestReadPly(unittest.TestCase):
         offset = point_cloud['offset']['data'][0]
         np.testing.assert_allclose(offset, 12.1)
 
+    def test_allLogEntriesContainAllColumns(self):
+        log = read(self.test_file_path)['log']
+
+        for entry in log:
+            for key in ['time', 'module', 'parameters', 'version']:
+                self.assertIn(key, entry)
+
+    def test_correctModulesLogged(self):
+        log = read(self.test_file_path)['log']
+
+        modules = [entry['module'] for entry in log]
+        self.assertListEqual(['load', 'filter'], modules)
+
+    def test_correctTimesLogged(self):
+        log = read(self.test_file_path)['log']
+
+        self.assertListEqual([2018, 1, 18, 16, 1, 0, 3, 18, -1], list(log[0]['time'].timetuple()))
+        self.assertListEqual([2018, 1, 18, 16, 3, 0, 3, 18, -1], list(log[1]['time'].timetuple()))
+
     def setUp(self):
         os.mkdir(self._test_dir)
         shutil.copyfile(os.path.join(self._test_data_source, self._test_file_name), self.test_file_path)
