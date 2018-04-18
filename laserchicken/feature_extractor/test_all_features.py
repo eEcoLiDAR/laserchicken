@@ -30,7 +30,6 @@ _10_neighborhoods_in_260807 = next(compute_neighbors.compute_neighborhoods(_pc_2
 
 
 @pytest.mark.parametrize("feature", [name for name in _feature_map()])
-@pytest.mark.skip('during development only')
 def test_completeTile_noErrors(feature):
     compute_features(copy_pointcloud(_pc_260807), _1000_neighborhoods_in_260807, 0, copy_pointcloud(_pc_1000),
                      [feature],
