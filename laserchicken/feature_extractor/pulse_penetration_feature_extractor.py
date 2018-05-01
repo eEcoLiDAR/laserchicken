@@ -8,13 +8,13 @@ import numpy as np
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
 
+# classification according to
+# http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
+GROUND_TAGS = [2]
+
 
 class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
     """Feature extractor for the point density."""
-
-    # classification according to
-    # http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
-    ground_tags = [2]
 
     @classmethod
     def requires(cls):
@@ -52,10 +52,14 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
+        if 'raw_classification' not in point_cloud[point]:
+            raise ValueError(
+                'Missing raw_classification attribute which is necessary for calculating pulse_penetratio and '
+                'density_absolute_mean features.')
+
         class_neighbors = [point_cloud[point]['raw_classification']["data"][n] for n in neighborhood]
 
-        ground_indices = self._get_ground_indices(
-            class_neighbors, self.ground_tags)
+        ground_indices = self._get_ground_indices(class_neighbors, GROUND_TAGS)
 
         pulse_penetration_ratio = self._get_pulse_penetration_ratio(
             ground_indices, class_neighbors)
@@ -74,7 +78,7 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
 
     @staticmethod
     def _get_pulse_penetration_ratio(ground_indices, class_neighbors):
-        n_total = len(class_neighbors)
+        n_total = np.max((len(class_neighbors), 1))
         n_ground = len(ground_indices)
         return float(n_ground) / n_total
 
