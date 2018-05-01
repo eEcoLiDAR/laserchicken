@@ -6,6 +6,7 @@ import numpy as np
 from laserchicken import compute_neighbors
 from laserchicken import keys
 from laserchicken import read_las
+from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
 from laserchicken.keys import point
 from laserchicken.utils import copy_pointcloud
 from laserchicken.volume_specification import InfiniteCylinder
@@ -52,7 +53,7 @@ def test_manyTargets_consistentOutput(feature):
 def test_xAllZeros_consistentOutput(feature):
     n = 10
     pc = _create_point_cloud(x=0, n=n)
-    compute_features(pc, range(n), 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -60,7 +61,7 @@ def test_xAllZeros_consistentOutput(feature):
 def test_yAllZeros_consistentOutput(feature):
     n = 10
     pc = _create_point_cloud(y=0, n=n)
-    compute_features(pc, range(n), 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -68,7 +69,7 @@ def test_yAllZeros_consistentOutput(feature):
 def test_zAllZeros_consistentOutput(feature):
     n = 10
     pc = _create_point_cloud(z=0, n=n)
-    compute_features(pc, range(n), 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -120,9 +121,12 @@ def test_inputNotChanged(feature):
 
 
 def _create_point_cloud(x=None, y=None, z=None, n=10):
+    tag = GROUND_TAGS[0]
     pc = {point: {'x': {'data': np.array([x if x is not None else i for i in range(n)]), 'type': 'float'},
                   'y': {'data': np.array([y if y is not None else i for i in range(n)]), 'type': 'float'},
-                  'z': {'data': np.array([z if z is not None else i for i in range(n)]), 'type': 'float'}}}
+                  'z': {'data': np.array([z if z is not None else i for i in range(n)]), 'type': 'float'},
+                  'raw_classification': {'data': np.array([i if i % 2 == 0 else tag for i in range(n)]),
+                                         'type': 'float'}}}
     return pc
 
 
@@ -135,5 +139,4 @@ def _assert_attributes_not_changed(original_point_cloud, new_point_cloud):
 def _assert_consistent_attribute_length(target_point_cloud):
     n_elements = len(target_point_cloud[keys.point]['x'])
     for key in target_point_cloud[keys.point]:
-        print(key, len(target_point_cloud[keys.point][key]))
         assert n_elements == len(target_point_cloud[keys.point][key])
