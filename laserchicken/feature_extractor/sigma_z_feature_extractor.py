@@ -4,6 +4,7 @@ Here, Sigma Z is defined as the standard deviation of the residuals after plane 
 See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/20
 """
 import numpy as np
+from numpy.linalg import LinAlgError
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.utils import get_point, fit_plane
@@ -49,9 +50,12 @@ class SigmaZFeatureExtractor(AbstractFeatureExtractor):
         :return:
         """
         x, y, z = get_point(source_point_cloud, neighborhood)
-        plane_estimator = fit_plane(x, y, z)
-        normalized = z - plane_estimator(x, y)
-        return np.std(normalized)
+        try:
+            plane_estimator = fit_plane(x, y, z)
+            normalized = z - plane_estimator(x, y)
+            return np.std(normalized)
+        except LinAlgError:
+            return 0
 
     def get_params(self):
         """

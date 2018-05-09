@@ -41,9 +41,8 @@ def compute_cylinder_neighborhood(environment_pc, target_pc, radius):
     if cyl_size > mem_size * MEMORY_THRESHOLD:
         y = target_pc[point]['y']['data']
 
-        num_points = math.floor(mem_size * MEMORY_THRESHOLD / \
-            (avg_points_cyl * sys.getsizeof(int)))
-        print("Number of points: %f" % num_points)
+        num_points = int(math.floor(mem_size * MEMORY_THRESHOLD / (avg_points_cyl * sys.getsizeof(int))))
+        print("Number of points: %d" % num_points)
 
         env_tree = kd_tree.get_kdtree_for_pc(environment_pc)
 
@@ -102,7 +101,6 @@ def compute_neighborhoods(env_pc, target_pc, volume_description):
     :return: indices of neighboring points from the environment point cloud for each target point
     """
     volume_type = volume_description.get_type()
-    neighbors = []
     if volume_type == Sphere.TYPE:
         neighbors = compute_sphere_neighborhood(
             env_pc, target_pc, volume_description.radius)
