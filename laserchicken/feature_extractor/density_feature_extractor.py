@@ -31,29 +31,20 @@ class PointDensityFeatureExtractor(AbstractFeatureExtractor):
         """
         return ['point_density']
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
+    def extract(self, source_point_cloud, neighborhood, target_point_cloud, target_index, volume):
         """
-        Extract the feature value(s) of the point cloud at location of the target.
+        Extract either the surface density or volume density depending on the volume type.
 
-        :param point_cloud: environment (search space) point cloud
+        :param source_point_cloud: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
         :param target_index: index of the target point in the target pointcloud
-        :param volume_description: volume object that describes the shape and size of the search volume
+        :param volume: volume object that describes the shape and size of the search volume
         :return: feature value
         """
 
-        if sourcepc is not None and isinstance(neighborhood, list):
-            npts = float(len(sourcepc[point]['x']['data'][neighborhood]))
+        npts = float(len(neighborhood))
 
-        elif targetpc is not None:
-            npts = float(len(targetpc[point]['x']['data']))
-        else:
-            raise ValueError("You can either specify a sourcepc and a neighborhhod or a targetpc\n\
-                              example\nextractror.extract(sourcepc,index,None,None,volume)\n\
-                              extractror.extract(None,None,targetpc,None,volume)")
-
-        # sphere/cylinder cases
         if volume.get_type() == Sphere.TYPE:
             vol = volume.calculate_volume()
             return npts / vol
