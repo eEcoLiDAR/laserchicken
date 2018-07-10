@@ -92,6 +92,66 @@ def compute_sphere_neighborhood(environment_pc, target_pc, radius):
         yield result
 
 
+def compute_cell_neighborhood(environment_pc, target_pc, cell_side_lenght):
+    """
+    Find the indices of points within a square neighbourhood for a given point of a target point cloud among the
+    points from an environment point cloud.
+
+    :param environment_pc: environment point cloud
+    :param target_pc: point cloud that contains the points at which neighborhoods are to be calculated
+    :param cell_side_lenght: search radius for neighbors
+    :return: indices of neighboring points from the environment point cloud for each target point
+    """
+
+    new_radius = math.sqrt((cell_side_lenght ** 2) + (cell_side_lenght ** 2))
+
+    neighbors = compute_cylinder_neighborhood(
+        environment_pc, target_pc, new_radius)
+
+    for neighborhood_indices in neighbors:
+        result = []
+        for i in range(len(neighborhood_indices)):
+            target_x, target_y, target_z = utils.get_point(target_pc, i)
+            neighbor_indices = neighborhood_indices[i]
+            result_indices = []
+            for j in neighbor_indices:
+                env_x, env_y, env_z = utils.get_point(environment_pc, j)
+                if ((abs(target_x - env_x)) > radius) or ((abs(target_y - env_y)) > radius):
+                    continue
+                else:
+                    result_indices.append(j)
+            result.append(result_indices)
+        yield result
+
+def compute_cube_neighborhood(environment_pc, target_pc, cell_side_lenght):
+    """
+    Find the indices of points within a square neighbourhood for a given point of a target point cloud among the
+    points from an environment point cloud.
+
+    :param environment_pc: environment point cloud
+    :param target_pc: point cloud that contains the points at which neighborhoods are to be calculated
+    :param cell_side_lenght: search radius for neighbors
+    :return: indices of neighboring points from the environment point cloud for each target point
+    """
+
+    neighbors = compute_cell_neighborhood(
+        environment_pc, target_pc, cell_side_lenght)
+
+    for neighborhood_indices in neighbors:
+        result = []
+        for i in range(len(neighborhood_indices)):
+            target_x, target_y, target_z = utils.get_point(target_pc, i)
+            neighbor_indices = neighborhood_indices[i]
+            result_indices = []
+            for j in neighbor_indices:
+                env_x, env_y, env_z = utils.get_point(environment_pc, j)
+                if abs(target_z - env_z) > radius:
+                    continue
+                else:
+                    result_indices.append(j)
+            result.append(result_indices)
+        yield result
+
 def compute_neighborhoods(env_pc, target_pc, volume_description):
     """
     Find a subset of points in a neighbourhood in the environment point cloud for each point in a target point cloud.
