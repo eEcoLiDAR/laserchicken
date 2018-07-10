@@ -116,7 +116,7 @@ def compute_cell_neighborhood(environment_pc, target_pc, cell_side_lenght):
             result_indices = []
             for j in neighbor_indices:
                 env_x, env_y, env_z = utils.get_point(environment_pc, j)
-                if ((abs(target_x - env_x)) > radius) or ((abs(target_y - env_y)) > radius):
+                if ((abs(target_x - env_x)) > cell_side_lenght) or ((abs(target_y - env_y)) > cell_side_lenght):
                     continue
                 else:
                     result_indices.append(j)
@@ -145,7 +145,7 @@ def compute_cube_neighborhood(environment_pc, target_pc, cell_side_lenght):
             result_indices = []
             for j in neighbor_indices:
                 env_x, env_y, env_z = utils.get_point(environment_pc, j)
-                if abs(target_z - env_z) > radius:
+                if abs(target_z - env_z) > cell_side_lenght:
                     continue
                 else:
                     result_indices.append(j)
