@@ -25,7 +25,7 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
         """Create two planes of ground point at z = +- 0.1."""
         n_points = 10
         pos = np.linspace(-self.radius, self.radius, n_points)
-        self.npt_plane = 2 * n_points ** 2
+        self.points_per_plane = 2 * n_points ** 2
         for z in [-0.1, 0.1]:
             for x in pos:
                 for y in pos:
@@ -54,7 +54,7 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
                              'raw_classification': {'type': 'int', 'data': self.pt_type}}}, len(self.xyz)
 
     def setUp(self):
-        """Set up the data fpr the test."""
+        """Set up the data for the test."""
         # set up the point cloud
         self.radius = 0.5
         self.xyz, self.pt_type = [], []
@@ -67,7 +67,7 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
         self.neighborhood = list(range(n_points))
 
         # theo val
-        self.expected_pp_ratio = float(self.npt_plane) / n_points
+        self.expected_pp_ratio = float(self.points_per_plane) / n_points
 
 
 class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):

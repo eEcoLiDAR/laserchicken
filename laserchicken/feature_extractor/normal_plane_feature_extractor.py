@@ -32,26 +32,30 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
         """
         return ['normal_vector_1', 'normal_vector_2', 'normal_vector_3', 'slope']
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
+    def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param point_cloud: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
-        :param target_index: index of the target point in the target pointcloud
+        :param target_index: index of the target point in the target point cloud
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
 
-        x = sourcepc[point]['x']['data'][neighborhood]
-        y = sourcepc[point]['y']['data'][neighborhood]
-        z = sourcepc[point]['z']['data'][neighborhood]
+        x = _to_float64(point_cloud[point]['x']['data'][neighborhood])
+        y = _to_float64(point_cloud[point]['y']['data'][neighborhood])
+        z = _to_float64(point_cloud[point]['z']['data'][neighborhood])
 
-        nvect = fit_plane_svd(x, y, z)
-        slope = np.dot(nvect, np.array([0., 0., 1.]))
+        try:
+            normal_vector = fit_plane_svd(x, y, z)
+            slope = np.dot(normal_vector, np.array([0., 0., 1.]))
+        except np.linalg.linalg.LinAlgError:
+            normal_vector = [0.0, 0.0, 0.0]
+            slope = 0.0
 
-        return nvect[0], nvect[1], nvect[2], slope
+        return normal_vector[0], normal_vector[1], normal_vector[2], slope
 
     def get_params(self):
         """
@@ -60,3 +64,13 @@ class NormalPlaneFeatureExtractor(AbstractFeatureExtractor):
         Needed for provenance.
         """
         return ()
+
+
+def _to_float64(x_org):
+    """
+    Returns the input if dtype is float64 or a copy of it with this dtype if it isn't.
+    NB. Returns reference to input array or copy.
+    :param x_org:
+    :return: array with float64 dtype
+    """
+    return x_org if x_org.dtype == np.float64 else np.array(x_org, dtype=np.float64)

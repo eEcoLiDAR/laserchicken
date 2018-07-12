@@ -1,7 +1,7 @@
-import os
 import random
 import unittest
 
+import numpy as np
 from laserchicken import read_las
 from laserchicken.feature_extractor.height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
 
@@ -9,14 +9,12 @@ from laserchicken.feature_extractor.height_statistics_feature_extractor import H
 class TestHeightStatisticsFeatureExtractor(unittest.TestCase):
 
     def test_height_stats(self):
-        print(os.getcwd())
-        print(os.path.exists("testdata/AHN2.las"))
         pc_in = read_las.read("testdata/AHN2.las")
-        indices = [89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018,
+        neighborhood = [89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018,
                    61494, 65194, 117931, 62971, 10474, 90322]
         extractor = HeightStatisticsFeatureExtractor()
         (max_z, min_z, mean_z, median_z, std_z, var_z, range_z, coeff_var_z, skew_z, kurto_z) = extractor.extract(
-            pc_in, indices, None, None, None)
+            pc_in, neighborhood, None, None, None)
         print(max_z, min_z, mean_z, median_z, std_z,
               var_z, range_z, coeff_var_z, skew_z, kurto_z)
         assert (max_z == 5.979999973773956)
@@ -29,6 +27,25 @@ class TestHeightStatisticsFeatureExtractor(unittest.TestCase):
         assert (coeff_var_z == 0.9845966191155302)
         assert (skew_z == 2.083098281031817)
         assert (kurto_z == 3.968414258629714)
+
+    def test_height_stats_without_neighbors(self):
+        pc_in = read_las.read("testdata/AHN2.las")
+        neighborhood = []
+        extractor = HeightStatisticsFeatureExtractor()
+        (max_z, min_z, mean_z, median_z, std_z, var_z, range_z, coeff_var_z, skew_z, kurto_z) = extractor.extract(
+            pc_in, neighborhood, pc_in, None, None)
+        print(max_z, min_z, mean_z, median_z, std_z,
+              var_z, range_z, coeff_var_z, skew_z, kurto_z)
+        assert np.isnan(max_z)
+        assert np.isnan(min_z)
+        assert np.isnan(mean_z )
+        assert np.isnan(median_z )
+        assert np.isnan(std_z )
+        assert np.isnan(var_z )
+        assert np.isnan(range_z)
+        assert np.isnan(coeff_var_z)
+        assert np.isnan(skew_z)
+        assert np.isnan(kurto_z)
 
     def setUp(self):
         random.seed(20)
