@@ -10,7 +10,7 @@ from laserchicken.volume_specification import InfiniteCylinder
 
 class TestExtractSigmaZ(unittest.TestCase):
     def test_constantValues_result0(self):
-        def z_constant(_, _):
+        def z_constant(x, y):
             return 2
 
         assert_std_for_z_function_in_xy_grid(z_constant, 0)
