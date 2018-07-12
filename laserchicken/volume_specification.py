@@ -54,3 +54,43 @@ class InfiniteCylinder(Volume):
         :return: area of the base
         """
         return np.power(self.radius, 2) * np.pi
+
+
+class Cell(Volume):
+    """Cell that is square in xy plane and extends infinitely to both z and -z direction."""
+
+    TYPE = 'cell'
+
+    def __init__(self, side_length):
+        self.side_length = side_length
+
+    def get_type(self):
+        return self.TYPE
+
+    def calculate_base_area(self):
+        """
+        Calculate the area of the base of the cell..
+
+        :return: area of the base
+        """
+        return np.power(self.side_length, 2)
+
+
+class Cube(Volume):
+    """Mathematical cube."""
+
+    TYPE = 'cube'
+
+    def __init__(self, side_length):
+        self.side_length = side_length
+
+    def get_type(self):
+        return self.TYPE
+
+    def calculate_volume(self):
+        """
+        Calculate the volume of this sphere based on its radius.
+
+        :return: volume
+        """
+        return np.power(self.side_length, 3)
