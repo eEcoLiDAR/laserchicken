@@ -107,3 +107,13 @@ def create_point_cloud(x, y, z):
             keys.point_cloud: {},
             keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]
             }
+
+
+def create_points_in_xy_grid(z_function):
+    n_points = 100
+    points = np.zeros((n_points, 3))
+    for i in range(n_points):
+        x = i % np.sqrt(n_points)
+        y = np.floor(i / np.sqrt(n_points))
+        points[i] = np.array((x, y, z_function(x, y)))
+    return n_points, points
