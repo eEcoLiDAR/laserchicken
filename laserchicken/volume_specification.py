@@ -13,7 +13,15 @@ class Volume(object):
 
         :return: type description
         """
-        raise NotImplementedError("Class {} doesn't implement get_requirements()".format(type(self).__name__))
+        raise NotImplementedError("Class {} doesn't implement get_type()".format(type(self).__name__))
+
+    def calculate_area_or_volume(self):
+        """
+        Calculate the area (infinite cylinder. cell) or volume (sphere, cube) depending on the volume type.
+
+        :return: area or volume
+        """
+        raise NotImplementedError("Class {} doesn't implement calculate_area_or_volume()".format(type(self).__name__))
 
 
 class Sphere(Volume):
@@ -35,6 +43,8 @@ class Sphere(Volume):
         """
         return np.power(self.radius, 3) * SPHERE_VOLUME_FACTOR
 
+    def calculate_area_or_volume(self):
+        return self.calculate_volume()
 
 class InfiniteCylinder(Volume):
     """Cylinder with base in the xy plane and height that extends infinitely to both z and -z direction."""
@@ -54,6 +64,9 @@ class InfiniteCylinder(Volume):
         :return: area of the base
         """
         return np.power(self.radius, 2) * np.pi
+
+    def calculate_area_or_volume(self):
+        return self.calculate_base_area()
 
 
 class Cell(Volume):
@@ -75,6 +88,9 @@ class Cell(Volume):
         """
         return np.power(self.side_length, 2)
 
+    def calculate_area_or_volume(self):
+        return self.calculate_base_area()
+
 
 class Cube(Volume):
     """Mathematical cube."""
@@ -94,3 +110,6 @@ class Cube(Volume):
         :return: volume
         """
         return np.power(self.side_length, 3)
+
+    def calculate_area_or_volume(self):
+        return self.calculate_volume()

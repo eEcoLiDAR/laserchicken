@@ -16,7 +16,7 @@ class TestExtractEntropy(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for p in range(20)]
-        target_point_cloud = utils.copy_pointcloud(
+        target_point_cloud = utils.copy_point_cloud(
             self.point_cloud, rand_indices)
         n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         radius = 25

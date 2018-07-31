@@ -110,7 +110,7 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for _ in range(20)]
-        return utils.copy_pointcloud(self.point_cloud, rand_indices)
+        return utils.copy_point_cloud(self.point_cloud, rand_indices)
 
 
 if __name__ == '__main__':

@@ -31,27 +31,32 @@ class PointDensityFeatureExtractor(AbstractFeatureExtractor):
         """
         return ['point_density']
 
-    def extract(self, source_point_cloud, neighborhood, target_point_cloud, target_index, volume):
+    def extract(self, source_pc, neighborhood, target_pc, target_index, volume_description):
         """
-        Extract either the surface density or volume density depending on the volume type.
+        Extract the feature value(s) of the point cloud at location of the target.
 
-        :param source_point_cloud: environment (search space) point cloud
+        :param source_pc: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
-        :param target_point_cloud: point cloud that contains target point
+        :param target_pc: point cloud that contains target point
         :param target_index: index of the target point in the target pointcloud
-        :param volume: volume object that describes the shape and size of the search volume
+        :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
 
-        npts = float(len(neighborhood))
+        if source_pc is not None and isinstance(neighborhood, list):
+            n_points = float(len(source_pc[point]['x']['data'][neighborhood]))
 
-        if volume.get_type() == Sphere.TYPE:
-            vol = volume.calculate_volume()
-            return npts / vol
+        elif target_pc is not None:
+            n_points = float(len(target_pc[point]['x']['data']))
+        else:
+            raise ValueError("You can either specify a sourcepc and a neighborhood or a targetpc\n\
+                              example\nextractror.extract(sourcepc,index,None,None,volume)\n\
+                              extractror.extract(None,None,targetpc,None,volume)")
 
-        elif volume.get_type() == InfiniteCylinder.TYPE:
-            area = volume.calculate_base_area()
-            return npts / area
+        area_or_volume = volume_description.calculate_area_or_volume()
+        return n_points / area_or_volume
+
+
 
     def get_params(self):
         """

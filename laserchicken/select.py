@@ -1,7 +1,7 @@
 """Functions that select points from a point cloud and put them in a new point cloud."""
 
 from laserchicken.keys import point
-from laserchicken.utils import copy_pointcloud
+from laserchicken.utils import copy_point_cloud
 
 
 def select_equal(point_cloud, attribute, value):
@@ -15,7 +15,7 @@ def select_equal(point_cloud, attribute, value):
     """
     _check_valid_arguments(attribute, point_cloud)
     mask = point_cloud[point][attribute]['data'] == value
-    return copy_pointcloud(point_cloud, mask)
+    return copy_point_cloud(point_cloud, mask)
 
 
 def select_above(point_cloud, attribute, threshold):
@@ -29,7 +29,7 @@ def select_above(point_cloud, attribute, threshold):
     """
     _check_valid_arguments(attribute, point_cloud)
     mask = point_cloud[point][attribute]['data'] > threshold
-    return copy_pointcloud(point_cloud, mask)
+    return copy_point_cloud(point_cloud, mask)
 
 
 def select_below(point_cloud, attribute, threshold):
@@ -43,7 +43,7 @@ def select_below(point_cloud, attribute, threshold):
     """
     _check_valid_arguments(attribute, point_cloud)
     mask = point_cloud[point][attribute]['data'] < threshold
-    return copy_pointcloud(point_cloud, mask)
+    return copy_point_cloud(point_cloud, mask)
 
 
 def _check_valid_arguments(attribute, point_cloud):

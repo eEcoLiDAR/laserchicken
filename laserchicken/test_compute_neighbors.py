@@ -9,6 +9,7 @@ from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighborhoods, compute_cylinder_neighborhood, \
     compute_sphere_neighborhood
 from laserchicken.test_tools import create_point_cloud, create_points_in_xy_grid
+from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import Sphere, InfiniteCylinder, Cell, Cube
 
 from laserchicken import kd_tree
@@ -69,8 +70,6 @@ class TestComputeNeighbors(unittest.TestCase):
         self._assert_all_points_within_cylinder(
             result_point_clouds, target_point_cloud, cylinder.radius)
 
-
-
     def test_cell_no_points(self):
         point_cloud = create_emtpy_point_cloud()
         targets = create_point_cloud(np.zeros(1), np.zeros(1), np.zeros(1))
@@ -82,11 +81,18 @@ class TestComputeNeighbors(unittest.TestCase):
     def test_cell_grid(self):
         _, points = create_points_in_xy_grid(lambda x, y: np.random.rand())
         point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])
-        targets = create_point_cloud(np.array([5.5]), np.array([5.5]), np.array([5.5]))  # Center of grid
+        targets = create_point_cloud(np.array([4.5]), np.array([4.5]), np.array([4.5]))  # Center of grid
         neighborhoods = compute_neighborhoods(point_cloud, targets, Cell(2))
         neighborhood = next(neighborhoods)
-        print(neighborhood)
-        assert_equal(len(neighborhood[0]), 16)
+        assert_equal(len(neighborhood[0]), 4)
+
+    def test_cell_grid_origin(self):
+        _, points = create_points_in_xy_grid(lambda x, y: np.random.rand())
+        point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])
+        targets = create_point_cloud(np.array([0]), np.array([0]), np.array([0]))  # Center of grid
+        neighborhoods = compute_neighborhoods(point_cloud, targets, Cell(1.99))
+        neighborhood = next(neighborhoods)
+        assert_equal(len(neighborhood[0]), 1)
 
     def test_cube_no_points(self):
         point_cloud = create_emtpy_point_cloud()
@@ -98,10 +104,10 @@ class TestComputeNeighbors(unittest.TestCase):
     def test_cube_grid(self):
         _, points = create_points_in_xy_grid(lambda x, y: 10 * (x % 2))
         point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])
-        targets = create_point_cloud(np.array([5.5]), np.array([5.5]), np.array([0]))  # Center of grid
+        targets = create_point_cloud(np.array([4.5]), np.array([4.5]), np.array([0]))  # Center of grid
         neighborhoods = compute_neighborhoods(point_cloud, targets, Cube(2))
         neighborhood = next(neighborhoods)
-        assert_equal(len(neighborhood[0]), 8)
+        assert_equal(len(neighborhood[0]), 2)
 
     def test_target_number_matches_neighborhood_number(self):
         _, points = create_points_in_xy_grid(lambda x, y: 10 * (x % 2))
@@ -125,10 +131,10 @@ class TestComputeNeighbors(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for _ in range(20)]
-        return utils.copy_pointcloud(self.point_cloud, rand_indices)
+        return utils.copy_point_cloud(self.point_cloud, rand_indices)
 
     def _assert_all_points_within_cylinder(self, index_sets, target_point_cloud, radius):
-        point_clouds = [utils.copy_pointcloud(
+        point_clouds = [utils.copy_point_cloud(
             self.point_cloud, indices) for indices in index_sets]
         n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         assert_equal(n_targets, len(point_clouds))
@@ -143,7 +149,7 @@ class TestComputeNeighbors(unittest.TestCase):
                 self.assertTrue(dist <= radius)
 
     def _assert_all_points_within_sphere(self, index_sets, target_point_cloud, radius):
-        point_clouds = [utils.copy_pointcloud(
+        point_clouds = [utils.copy_point_cloud(
             self.point_cloud, indices) for indices in index_sets]
         n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         assert_equal(n_targets, len(point_clouds))
@@ -156,6 +162,7 @@ class TestComputeNeighbors(unittest.TestCase):
                 dist = np.sqrt(
                     (neighbor_x - target_x) ** 2 + (neighbor_y - target_y) ** 2 + (neighbor_z - target_z) ** 2)
                 self.assertTrue(dist <= radius)
+
 
 def create_emtpy_point_cloud():
     empty = np.zeros(0)
