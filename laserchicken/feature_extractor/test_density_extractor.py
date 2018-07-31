@@ -28,7 +28,7 @@ class TestDensityFeatureExtractorSphere(unittest.TestCase):
 
     def _get_central_point(self):
         """Get the central point."""
-        return utils.copy_pointcloud(self.point_cloud, [0])
+        return utils.copy_point_cloud(self.point_cloud, [0])
 
     def _set_sphere_data(self):
         """Generate a pc of points regularly positionned on a two spheres of radius 1 and 2."""
@@ -88,7 +88,7 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
 
     def _get_central_point(self):
         """Get the central point."""
-        return utils.copy_pointcloud(self.point_cloud, [0])
+        return utils.copy_point_cloud(self.point_cloud, [0])
 
     def _set_cylinder_data(self):
 
@@ -205,7 +205,7 @@ class TestDensityFeatureOnRealData(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for p in range(20)]
-        return utils.copy_pointcloud(self.point_cloud, rand_indices)
+        return utils.copy_point_cloud(self.point_cloud, rand_indices)
 
     def setUp(self):
         """Set up the test."""

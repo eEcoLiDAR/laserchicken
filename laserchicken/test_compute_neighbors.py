@@ -9,7 +9,7 @@ from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighborhoods, compute_cylinder_neighborhood, \
     compute_sphere_neighborhood
 from laserchicken.test_tools import create_point_cloud, create_points_in_xy_grid
-from laserchicken.utils import copy_pointcloud
+from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import Sphere, InfiniteCylinder, Cell, Cube
 
 from laserchicken import kd_tree
@@ -131,10 +131,10 @@ class TestComputeNeighbors(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for _ in range(20)]
-        return utils.copy_pointcloud(self.point_cloud, rand_indices)
+        return utils.copy_point_cloud(self.point_cloud, rand_indices)
 
     def _assert_all_points_within_cylinder(self, index_sets, target_point_cloud, radius):
-        point_clouds = [utils.copy_pointcloud(
+        point_clouds = [utils.copy_point_cloud(
             self.point_cloud, indices) for indices in index_sets]
         n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         assert_equal(n_targets, len(point_clouds))
@@ -149,7 +149,7 @@ class TestComputeNeighbors(unittest.TestCase):
                 self.assertTrue(dist <= radius)
 
     def _assert_all_points_within_sphere(self, index_sets, target_point_cloud, radius):
-        point_clouds = [utils.copy_pointcloud(
+        point_clouds = [utils.copy_point_cloud(
             self.point_cloud, indices) for indices in index_sets]
         n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         assert_equal(n_targets, len(point_clouds))

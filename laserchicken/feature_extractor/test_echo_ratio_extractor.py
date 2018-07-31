@@ -83,7 +83,7 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
 
     def _get_central_point(self, index):
         """Get the central point."""
-        return utils.copy_pointcloud(self.point_cloud, [index])
+        return utils.copy_point_cloud(self.point_cloud, [index])
 
     def setUp(self):
         """
@@ -165,7 +165,7 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for p in range(20)]
-        return utils.copy_pointcloud(self.point_cloud, rand_indices)
+        return utils.copy_point_cloud(self.point_cloud, rand_indices)
 
 
 if __name__ == '__main__':

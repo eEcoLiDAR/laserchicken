@@ -41,7 +41,7 @@ def get_features(point_cloud, index, attribute_names):
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
 
-def copy_pointcloud(source_point_cloud, array_mask=None):
+def copy_point_cloud(source_point_cloud, array_mask=None):
     """
     Makes a deep copy of a point cloud dict using the array mask when copying the points.
 
@@ -52,7 +52,7 @@ def copy_pointcloud(source_point_cloud, array_mask=None):
     result = {}
     for key, value in source_point_cloud.items():
         if isinstance(value, dict):
-            new_value = copy_pointcloud(value, array_mask)
+            new_value = copy_point_cloud(value, array_mask)
         elif isinstance(value, np.ndarray):
             if array_mask is not None:
                 new_value = value[array_mask] if any(value) else np.copy(value)
