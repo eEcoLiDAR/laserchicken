@@ -85,6 +85,8 @@ Tested for correctness using a simple case with artificial data against manually
 Tested for correctness on artificial data.
 
 
+**Volumes**
+
 The following volume types are supported:
 - Infinite cylinder
 - Sphere
