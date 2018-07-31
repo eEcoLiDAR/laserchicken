@@ -41,6 +41,55 @@ Toolkit for handling point clouds created using airborne laser scanning (ALS). F
  - density_absolute_mean
  - sigma_z
 
+**Feature testing**
+
+All features were tested for the following general conditions:
+- Output consistent point clouds and don't crash with artificial data, real data, all zero data (x, y or z), data without points, data with very low number of neighbors (0, 1, 2)
+- Input should not be changed by the feature extractor
+
+The specific features were tested as follows.
+
+*Echo ratio*
+
+A test was written with artificial data to check the correctness of the calculation with manually calculated ratio. Also tested on real data to make sure it doesn't crash, without checking for correctness. We could add a test for correctness with real data but we would need both that data and a verified ground truth.
+
+*Eigenvalues*
+
+Only sanity tests (l1>l2>l3) on real data and corner cases but no actual test for correctness. The code is very simple though and mainly calls numpy.linalg.eig.
+
+*Height statistics (max_z','min_z','mean_z','median_z','std_z','var_z','coeff_var_z','skew_z','kurto_z)*
+
+Tested on real data for correctness. It is however unclear where the ground truths come from. Code is mainly calling numpy methods that do all the work already. Only calculations in our code are:
+
+```
+range_z = max_z - min_z
+coeff_var_z = np.std(z) / np.mean(z)
+```
+   
+I don't know about any packages that could provide an out of the box coefficient of variance. This is probably because the calculation is so simple.
+
+*Pulse penetration ratio*
+
+Tested for correctness using artificial data against manually calculated values. No comparison was made with other implementations.
+
+*Sigma_z*
+
+Tested for correctness using artificial data against manually calculated values. No comparison was made with other implementations.
+
+*Percentiles*
+
+Tested for correctness using a simple case with artificial data against manually calculated values.
+
+*point_density*
+
+Tested for correctness on artificial data.
+
+
+The following volume types are supported:
+- Infinite cylinder
+- Sphere
+- Cell
+- Cube
 
 
 
