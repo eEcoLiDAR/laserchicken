@@ -6,8 +6,9 @@ import numpy as np
 
 from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighborhoods
-from laserchicken.volume_specification import Sphere, InfiniteCylinder
+from laserchicken.volume_specification import Sphere, InfiniteCylinder, Cell, Cube
 from laserchicken.feature_extractor.density_feature_extractor import PointDensityFeatureExtractor
+from laserchicken.test_tools import create_point_cloud
 
 
 class TestDensityFeatureExtractorSphere(unittest.TestCase):
@@ -17,12 +18,8 @@ class TestDensityFeatureExtractorSphere(unittest.TestCase):
 
     def test_sphere(self):
         """Compute the density for a sphere given as index of the source pc."""
-        neighbors = compute_neighborhoods(self.point_cloud,
-                                          self.targetpc,
-                                          self.sphere)
-        neighbors_index = []
-        for x in neighbors:
-            neighbors_index += x
+        neighbors_index = list(compute_neighborhoods(self.point_cloud, self.targetpc, self.sphere))
+
         extractor = PointDensityFeatureExtractor()
         for index in neighbors_index:
             d = extractor.extract(self.point_cloud, index,
@@ -81,12 +78,8 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
 
     def test_cylinder(self):
         """Compute the density for a cylinder given as index of source pc."""
-        neighbors = compute_neighborhoods(self.point_cloud,
-                                          self.targetpc,
-                                          self.cyl)
-        neighbors_index = []
-        for x in neighbors:
-            neighbors_index += x
+        neighbors_index = compute_neighborhoods(self.point_cloud, self.targetpc, self.cyl)
+
         extractor = PointDensityFeatureExtractor()
         for index in neighbors_index:
             d = extractor.extract(self.point_cloud, index,
@@ -139,6 +132,40 @@ class TestDensityFeatureExtractorCylinder(unittest.TestCase):
 
     def tearDowm(self):
         pass
+
+
+class TestDensityFeatureForCell(unittest.TestCase):
+    def test_cell(self):
+        n_included = 123
+        n_excluded = 456
+        x = np.append(np.zeros(n_included), np.ones(n_excluded))
+        environment = create_point_cloud(x, x, x)
+        target = create_point_cloud(np.zeros(1), np.zeros(1), np.zeros(1))
+
+        cell = Cell(1)  # area = 1.0
+        neighbors_index = compute_neighborhoods(environment, target, cell)
+
+        extractor = PointDensityFeatureExtractor()
+        for index in neighbors_index:
+            d = extractor.extract(environment, index, target, [0], cell)
+            self.assertEqual(d, n_included)
+
+
+class TestDensityFeatureForCube(unittest.TestCase):
+    def test_cell(self):
+        n_included = 123
+        n_excluded = 456
+        x = np.append(np.zeros(n_included), np.ones(n_excluded))
+        environment = create_point_cloud(x, x, x)
+        target = create_point_cloud(np.zeros(1), np.zeros(1), np.zeros(1))
+
+        cube = Cube(1)  # volume = 1.0
+        neighbors_index = compute_neighborhoods(environment, target, cube)
+
+        extractor = PointDensityFeatureExtractor()
+        for index in neighbors_index:
+            d = extractor.extract(environment, index, target, [0], cube)
+            self.assertEqual(d, n_included)
 
 
 class TestDensityFeatureOnRealData(unittest.TestCase):
