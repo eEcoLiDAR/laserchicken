@@ -5,7 +5,7 @@ from scipy.spatial import cKDTree
 from psutil import virtual_memory
 
 from laserchicken import utils, kd_tree
-from laserchicken.volume_specification import Sphere, InfiniteCylinder
+from laserchicken.volume_specification import Sphere, InfiniteCylinder, Cell, Cube
 from laserchicken.keys import point
 
 
@@ -16,7 +16,7 @@ def frange(x_value, y_value, jump):
 
 
 MEMORY_THRESHOLD = 0.5
-POINTCLOUD_DIST = 10
+POINT_CLOUD_DIST = 10
 
 
 def compute_cylinder_neighborhood(environment_pc, target_pc, radius):
@@ -29,8 +29,13 @@ def compute_cylinder_neighborhood(environment_pc, target_pc, radius):
     :return: indices of neighboring points from the environment point cloud for each target point
              the returned indices also contains the index of the target point.
     """
-    avg_points_cyl = (radius * radius * math.pi) * POINTCLOUD_DIST
+    avg_points_cyl = (radius * radius * math.pi) * POINT_CLOUD_DIST
     x = target_pc[point]['x']['data']
+
+    if len(environment_pc[point]['x']['data']) == 0:
+        for _ in x:
+            yield [[] for _ in x]
+        return
 
     cyl_size = avg_points_cyl * np.size(x) * sys.getsizeof(int)
     mem_size = virtual_memory().total
@@ -72,20 +77,81 @@ def compute_sphere_neighborhood(environment_pc, target_pc, radius):
     :param radius: search radius for neighbors
     :return: indices of neighboring points from the environment point cloud for each target point
     """
-    neighbors = compute_cylinder_neighborhood(
+    neighborhoods = compute_cylinder_neighborhood(
         environment_pc, target_pc, radius)
 
-    for neighborhood_indices in neighbors:
+    for neighborhood_indices in neighborhoods:
         result = []
-        for i in range(len(neighborhood_indices)):
+        for i, _ in enumerate(neighborhood_indices):
             target_x, target_y, target_z = utils.get_point(target_pc, i)
-            neighbor_indices = neighborhood_indices[i]
             result_indices = []
-            for j in neighbor_indices:
+            for j in neighborhood_indices[i]:
                 env_x, env_y, env_z = utils.get_point(environment_pc, j)
                 if abs(target_z - env_z) > radius:
                     continue
                 if (env_x - target_x) ** 2 + (env_y - target_y) ** 2 + (env_z - target_z) ** 2 <= radius ** 2:
+                    result_indices.append(j)
+            result.append(result_indices)
+        yield result
+
+
+def compute_cell_neighborhood(environment_pc, target_pc, side_length):
+    """
+    Find the indices of points within a square neighbourhood for a given point of a target point cloud among the
+    points from an environment point cloud.
+
+    :param environment_pc: environment point cloud
+    :param target_pc: point cloud that contains the points at which neighborhoods are to be calculated
+    :param side_length: search radius for neighbors
+    :return: indices of neighboring points from the environment point cloud for each target point
+    """
+
+    max_radius = 0.5*math.sqrt((side_length ** 2) + (side_length ** 2))
+
+    neighbors = compute_cylinder_neighborhood(
+        environment_pc, target_pc, max_radius)
+
+    for neighborhood_indices in neighbors:
+        result = []
+        for i, _ in enumerate(neighborhood_indices):
+            target_x, target_y, _ = utils.get_point(target_pc, i)
+            neighbor_indices = neighborhood_indices[i]
+            result_indices = []
+            for j in neighbor_indices:
+                env_x, env_y, _ = utils.get_point(environment_pc, j)
+                if ((abs(target_x - env_x)) > 0.5*side_length) or ((abs(target_y - env_y)) > 0.5*side_length):
+                    continue
+                else:
+                    result_indices.append(j)
+            result.append(result_indices)
+        yield result
+
+
+def compute_cube_neighborhood(environment_pc, target_pc, side_length):
+    """
+    Find the indices of points within a square neighbourhood for a given point of a target point cloud among the
+    points from an environment point cloud.
+
+    :param environment_pc: environment point cloud
+    :param target_pc: point cloud that contains the points at which neighborhoods are to be calculated
+    :param side_length: search radius for neighbors
+    :return: indices of neighboring points from the environment point cloud for each target point
+    """
+
+    neighbors = compute_cell_neighborhood(
+        environment_pc, target_pc, side_length)
+
+    for neighborhood_indices in neighbors:
+        result = []
+        for i, _ in enumerate(neighborhood_indices):
+            _, _, target_z = utils.get_point(target_pc, i)
+            neighbor_indices = neighborhood_indices[i]
+            result_indices = []
+            for j in neighbor_indices:
+                _, _, env_z = utils.get_point(environment_pc, j)
+                if abs(target_z - env_z) > side_length:
+                    continue
+                else:
                     result_indices.append(j)
             result.append(result_indices)
         yield result
@@ -101,14 +167,23 @@ def compute_neighborhoods(env_pc, target_pc, volume_description):
     :return: indices of neighboring points from the environment point cloud for each target point
     """
     volume_type = volume_description.get_type()
-    if volume_type == Sphere.TYPE:
-        neighbors = compute_sphere_neighborhood(
-            env_pc, target_pc, volume_description.radius)
+    
+    if volume_type == Cell.TYPE:
+        neighbors1 = compute_cell_neighborhood(env_pc, target_pc, volume_description.side_length)
+        for x in neighbors1:
+            yield x
+    elif volume_type == Cube.TYPE:
+        neighbors = compute_cube_neighborhood(env_pc, target_pc, volume_description.side_length)
+        for x in neighbors:
+            yield x
+    elif volume_type == Sphere.TYPE:
+        neighbors = compute_sphere_neighborhood(env_pc, target_pc, volume_description.radius)
+        for x in neighbors:
+            yield x
     elif volume_type == InfiniteCylinder.TYPE:
-        neighbors = compute_cylinder_neighborhood(
-            env_pc, target_pc, volume_description.radius)
+        neighbors = compute_cylinder_neighborhood(env_pc, target_pc, volume_description.radius)
+        for x in neighbors:
+            yield x
     else:
         raise ValueError(
             'Neighborhood computation error because volume type "{}" is unknown.'.format(volume_type))
-    for x in neighbors:
-        yield x

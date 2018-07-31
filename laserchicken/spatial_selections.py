@@ -9,7 +9,7 @@ import numpy as np
 
 from laserchicken.keys import point
 from laserchicken import kd_tree
-from laserchicken.utils import copy_pointcloud
+from laserchicken.utils import copy_point_cloud
 
 
 def read_wkt_file(path):
@@ -79,7 +79,7 @@ def points_in_polygon_wkt(pc, polygons_wkt):
         points_in = _contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_pointcloud(pc, points_in)
+    return copy_point_cloud(pc, points_in)
 
 
 def points_in_polygon_wkt_file(pc, polygons_wkt_path):
@@ -98,7 +98,7 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
         points_in = _contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_pointcloud(pc, points_in)
+    return copy_point_cloud(pc, points_in)
 
 
 def points_in_polygon_shp_file(pc, polygons_shp_path):
@@ -114,4 +114,4 @@ def points_in_polygon_shp_file(pc, polygons_shp_path):
         points_in = _contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_pointcloud(pc, points_in)
+    return copy_point_cloud(pc, points_in)

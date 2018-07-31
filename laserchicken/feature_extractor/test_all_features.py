@@ -8,7 +8,7 @@ from laserchicken import keys
 from laserchicken import read_las
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
 from laserchicken.keys import point
-from laserchicken.utils import copy_pointcloud
+from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 
 from . import _feature_map
@@ -22,9 +22,9 @@ _TEST_DATA_SOURCE = 'testdata'
 
 _CYLINDER = InfiniteCylinder(4)
 _PC_260807 = read_las.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
-_PC_1000 = copy_pointcloud(_PC_260807, array_mask=(
+_PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
-_PC_10 = copy_pointcloud(_PC_260807, array_mask=(
+_PC_10 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=10, replace=False)))
 _1000_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
 _10_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_10, _CYLINDER))
@@ -35,16 +35,16 @@ feature_names = [name for name in _feature_map()]
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_completeTile_consistentOutput(feature):
-    target_point_cloud = copy_pointcloud(_PC_1000)
-    compute_features(copy_pointcloud(_PC_260807), _1000_NEIGHBORHOODS_IN_260807, 0, target_point_cloud,
+    target_point_cloud = copy_point_cloud(_PC_1000)
+    compute_features(copy_point_cloud(_PC_260807), _1000_NEIGHBORHOODS_IN_260807, 0, target_point_cloud,
                      [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
 
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_manyTargets_consistentOutput(feature):
-    target_point_cloud = copy_pointcloud(_PC_260807)
-    compute_features(copy_pointcloud(_PC_10), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
+    target_point_cloud = copy_point_cloud(_PC_260807)
+    compute_features(copy_point_cloud(_PC_10), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
                      [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
 
@@ -106,9 +106,9 @@ def _test_consistent_output_with_n_neighbors(feature, n_neighbors):
 @pytest.mark.parametrize("feature", feature_names)
 def test_inputNotChanged(feature):
     original_environment = _PC_260807
-    environment = copy_pointcloud(original_environment)
+    environment = copy_point_cloud(original_environment)
     original_targets = _PC_10
-    targets = copy_pointcloud(original_targets)
+    targets = copy_point_cloud(original_targets)
     original_neighborhoods = _10_NEIGHBORHOODS_IN_260807
     neighborhoods = [[e for e in l] for l in original_neighborhoods]
 

@@ -4,6 +4,7 @@ import numpy as np
 
 from laserchicken import keys, _version
 
+
 def get_point(point_cloud, index):
     """
     Get x, y, z tuple of one or more points in a point cloud.
@@ -40,7 +41,7 @@ def get_features(point_cloud, index, attribute_names):
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
 
-def copy_pointcloud(source_point_cloud, array_mask=None):
+def copy_point_cloud(source_point_cloud, array_mask=None):
     """
     Makes a deep copy of a point cloud dict using the array mask when copying the points.
 
@@ -51,7 +52,7 @@ def copy_pointcloud(source_point_cloud, array_mask=None):
     result = {}
     for key, value in source_point_cloud.items():
         if isinstance(value, dict):
-            new_value = copy_pointcloud(value, array_mask)
+            new_value = copy_point_cloud(value, array_mask)
         elif isinstance(value, np.ndarray):
             if array_mask is not None:
                 new_value = value[array_mask] if any(value) else np.copy(value)
@@ -77,7 +78,7 @@ def add_metadata(point_cloud, module, params):
     if any(params):
         msg["parameters"] = params
     msg["version"] = _version.__version__
-    if(keys.provenance not in point_cloud):
+    if keys.provenance not in point_cloud:
         point_cloud[keys.provenance] = []
     point_cloud[keys.provenance].append(msg)
 
@@ -130,4 +131,3 @@ def fit_plane(x, y, a):
     matrix = np.column_stack((np.ones(x.size), x, y))
     parameters, _, _, _ = np.linalg.lstsq(matrix, a)
     return lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters)
-
