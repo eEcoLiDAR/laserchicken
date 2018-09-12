@@ -17,6 +17,7 @@ from .normal_plane_feature_extractor import NormalPlaneFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
+from .max_z_feature_extractor import MaxZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
