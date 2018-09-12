@@ -1,5 +1,4 @@
 laspy
-numpy
 scikit-learn>=0.15.0
 scipy>=0.11
 pytest
@@ -11,3 +10,5 @@ PyShp
 pandas
 click
 colorama
+psutil
+numpy

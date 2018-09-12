@@ -43,7 +43,15 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
         nbptsX, nbptsY, nbptsZ = utils.get_point(sourcepc, neighborhood)
         matrix = np.column_stack((nbptsX, nbptsY, nbptsZ))
-        eigenvals, eigenvecs = _structure_tensor(matrix)
+
+        try:
+            eigenvals, eigenvecs = _structure_tensor(matrix)
+        except ValueError as err:
+            if str(err) == 'Not enough points to compute eigenvalues/vectors.':
+                return [0, 0, 0]
+            else:
+                raise
+
         return [eigenvals[0], eigenvals[1], eigenvals[2]]
 
 class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):

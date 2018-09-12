@@ -1,24 +1,21 @@
-from shapely.geometry import Point
-from shapely.errors import WKTReadingError
-
-from shapely.wkt import loads
-import numpy as np
-from laserchicken.keys import point
+import math
 import shapefile
 import shapely
-import math
+from shapely.geometry import Point
+from shapely.errors import WKTReadingError
+from shapely.wkt import loads
 from shapely.geometry import box
+import numpy as np
 
+from laserchicken.keys import point
 from laserchicken import kd_tree
-from laserchicken.utils import copy_pointcloud
+from laserchicken.utils import copy_point_cloud
 
 
 def read_wkt_file(path):
-    try:
-        with open(path) as f:
-            content = f.readlines()
-    except:
-        raise ValueError('Incorrect path.')
+    with open(path) as f:
+        content = f.readlines()
+
     content = [x.strip() for x in content]
     return content
 
@@ -31,13 +28,15 @@ def read_shp_file(path):
     # first feature of the shapefile
     feature = shape.shapeRecords()[0]
     first = feature.shape.__geo_interface__
-    shp_geom = shapely.geometry.shape(first)  # or shp_geom = shape(first) with PyShp)
+    # or shp_geom = shape(first) with PyShp)
+    shp_geom = shapely.geometry.shape(first)
     return shp_geom
 
 
 def _contains(pc, polygon):
     """
-    Return indices of points in point cloud that are contained by a polygon.
+    Return indices of points in point cloud that are contained by a polygon, i.e., all points within the boundaries of
+    Polygon excluding the ones overlaping Polygon's boundaries.
     :param pc: point cloud in
     :param polygon: containing polygon
     :return: point indices
@@ -52,7 +51,8 @@ def _contains(pc, polygon):
     if point_box.intersects(mbr):
         (x_min, y_min, x_max, y_max) = mbr.bounds
 
-        rad = math.ceil(math.sqrt(math.pow(x_max - x_min, 2) + math.pow(y_max - y_min, 2)) / 2)
+        rad = math.ceil(math.sqrt(math.pow(x_max - x_min, 2) +
+                                  math.pow(y_max - y_min, 2)) / 2)
         p = [x_min + ((x_max - x_min) / 2), y_min + ((y_max - y_min) / 2)]
         tree = kd_tree.get_kdtree_for_pc(pc)
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
@@ -79,7 +79,7 @@ def points_in_polygon_wkt(pc, polygons_wkt):
         points_in = _contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_pointcloud(pc, points_in)
+    return copy_point_cloud(pc, points_in)
 
 
 def points_in_polygon_wkt_file(pc, polygons_wkt_path):
@@ -98,7 +98,7 @@ def points_in_polygon_wkt_file(pc, polygons_wkt_path):
         points_in = _contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_pointcloud(pc, points_in)
+    return copy_point_cloud(pc, points_in)
 
 
 def points_in_polygon_shp_file(pc, polygons_shp_path):
@@ -114,4 +114,4 @@ def points_in_polygon_shp_file(pc, polygons_shp_path):
         points_in = _contains(pc, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_pointcloud(pc, points_in)
+    return copy_point_cloud(pc, points_in)

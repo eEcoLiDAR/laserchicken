@@ -41,7 +41,7 @@ def get_features(point_cloud, index, attribute_names):
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
 
-def copy_pointcloud(source_point_cloud, array_mask=None):
+def copy_point_cloud(source_point_cloud, array_mask=None):
     """
     Makes a deep copy of a point cloud dict using the array mask when copying the points.
 
@@ -52,7 +52,7 @@ def copy_pointcloud(source_point_cloud, array_mask=None):
     result = {}
     for key, value in source_point_cloud.items():
         if isinstance(value, dict):
-            new_value = copy_pointcloud(value, array_mask)
+            new_value = copy_point_cloud(value, array_mask)
         elif isinstance(value, np.ndarray):
             if array_mask is not None:
                 new_value = value[array_mask] if any(value) else np.copy(value)
@@ -81,6 +81,35 @@ def add_metadata(point_cloud, module, params):
     if keys.provenance not in point_cloud:
         point_cloud[keys.provenance] = []
     point_cloud[keys.provenance].append(msg)
+
+
+def fit_plane_svd(xpts, ypts, zpts):
+    """
+    Fit a plane to a series of points given as x,y,z coordinates.
+    
+    r=Return the normal vector to the plane
+    Use the SVD methods described for example here
+    https://www.ltu.se/cms_fs/1.51590!/svd-fitting.pdf
+
+    :param x: x coordinate of the points
+    :param y: y coordinate of the points
+    :param z: z coordinate of the points
+    :return: normal vector of the plane
+    """
+    # check size consistency
+    if xpts.size != ypts.size or xpts.size != zpts.size or ypts.size != zpts.size:
+        raise AssertionError("coordinate size don't match")
+    npts = xpts.size
+
+    # form the A matrix of the coordinate
+    a = np.column_stack((xpts, ypts, zpts))
+    a -= np.sum(a, 0) / npts
+
+    # compute the SVD
+    u, _, _ = np.linalg.svd(a.T)
+
+    # return the normal vector
+    return u[:, 2]
 
 
 def fit_plane(x, y, a):

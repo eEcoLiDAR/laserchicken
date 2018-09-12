@@ -28,9 +28,13 @@ class EntropyFeatureExtractor(AbstractFeatureExtractor):
         return p
 
     def extract(self, source_pc, neighborhood, target_pc, target_index, volume_description):
+        if len(neighborhood) == 0:
+            return 0
         z = source_pc[keys.point]["z"]["data"][neighborhood]
         _z_min = np.min(z) if self.z_min is None else self.z_min
         _z_max = np.max(z) if self.z_max is None else self.z_max
+        if _z_min == _z_max:
+            return 0
         n_bins = int(np.ceil((_z_max - _z_min) / self.layer_thickness))
         data = np.histogram(z, bins=n_bins, range=(_z_min, _z_max), density=True)[0]
         entropy_func = np.vectorize(_x_log_2x)

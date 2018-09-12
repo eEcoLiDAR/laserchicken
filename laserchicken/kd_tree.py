@@ -3,7 +3,7 @@ import numpy as np
 import weakref
 from laserchicken import keys
 
-kd_tree_cache = ([], [], [])
+kd_tree_cache = None
 
 
 def get_kdtree_for_pc(pc):
@@ -12,7 +12,6 @@ def get_kdtree_for_pc(pc):
     :param pc: point cloud
     :return: kdtree object
     """
-    global kd_tree_cache
     index = -1
     xref = weakref.ref(pc[keys.point]["x"]["data"])
     yref = weakref.ref(pc[keys.point]["y"]["data"])
@@ -32,3 +31,11 @@ def get_kdtree_for_pc(pc):
 def _build_kdtree(pc):
     points = np.column_stack((pc[keys.point]["x"].get("data", []), pc[keys.point]["y"].get("data", [])))
     return cKDTree(points, compact_nodes=False, balanced_tree=False)
+
+
+def initialize_cache():
+    global kd_tree_cache
+    kd_tree_cache = ([], [], [])
+
+
+initialize_cache()

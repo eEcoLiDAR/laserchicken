@@ -61,7 +61,7 @@ class ComplexTestData(object):
     @staticmethod
     def get_header():
         # This complex_test_header cloud and the complex_test_point should be in sync. Some tests depend on it.
-        comment = {"time": dt.datetime(2018, 1, 18, 16, 1, 0), "module": "filter"}
+        comment = {"module": "filter", "time": str(dt.datetime(2018, 1, 18, 16, 1, 0))}
         header = """ply
 format ascii 1.0
 comment [
@@ -88,6 +88,10 @@ property double offset
 """
         return data
 
+    @staticmethod
+    def get_wkt_polygon_around_first_point_only():
+        return "POLYGON(( 1.5 10.0, 1.5 -10.0, -1.5 -10.0, -1.5 1.0, 1.5 10.0 ))"
+
 
 def create_point_cloud(x, y, z):
     """
@@ -103,3 +107,13 @@ def create_point_cloud(x, y, z):
             keys.point_cloud: {},
             keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]
             }
+
+
+def create_points_in_xy_grid(z_function):
+    n_points = 100
+    points = np.zeros((n_points, 3))
+    for i in range(n_points):
+        x = i % np.sqrt(n_points)
+        y = np.floor(i / np.sqrt(n_points))
+        points[i] = np.array((x, y, z_function(x, y)))
+    return n_points, points

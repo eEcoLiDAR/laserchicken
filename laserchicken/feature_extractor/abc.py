@@ -14,7 +14,8 @@ class AbstractFeatureExtractor(object):
 
         :return: List of feature names
         """
-        raise NotImplementedError("Class %s doesn't implement get_requirements()" % (cls.__name__))
+        raise NotImplementedError(
+            "Class %s doesn't implement get_requirements()" % (cls.__name__))
 
     @classmethod
     def provides(cls):
@@ -27,7 +28,8 @@ class AbstractFeatureExtractor(object):
 
         :return: List of feature names
         """
-        raise NotImplementedError("Class %s doesn't implement get_names()" % (cls.__name__))
+        raise NotImplementedError(
+            "Class %s doesn't implement get_names()" % (cls.__name__))
 
     def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
@@ -40,7 +42,8 @@ class AbstractFeatureExtractor(object):
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
-        raise NotImplementedError("Class %s doesn't implement extract_features()" % (self.__class__.__name__))
+        raise NotImplementedError(
+            "Class %s doesn't implement extract_features()" % (self.__class__.__name__))
 
     def get_params(self):
         """
