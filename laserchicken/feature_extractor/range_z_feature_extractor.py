@@ -17,7 +17,7 @@ class RangeZFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return {'max_z', 'min_z', 'range_z'}
+        return ['max_z', 'min_z', 'range_z']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
