@@ -6,7 +6,7 @@ from laserchicken import read_las
 from laserchicken.feature_extractor.mean_z_feature_extractor import MeanZFeatureExtractor
 
 
-class TestHeightStatisticsFeatureExtractor(unittest.TestCase):
+class TestMeanZFeatureExtractor(unittest.TestCase):
     def test_height_stats(self):
         pc_in = read_las.read("testdata/AHN2.las")
         neighborhood = [89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591,
