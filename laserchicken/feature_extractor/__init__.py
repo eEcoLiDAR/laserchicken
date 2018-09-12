@@ -20,6 +20,7 @@ from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .max_z_feature_extractor import MaxZFeatureExtractor
 from .min_z_feature_extractor import MinZFeatureExtractor
 from .mean_z_feature_extractor import MeanZFeatureExtractor
+from .median_z_feature_extractor import MedianZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
