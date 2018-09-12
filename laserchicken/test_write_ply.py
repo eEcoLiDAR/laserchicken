@@ -60,8 +60,9 @@ class TestWritePly(unittest.TestCase):
 
     def test_write_loadTheSameComplexHeader(self):
         """  Writing a complex point cloud and loading it afterwards should result in the same point cloud."""
-        pc_in = ComplexTestData.get_point_cloud()
-        header_in = ComplexTestData.get_header()
+        test_data = ComplexTestData()
+        pc_in = test_data.get_point_cloud()
+        header_in = test_data.get_header()
         write(pc_in, self.test_file_path)
         with open(self.test_file_path, 'r') as ply:
             header_out = read_header(ply)
@@ -78,9 +79,10 @@ class TestWritePly(unittest.TestCase):
 
     def test_write_loadTheSameComplexData(self):
         """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
-        pc_in = ComplexTestData.get_point_cloud()
+        test_data = ComplexTestData()
+        pc_in = test_data.get_point_cloud()
         write(pc_in, self.test_file_path)
-        data_in = ComplexTestData.get_data()
+        data_in = test_data.get_data()
         with open(self.test_file_path, 'r') as ply:
             data_out = read_data(ply)
         self.assertEqual(data_in, data_out)

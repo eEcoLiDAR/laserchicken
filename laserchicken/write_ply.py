@@ -76,7 +76,7 @@ def _write_comment(pc, ply):
 
     head = 'comment [\n'
     tail = 'comment ]\n'
-    formatted_entries = ','.join(['comment ' + _stringify(entry) + '\n' for entry in log])
+    formatted_entries = ',\n'.join(['comment ' + _stringify(entry) for entry in log]) + '\n'
     ply.write(head + formatted_entries + tail)
 
 
