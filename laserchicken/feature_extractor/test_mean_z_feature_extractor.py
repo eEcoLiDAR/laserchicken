@@ -1,9 +1,8 @@
-import random
 import unittest
 
 import numpy as np
+
 from laserchicken import read_las
-from laserchicken.feature_extractor.height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
 from laserchicken.feature_extractor.mean_z_feature_extractor import MeanZFeatureExtractor
 
 
