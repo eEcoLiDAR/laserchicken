@@ -19,6 +19,7 @@ from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtracto
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .max_z_feature_extractor import MaxZFeatureExtractor
 from .min_z_feature_extractor import MinZFeatureExtractor
+from .mean_z_feature_extractor import MeanZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
