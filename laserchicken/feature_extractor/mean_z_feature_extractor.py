@@ -12,7 +12,7 @@ class MeanZFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return ['max_z', 'min_z', 'mean_z', 'median_z', 'std_z', 'var_z', 'range', 'coeff_var_z', 'skew_z', 'kurto_z']
+        return ['mean_z']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
