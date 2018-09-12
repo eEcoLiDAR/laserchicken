@@ -23,9 +23,3 @@ class TestMinZFeatureExtractor(unittest.TestCase):
         neighborhood = []
         min_z = MinZFeatureExtractor().extract(pc_in, neighborhood, pc_in, None, None)
         assert np.isnan(min_z)
-
-    def setUp(self):
-        random.seed(20)
-
-    def tearDown(self):
-        pass

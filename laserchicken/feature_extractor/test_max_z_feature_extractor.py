@@ -23,9 +23,3 @@ class TestMaxZFeatureExtractor(unittest.TestCase):
         neighborhood = []
         max_z = MaxZFeatureExtractor().extract(pc_in, neighborhood, pc_in, None, None)
         assert np.isnan(max_z)
-
-    def setUp(self):
-        random.seed(20)
-
-    def tearDown(self):
-        pass
