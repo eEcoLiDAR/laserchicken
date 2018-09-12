@@ -21,6 +21,7 @@ from .median_z_feature_extractor import MedianZFeatureExtractor
 from .range_z_feature_extractor import RangeZFeatureExtractor
 from .var_z_feature_extractor import VariationZFeatureExtractor
 from .mean_std_coeff_z_feature_extractor import MeanStdCoeffZFeatureExtractor
+from .skew_z_feature_extractor import SkewZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
