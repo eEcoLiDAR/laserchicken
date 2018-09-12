@@ -18,7 +18,7 @@ class VariationZFeatureExtractor(AbstractFeatureExtractor):
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
             z = sourcepc[point]['z']['data'][neighborhood]
-            std_z = np.var(z)
+            var_z = np.var(z)
         else:
-            std_z = np.NaN
-        return std_z
+            var_z = np.NaN
+        return var_z
