@@ -17,11 +17,10 @@ from .normal_plane_feature_extractor import NormalPlaneFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
-from .mean_z_feature_extractor import MeanZFeatureExtractor
 from .median_z_feature_extractor import MedianZFeatureExtractor
-from .std_z_feature_extractor import StdZFeatureExtractor
 from .range_z_feature_extractor import RangeZFeatureExtractor
 from .var_z_feature_extractor import VariationZFeatureExtractor
+from .mean_std_coeff_z_feature_extractor import MeanStdCoeffZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
