@@ -6,7 +6,7 @@ from laserchicken.keys import point
 
 
 class MinZFeatureExtractor(AbstractFeatureExtractor):
-    """Extracts the maximum value on the z axis."""
+    """Extracts the minimum value on the z axis."""
     DEFAULT_MIN = float('NaN')
 
     @classmethod
@@ -15,7 +15,7 @@ class MinZFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return ['max_z']
+        return ['min_z']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
