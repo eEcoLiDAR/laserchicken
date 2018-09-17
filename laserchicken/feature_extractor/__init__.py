@@ -12,11 +12,16 @@ from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
-from .height_statistics_feature_extractor import HeightStatisticsFeatureExtractor
 from .normal_plane_feature_extractor import NormalPlaneFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
+from .median_z_feature_extractor import MedianZFeatureExtractor
+from .range_z_feature_extractor import RangeZFeatureExtractor
+from .var_z_feature_extractor import VariationZFeatureExtractor
+from .mean_std_coeff_z_feature_extractor import MeanStdCoeffZFeatureExtractor
+from .skew_z_feature_extractor import SkewZFeatureExtractor
+from .kurtosis_z_feature_extractor import KurtosisZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
@@ -60,9 +65,10 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
     :return: None, results are stored in attributes of the target point cloud
     """
     _verify_feature_names(feature_names)
-    ordered_features = _make_feature_list(feature_names)
+    wanted_feature_names = feature_names + [existing_feature for existing_feature in target_point_cloud[keys.point]]
+    extended_features = _make_extended_feature_list(feature_names)
 
-    for feature in ordered_features:
+    for feature in extended_features:
         if (target_idx_base == 0) and (not overwrite) and (feature in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
 
@@ -81,6 +87,16 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
             elapsed = time.time() - start
             sys.stdout.write(' took {:.2f} seconds\n'.format(elapsed))
             sys.stdout.flush()
+
+    _keep_only_wanted_features(target_point_cloud, wanted_feature_names)
+
+
+def _keep_only_wanted_features(target_point_cloud, wanted_feature_names):
+    redundant_features = [f for f in target_point_cloud[keys.point] if f not in wanted_feature_names]
+    print('The following unrequested features were calculated as a side effect, but will not be returned:',
+          redundant_features)
+    for f in redundant_features:
+        target_point_cloud[keys.point].pop(f)
 
 
 def _verify_feature_names(feature_names):
@@ -119,17 +135,21 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
                 "type": 'float64', "data": feature_values[i]}
 
 
-def _make_feature_list(feature_names):
-    feature_list = reversed(_make_feature_list_helper(feature_names))
+def _make_extended_feature_list(feature_names):
+    feature_list = reversed(_make_extended_feature_list_helper(feature_names))
+    return _remove_duplicates(feature_list)
+
+
+def _remove_duplicates(feature_list):
     seen = set()
     return [f for f in feature_list if not (f in seen or seen.add(f))]
 
 
-def _make_feature_list_helper(feature_names):
+def _make_extended_feature_list_helper(feature_names):
     feature_list = feature_names
     for feature_name in feature_names:
         extractor = FEATURES[feature_name]()
         dependencies = extractor.requires()
         feature_list.extend(dependencies)
-        feature_list.extend(_make_feature_list_helper(dependencies))
+        feature_list.extend(_make_extended_feature_list_helper(dependencies))
     return feature_list

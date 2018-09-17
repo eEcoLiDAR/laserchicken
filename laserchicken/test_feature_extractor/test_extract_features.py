@@ -13,22 +13,27 @@ from . import __name__ as test_module_name
 
 class TestExtractFeatures(unittest.TestCase):
     @staticmethod
-    def test_extract_single_feature():
-        target = test_tools.ComplexTestData.get_point_cloud()
+    def test_extract_single_feature_ends_up_in_pc():
+        target = test_tools.ComplexTestData().get_point_cloud()
         _compute_features(target, ['test3_a'])
-        assert 'test1_b' in target[keys.point]
-        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data'])
+        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data'])\
+
+    @staticmethod
+    def test_extract_only_requested_feature_ends_up_in_pc():
+        target = test_tools.ComplexTestData().get_point_cloud()
+        _compute_features(target, ['test3_a'])
+        assert 'test1_b' not in target[keys.point]
 
     @staticmethod
     def test_extract_multiple_features():
-        target = test_tools.ComplexTestData.get_point_cloud()
+        target = test_tools.ComplexTestData().get_point_cloud()
         feature_names = ['test3_a', 'test2_b']
         target = _compute_features(target, feature_names)
         assert ('test3_a' in target[keys.point] and 'test2_b' in target[keys.point])
 
     @staticmethod
     def test_extract_does_not_overwrite():
-        target = test_tools.ComplexTestData.get_point_cloud()
+        target = test_tools.ComplexTestData().get_point_cloud()
         target[keys.point]['test2_b'] = {"type": np.float64, "data": [0.9, 0.99, 0.999, 0.9999]}
         feature_names = ['test3_a', 'test2_b']
         target = _compute_features(target, feature_names)
@@ -36,7 +41,7 @@ class TestExtractFeatures(unittest.TestCase):
 
     @staticmethod
     def test_extract_can_overwrite():
-        target = test_tools.ComplexTestData.get_point_cloud()
+        target = test_tools.ComplexTestData().get_point_cloud()
         target[keys.point]['test2_b'] = {"type": np.float64, "data": [0.9, 0.99, 0.999, 0.9999]}
         feature_names = ['test3_a', 'test2_b']
         target = _compute_features(target, feature_names, overwrite=True)
@@ -45,7 +50,7 @@ class TestExtractFeatures(unittest.TestCase):
     @staticmethod
     def test_extract_unknown_feature():
         with raises(ValueError):
-            target = test_tools.ComplexTestData.get_point_cloud()
+            target = test_tools.ComplexTestData().get_point_cloud()
             _compute_features(target, ['some_unknown_feature'])
 
 
