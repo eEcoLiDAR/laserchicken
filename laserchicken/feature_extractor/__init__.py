@@ -93,6 +93,8 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
 
 def _keep_only_wanted_features(target_point_cloud, wanted_feature_names):
     redundant_features = [f for f in target_point_cloud[keys.point] if f not in wanted_feature_names]
+    print('The following unrequested features were calculated as a side effect, but will not be returned:',
+          redundant_features)
     for f in redundant_features:
         target_point_cloud[keys.point].pop(f)
 
