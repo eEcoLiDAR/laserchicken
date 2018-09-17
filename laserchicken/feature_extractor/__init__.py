@@ -10,7 +10,8 @@ import time
 from laserchicken import keys, utils
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
-from .eigenvals_feature_extractor import EigenValueFeatureExtractor
+# from .eigenvals_feature_extractor import EigenValueFeatureExtractor
+from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .normal_plane_feature_extractor import NormalPlaneFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
@@ -118,14 +119,13 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
                       for i in range(n_features)]
 
     print("Number of targets: %d, number of features: %d" % (n_targets, n_features))
-    for target_index in range(n_targets):
-        point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
-                                         target_index+target_idx_base, volume)
-        if n_features > 1:
-            for i in range(n_features):
-                feature_values[i][target_index] = point_values[i]
-        else:
-            feature_values[0][target_index] = point_values
+    if hasattr(extractor, 'is_vectorized'):
+        _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
+                                     target_idx_base, target_point_cloud, volume)
+    else:
+        _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets,
+                                          neighborhoods, target_idx_base, target_point_cloud, volume)
+
     for i in range(n_features):
         feature = provided_features[i]
         if (target_idx_base != 0):
@@ -133,6 +133,33 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
         elif (overwrite or (feature not in target_point_cloud[keys.point])) and (target_idx_base == 0):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
+
+
+def _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
+                                      target_idx_base, target_point_cloud, volume):
+    for target_index in range(n_targets):
+        point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
+                                         target_index + target_idx_base, volume)
+        if n_features > 1:
+            for i in range(n_features):
+                feature_values[i][target_index] = point_values[i]
+        else:
+            feature_values[0][target_index] = point_values
+
+
+def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
+                                     target_idx_base, target_point_cloud, volume):
+    chunk_size = 100000
+    print('calculating {} in chunks'.format(extractor.provides()))
+    for chunk_no in range(np.math.floor(n_targets / chunk_size)):
+        target_indices = range(chunk_no * chunk_size, (chunk_no + 1) * chunk_size)
+        point_values = extractor.extract(env_point_cloud, neighborhoods[target_indices], target_point_cloud,
+                                         target_indices + target_idx_base, volume)
+        if n_features > 1:
+            for i in range(n_features):
+                feature_values[i][target_indices] = point_values[i]
+        else:
+            feature_values[0][target_indices] = point_values
 
 
 def _make_extended_feature_list(feature_names):
