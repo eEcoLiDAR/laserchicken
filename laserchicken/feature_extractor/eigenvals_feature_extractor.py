@@ -2,6 +2,7 @@ import numpy as np
 
 from laserchicken import utils
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.utils import get_xyz
 
 
 def _structure_tensor(points):
@@ -55,6 +56,7 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
         return [eigenvals[0], eigenvals[1], eigenvals[2]]
 
 class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
+    is_vectorized = True
 
     @classmethod
     def requires(cls):
@@ -62,15 +64,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return ['eigenvalues']
-
-    @staticmethod
-    def _get_xyz(sourcepc, neighborhood):
-        xyz_grp = []
-        for n in neighborhood:
-            x, y, z = utils.get_point(sourcepc, n)
-            xyz_grp.append(np.column_stack((x, y, z)).T)
-        return np.array(xyz_grp)
+        return ['eigenv_1', 'eigenv_2', 'eigenv_3']
 
     @staticmethod
     def _get_cov(xyz):
@@ -83,7 +77,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         if not isinstance(neighborhood[0], list):
             neighborhood = [neighborhood]
 
-        xyz_grp = self._get_xyz(sourcepc, neighborhood)
+        xyz_grp = get_xyz(sourcepc, neighborhood)
         cov_mat = self._get_cov(xyz_grp)
         eigval, _ = np.linalg.eig(cov_mat)
 
