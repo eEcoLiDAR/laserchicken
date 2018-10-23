@@ -17,6 +17,32 @@ def get_point(point_cloud, index):
            point_cloud[keys.point]["z"]["data"][index]
 
 
+def get_xyz(sourcepc, neighborhoods):
+    """
+    Get x, y, z tuple of one or more points in a point cloud.
+    :param sourcepc:
+    :param neighborhoods:
+    :return:
+    """
+    xyz_grp = []
+    max_length = max(map(lambda x: len(x), neighborhoods))
+    # for n in neighborhoods:
+    #     x, y, z = get_point(sourcepc, n)
+    #     xyz_grp.append(np.column_stack((x, y, z)).T)
+    # return np.array(xyz_grp)
+
+    xyz_grp = np.zeros((len(neighborhoods), 3, max_length))
+    mask = np.zeros((len(neighborhoods), 3, max_length))
+    for i, neighborhood in enumerate(neighborhoods):
+        x, y, z = get_point(sourcepc, neighborhood)
+        n_neighbors = len(x)
+        xyz_grp[i, 0, :n_neighbors] = x
+        xyz_grp[i, 1, :n_neighbors] = y
+        xyz_grp[i, 2, :n_neighbors] = z
+        mask[i, :, :n_neighbors] = 1
+    return xyz_grp, mask
+
+
 def get_attribute_value(point_cloud, index, attribute_name):
     """
     Get value of a single attribute of a single point in a point cloud.

@@ -55,6 +55,7 @@ class EigenValueFeatureExtractor(AbstractFeatureExtractor):
 
         return [eigenvals[0], eigenvals[1], eigenvals[2]]
 
+
 class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
     is_vectorized = True
 
@@ -67,18 +68,23 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         return ['eigenv_1', 'eigenv_2', 'eigenv_3']
 
     @staticmethod
-    def _get_cov(xyz):
-        n = xyz.shape[2]
-        m = xyz - xyz.sum(2, keepdims=1) / n
+    def _get_cov(xyz, mask):
+        # n = xyz.shape[2]
+
+        n = mask.sum(axis=2, keepdims=True)
+        m = xyz - xyz.sum(2, keepdims=True) / n
         return np.einsum('ijk,ilk->ijl', m, m) / (n - 1)
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
-
         if not isinstance(neighborhood[0], list):
             neighborhood = [neighborhood]
 
-        xyz_grp = get_xyz(sourcepc, neighborhood)
-        cov_mat = self._get_cov(xyz_grp)
+        xyz_grp, mask = get_xyz(sourcepc, neighborhood)
+        cov_mat = self._get_cov(xyz_grp, mask)
+
+
+        # for i, n in enumerate(np.sum(mask[:, 0, :], axis=1)):
+
         eigval, _ = np.linalg.eig(cov_mat)
 
         return np.sort(eigval, axis=1)[:, ::-1]
