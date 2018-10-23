@@ -40,7 +40,7 @@ def get_xyz(sourcepc, neighborhoods):
         xyz_grp[i, 1, :n_neighbors] = y
         xyz_grp[i, 2, :n_neighbors] = z
         mask[i, :, :n_neighbors] = 1
-    return xyz_grp, mask
+    return np.ma.MaskedArray(xyz_grp, mask==0)
 
 
 def get_attribute_value(point_cloud, index, attribute_name):

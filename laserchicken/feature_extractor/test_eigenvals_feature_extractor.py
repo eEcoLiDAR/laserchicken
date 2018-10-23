@@ -7,7 +7,8 @@ import unittest
 import numpy as np
 
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
-from laserchicken.feature_extractor import EigenValueFeatureExtractor
+from laserchicken.feature_extractor import EigenValueOld
+from laserchicken.utils import copy_point_cloud
 from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
@@ -62,7 +63,7 @@ class TestExtractEigenvaluesVector(unittest.TestCase):
 
     point_cloud = None
 
-    def test_eig(self):
+    def test_eigen_multiple_neighborhoods(self):
         """
         Test and compare the serial and vectorized eigenvalues.
 
@@ -79,7 +80,7 @@ class TestExtractEigenvaluesVector(unittest.TestCase):
         eigvals = []
         t0 = time.time()
         for n in self.neigh:
-            extract = EigenValueFeatureExtractor()
+            extract = EigenValueOld()
             eigvals.append(extract.extract(self.point_cloud, n, None, None, None))
         print('Timing Serial : {}'.format((time.time() - t0)))
         eigvals = np.array(eigvals)
@@ -115,11 +116,16 @@ class TestExtractEigenvaluesVector(unittest.TestCase):
         contains ncube X lengthcube points so that we can extract
         easily cubic neighborhoods for testing
         """
-        self.ncube, self.lengthcube = 9, 9
-        self.dim = self.ncube * self.lengthcube
-        x = np.random.rand(self.dim)
-        pts_xyz = np.array(list(itertools.product(x, repeat=3)))
-        self.point_cloud = {keys.point: {'x': {'type': 'double', 'data': pts_xyz[:, 0]},
-                           'y': {'type': 'double', 'data': pts_xyz[:, 1]},
-                           'z': {'type': 'double', 'data': pts_xyz[:, 2]}}}
-        self.neigh = self._get_neighborhoods()
+        np.random.seed(1234)
+
+        _TEST_FILE_NAME = 'AHN3.las'
+        _TEST_DATA_SOURCE = 'testdata'
+
+        _CYLINDER = InfiniteCylinder(4)
+        _PC_260807 = read_las.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
+        _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
+            np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
+        _1000_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
+
+        self.point_cloud=_PC_260807
+        self.neigh = _1000_NEIGHBORHOODS_IN_260807

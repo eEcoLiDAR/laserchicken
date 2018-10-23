@@ -32,7 +32,7 @@ def _structure_tensor(points):
         raise ValueError('Not enough points to compute eigenvalues/vectors.')
 
 
-class EigenValueFeatureExtractor(AbstractFeatureExtractor):
+class EigenValueOld(AbstractFeatureExtractor):
     @classmethod
     def requires(cls):
         return []
@@ -68,10 +68,9 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         return ['eigenv_1', 'eigenv_2', 'eigenv_3']
 
     @staticmethod
-    def _get_cov(xyz, mask):
-        # n = xyz.shape[2]
-
-        n = mask.sum(axis=2, keepdims=True)
+    def _get_cov(xyz):
+        n_max = xyz.shape[2]
+        n = (xyz.mask.sum(axis=2, keepdims=True)*-1) + n_max
         m = xyz - xyz.sum(2, keepdims=True) / n
         return np.einsum('ijk,ilk->ijl', m, m) / (n - 1)
 
@@ -79,8 +78,8 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         if not isinstance(neighborhood[0], list):
             neighborhood = [neighborhood]
 
-        xyz_grp, mask = get_xyz(sourcepc, neighborhood)
-        cov_mat = self._get_cov(xyz_grp, mask)
+        xyz_grp = get_xyz(sourcepc, neighborhood)
+        cov_mat = self._get_cov(xyz_grp)
 
 
         # for i, n in enumerate(np.sum(mask[:, 0, :], axis=1)):
