@@ -10,7 +10,7 @@ import time
 from laserchicken import keys, utils
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
-# from .eigenvals_feature_extractor import EigenValueFeatureExtractor
+from .eigenvals_feature_extractor import EigenValueOld
 from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .normal_plane_feature_extractor import NormalPlaneFeatureExtractor
@@ -94,8 +94,9 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
 
 def _keep_only_wanted_features(target_point_cloud, wanted_feature_names):
     redundant_features = [f for f in target_point_cloud[keys.point] if f not in wanted_feature_names]
-    print('The following unrequested features were calculated as a side effect, but will not be returned:',
-          redundant_features)
+    if redundant_features:
+        print('The following unrequested features were calculated as a side effect, but will not be returned:',
+              redundant_features)
     for f in redundant_features:
         target_point_cloud[keys.point].pop(f)
 
