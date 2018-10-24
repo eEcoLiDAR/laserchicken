@@ -70,7 +70,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
     @staticmethod
     def _get_cov(xyz):
         n_max = xyz.shape[2]
-        n = (xyz.mask.sum(axis=2, keepdims=True)*-1) + n_max
+        n = (xyz.mask.sum(axis=2, keepdims=True) * -1) + n_max
         m = xyz - xyz.sum(2, keepdims=True) / n
         return np.einsum('ijk,ilk->ijl', m, m) / (n - 1)
 
@@ -81,8 +81,12 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         xyz_grp = get_xyz(sourcepc, neighborhood)
         cov_mat = self._get_cov(xyz_grp)
 
-        eigval, _ = np.linalg.eig(cov_mat)
+        eigval, eigvects = np.linalg.eig(cov_mat)
 
         e = np.sort(eigval, axis=1)[:, ::-1]  # Sorting to make result identical to serial implementation.
+        print(eigvects)
+        normals = eigvects[:, :, 2]
+        print(normals)
+        slope = np.dot(normals, np.array([0., 0., 1.]))
 
-        return e[:,0], e[:,1], e[:,2], None, None,None,None,
+        return e[:, 0], e[:, 1], e[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope

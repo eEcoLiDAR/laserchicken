@@ -118,12 +118,13 @@ class TestExtractNormalPlaneArtificialData(unittest.TestCase):
         self.zaxis = np.array([0., 0., 1.])
         self.nvect = np.array([1., 2., 3.])
         self.nvect /= np.linalg.norm(self.nvect)
-        self.slope = np.dot(self.nvect, self.zaxis)  # This is not the slope. Range is only -1 to 1 for example.
+        self.slope = np.dot(self.nvect, self.zaxis)
         point = _generate_random_points_in_plane(self.nvect, dparam=0, npts=100)
         self.pc = {keys.point: {'x': {'type': 'double', 'data': point[:, 0]},
                                 'y': {'type': 'double', 'data': point[:, 1]},
                                 'z': {'type': 'double', 'data': point[:, 2]}}}
         self.neighborhood = [[3, 4, 5, 6, 7], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9]]
+
 
 def _generate_random_points_in_plane(nvect, dparam, npts, eps=0.0):
     """
