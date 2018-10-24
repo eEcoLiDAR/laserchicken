@@ -86,4 +86,4 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
 
         eigval, _ = np.linalg.eig(cov_mat)
 
-        return np.sort(eigval, axis=1)[:, ::-1]
+        return np.sort(eigval, axis=1)[:, ::-1]   # Sorting to make result identical to serial implementation.
