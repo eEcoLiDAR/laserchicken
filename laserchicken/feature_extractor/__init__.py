@@ -10,7 +10,6 @@ import time
 from laserchicken import keys, utils
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
-from .eigenvals_feature_extractor import EigenValueOld
 from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor

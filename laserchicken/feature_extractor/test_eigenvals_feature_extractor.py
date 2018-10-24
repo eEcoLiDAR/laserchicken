@@ -1,4 +1,3 @@
-import itertools
 import os
 import random
 import time
@@ -7,16 +6,16 @@ import unittest
 import numpy as np
 
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
-from laserchicken.feature_extractor import EigenValueOld
-from laserchicken.utils import copy_point_cloud
-from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
+from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.test_tools import create_point_cloud
+from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
+from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 
 
 class TestExtractEigenValues(unittest.TestCase):
     def test_eigenvalues_in_cylinders(self):
-        """Test computing provenance added (This should actually be part the general feature extractor test suite)."""
+        """Test provenance added (This should actually be part the general feature extractor test suite)."""
         random.seed(102938482634)
         point_cloud = read_las.read(
             os.path.join('testdata', 'AHN3.las'))
@@ -60,9 +59,9 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         """
         Test and compare the serial and vectorized eigenvalues.
 
-        Eigenvalues are computed for multiple cubic neighborhoods of points. A vectorized implementation and a serial
+        Eigenvalues are computed for a list of neighborhoods in real data. A vectorized implementation and a serial
         implementation are compared and timed. Any difference in result between the two methods is definitely
-        unexpected (except maybe in ordering of eigen values)
+        unexpected (except maybe in ordering of eigen values).
         """
         # vectorized version
         t0 = time.time()
@@ -75,7 +74,7 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         eigvals = []
         t0 = time.time()
         for n in self.neigh:
-            extract = EigenValueOld()
+            extract = EigenValueSerial()
             eigvals.append(extract.extract(self.point_cloud, n, None, None, None))
         print('Timing Serial : {}'.format((time.time() - t0)))
         eigvals = np.array(eigvals)
@@ -143,3 +142,56 @@ def _generate_random_points_in_plane(nvect, dparam, npts, eps=0.0):
     if eps > 0:
         z += np.random.normal(loc=0., scale=eps, size=npts)
     return np.column_stack((x, y, z))
+
+
+class EigenValueSerial(AbstractFeatureExtractor):
+    """Old serial implementation. Used to test the current (vectorized) implementation against."""
+
+    @classmethod
+    def requires(cls):
+        return []
+
+    @classmethod
+    def provides(cls):
+        return ["eigenv_1", "eigenv_2", "eigenv_3"]
+
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
+        nbptsX, nbptsY, nbptsZ = utils.get_point(sourcepc, neighborhood)
+        matrix = np.column_stack((nbptsX, nbptsY, nbptsZ))
+
+        try:
+            eigenvals, eigenvecs = self._structure_tensor(matrix)
+        except ValueError as err:
+            if str(err) == 'Not enough points to compute eigenvalues/vectors.':
+                return [0, 0, 0]
+            else:
+                raise
+
+        return [eigenvals[0], eigenvals[1], eigenvals[2]]
+
+    @staticmethod
+    def _structure_tensor(points):
+        """
+        Computes the structure tensor of points by computing the eigenvalues
+        and eigenvectors of the covariance matrix of a point cloud.
+        Parameters
+        ----------
+        points : (Mx3) array
+            X, Y and Z coordinates of points.
+        Returns
+        -------
+        eigenvalues : (1x3) array
+            The eigenvalues corresponding to the eigenvectors of the covariance
+            matrix.
+        eigenvectors : (3,3) array
+            The eigenvectors of the covariance matrix.
+        """
+        if points.shape[0] > 3:
+            cov_mat = np.cov(points, rowvar=False)
+            eigenvalues, eigenvectors = np.linalg.eig(cov_mat)
+            order = np.argsort(-eigenvalues)
+            eigenvalues = eigenvalues[order]
+            eigenvectors = eigenvectors[:, order]
+            return eigenvalues, eigenvectors
+        else:
+            raise ValueError('Not enough points to compute eigenvalues/vectors.')
