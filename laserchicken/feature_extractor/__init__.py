@@ -151,7 +151,7 @@ def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values,
     chunk_size = 100000
     print('calculating {} in chunks'.format(extractor.provides()))
     for chunk_no in range(np.math.floor(n_targets / chunk_size)):
-        target_indices = range(chunk_no * chunk_size, (chunk_no + 1) * chunk_size)
+        target_indices = list(range(chunk_no * chunk_size, (chunk_no + 1) * chunk_size))
         point_values = extractor.extract(env_point_cloud, neighborhoods[target_indices], target_point_cloud,
                                          target_indices + target_idx_base, volume)
         if n_features > 1:
