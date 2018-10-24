@@ -81,9 +81,8 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         xyz_grp = get_xyz(sourcepc, neighborhood)
         cov_mat = self._get_cov(xyz_grp)
 
-
-        # for i, n in enumerate(np.sum(mask[:, 0, :], axis=1)):
-
         eigval, _ = np.linalg.eig(cov_mat)
 
-        return np.sort(eigval, axis=1)[:, ::-1]   # Sorting to make result identical to serial implementation.
+        e = np.sort(eigval, axis=1)[:, ::-1]  # Sorting to make result identical to serial implementation.
+
+        return e[:,0], e[:,1], e[:,2], None, None,None,None,

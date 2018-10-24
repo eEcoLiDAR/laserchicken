@@ -40,7 +40,7 @@ class TestExtractEigenValues(unittest.TestCase):
 
     @staticmethod
     def test_eigenvalues_of_too_few_points_results_in_0():
-        """If there are too few points to calculate the eigen values we output 0 (as opposed to NaN for example)."""
+        """If there are too few points to calculate the eigen values don't output NaN or inf."""
         a = np.array([5])
         pc = create_point_cloud(a, a, a)
 
@@ -49,13 +49,11 @@ class TestExtractEigenValues(unittest.TestCase):
 
         eigen_val_123 = np.array(
             [pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])
-        np.testing.assert_allclose(eigen_val_123, np.zeros((3, 1)))
-
-    def tearDown(self):
-        pass
+        assert not np.any(np.isnan(eigen_val_123))
+        assert not np.any(np.isinf(eigen_val_123))
 
 
-class TestExtractEigenvaluesVectorRealData(unittest.TestCase):
+class TestExtractEigenvaluesComparison(unittest.TestCase):
     point_cloud = None
 
     def test_eigen_multiple_neighborhoods(self):
@@ -71,6 +69,7 @@ class TestExtractEigenvaluesVectorRealData(unittest.TestCase):
         extract_vect = EigenValueVectorizeFeatureExtractor()
         eigvals_vect = extract_vect.extract(self.point_cloud, self.neigh, None, None, None)
         print('Timing Vectorize : {}'.format((time.time() - t0)))
+        eigvals_vect = np.vstack(eigvals_vect[:3]).T
 
         # serial version
         eigvals = []
@@ -102,3 +101,44 @@ class TestExtractEigenvaluesVectorRealData(unittest.TestCase):
 
         self.point_cloud = _PC_260807
         self.neigh = _1000_NEIGHBORHOODS_IN_260807
+
+
+class TestExtractNormalPlaneArtificialData(unittest.TestCase):
+    def test_from_eigen(self):
+        extractor = EigenValueVectorizeFeatureExtractor()
+        n1, n2, n3, slope_fit = extractor.extract(
+            self.pc, self.neighborhood, None, None, None)[3:]
+        np.testing.assert_allclose(self.nvect[0], n1[0])
+        np.testing.assert_allclose(self.nvect[1], n2[0])
+        np.testing.assert_allclose(self.nvect[2], n3[0])
+        np.testing.assert_allclose(slope_fit, self.slope)
+
+    def setUp(self):
+        """Generate some points in a plane."""
+        self.zaxis = np.array([0., 0., 1.])
+        self.nvect = np.array([1., 2., 3.])
+        self.nvect /= np.linalg.norm(self.nvect)
+        self.slope = np.dot(self.nvect, self.zaxis)  # This is not the slope. Range is only -1 to 1 for example.
+        point = _generate_random_points_in_plane(self.nvect, dparam=0, npts=100)
+        self.pc = {keys.point: {'x': {'type': 'double', 'data': point[:, 0]},
+                                'y': {'type': 'double', 'data': point[:, 1]},
+                                'z': {'type': 'double', 'data': point[:, 2]}}}
+        self.neighborhood = [[3, 4, 5, 6, 7], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9]]
+
+def _generate_random_points_in_plane(nvect, dparam, npts, eps=0.0):
+    """
+    Generate a series of point all belonging to a plane.
+
+    :param nvect: normal vector of the plane
+    :param dparam: zero point value of the plane
+    :param npts: number of points
+    :param eps: std of the gaussian noise added to the z values of the planes
+    :return: x,y,z coordinate of the points
+    """
+    np.random.seed(12345)
+    a, b, c = nvect / np.linalg.norm(nvect)
+    x, y = np.random.rand(npts), np.random.rand(npts)
+    z = (dparam - a * x - b * y) / c
+    if eps > 0:
+        z += np.random.normal(loc=0., scale=eps, size=npts)
+    return np.column_stack((x, y, z))
