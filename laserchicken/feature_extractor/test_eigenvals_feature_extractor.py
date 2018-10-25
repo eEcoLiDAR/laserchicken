@@ -79,6 +79,10 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         print('Timing Serial : {}'.format((time.time() - t0)))
         eigvals = np.array(eigvals)
 
+
+        # print('self.neigh',self.neigh[-20])
+        # print('eigvals_vect',eigvals_vect[-20])
+        # print('eigvals',eigvals[-20])
         np.testing.assert_allclose(eigvals_vect, eigvals)
 
     def setUp(self):

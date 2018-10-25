@@ -23,11 +23,17 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         m = xyz - xyz.sum(2, keepdims=True) / n
         return np.einsum('ijk,ilk->ijl', m, m) / (n - 1)
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
-        if not isinstance(neighborhood[0], list):
-            neighborhood = [neighborhood]
+    def extract(self, sourcepc, neighborhoods, targetpc, targetindex, volume):
+        if not (isinstance(neighborhoods[0], list) or isinstance(neighborhoods[0], range)):
+            neighborhoods = [neighborhoods]
 
-        xyz_grp = get_xyz(sourcepc, neighborhood)
+        xyz_grp = get_xyz(sourcepc, neighborhoods)
+        minimum_for_calculation = 3
+        invalid_rows = np.sum(xyz_grp.mask == False, axis=(1, 2)) < minimum_for_calculation
+        print('invalid_rows', invalid_rows)
+        print('xyz_grp.mask', xyz_grp.mask, np.sum(xyz_grp.mask))
+        xyz_grp.mask[invalid_rows, :, :] = True
+
         cov_mat = self._get_cov(xyz_grp)
 
         eigval, eigvects = np.linalg.eig(cov_mat)

@@ -34,8 +34,10 @@ def get_xyz(sourcepc, neighborhoods):
     xyz_grp = np.zeros((len(neighborhoods), 3, max_length))
     mask = np.zeros((len(neighborhoods), 3, max_length))
     for i, neighborhood in enumerate(neighborhoods):
+        n_neighbors = len(neighborhood)
+        if n_neighbors is 0:
+            continue
         x, y, z = get_point(sourcepc, neighborhood)
-        n_neighbors = len(x)
         xyz_grp[i, 0, :n_neighbors] = x
         xyz_grp[i, 1, :n_neighbors] = y
         xyz_grp[i, 2, :n_neighbors] = z
