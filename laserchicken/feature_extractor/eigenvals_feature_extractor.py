@@ -1,6 +1,5 @@
 import numpy as np
 
-from laserchicken import utils
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.utils import get_xyz
 
@@ -28,18 +27,24 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
             neighborhoods = [neighborhoods]
 
         xyz_grp = get_xyz(sourcepc, neighborhoods)
-        minimum_for_calculation = 3
-        invalid_rows = np.sum(xyz_grp.mask == False, axis=(1, 2)) < minimum_for_calculation
-        print('invalid_rows', invalid_rows)
-        print('xyz_grp.mask', xyz_grp.mask, np.sum(xyz_grp.mask))
-        xyz_grp.mask[invalid_rows, :, :] = True
+        self._mask_rows_with_too_few_points(xyz_grp)
 
-        cov_mat = self._get_cov(xyz_grp)
-
-        eigval, eigvects = np.linalg.eig(cov_mat)
-
-        e = np.sort(eigval, axis=1)[:, ::-1]  # Sorting to make result identical to serial implementation.
-
+        e_vals, eigvects = self._get_eigen_vals_and_vects(xyz_grp)
         normals = eigvects[:, :, 2]
         slope = np.dot(normals, np.array([0., 0., 1.]))
-        return e[:, 0], e[:, 1], e[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope
+
+        return e_vals[:, 0], e_vals[:, 1], e_vals[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope
+
+    def _get_eigen_vals_and_vects(self, xyz_grp):
+        cov_mat = self._get_cov(xyz_grp)
+        eigval, eigvects = np.linalg.eig(cov_mat)
+        e = np.sort(eigval, axis=1)[:, ::-1]  # Sorting to make result identical to serial implementation.
+        return e, eigvects
+
+    @staticmethod
+    def _mask_rows_with_too_few_points(xyz_grp):
+        minimum_for_calculation = 3
+        invalid_cells = xyz_grp.mask == False
+        invalid_neighbors = np.any(invalid_cells, axis=1)
+        invalid_rows = np.sum(invalid_neighbors, axis=1) < minimum_for_calculation
+        xyz_grp.mask[invalid_rows, :, :] = True

@@ -26,10 +26,6 @@ def get_xyz(sourcepc, neighborhoods):
     """
     xyz_grp = []
     max_length = max(map(lambda x: len(x), neighborhoods))
-    # for n in neighborhoods:
-    #     x, y, z = get_point(sourcepc, n)
-    #     xyz_grp.append(np.column_stack((x, y, z)).T)
-    # return np.array(xyz_grp)
 
     xyz_grp = np.zeros((len(neighborhoods), 3, max_length))
     mask = np.zeros((len(neighborhoods), 3, max_length))
