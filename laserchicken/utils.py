@@ -53,15 +53,17 @@ def get_attribute_value(point_cloud, index, attribute_name):
     return point_cloud[keys.point][attribute_name]["data"][index]
 
 
-def get_features(point_cloud, index, attribute_names):
+def get_features(point_cloud, attribute_names, index=None):
     """
     Get value of each attribute in a list for a single point in a point cloud.
 
     :param point_cloud: point cloud containing the point of interest
-    :param index: index of the point within the point cloud
     :param attribute_names: attribute names
+    :param index: index of the point within the point cloud
     :return: list of values of the attributes of the point
     """
+    if not index:
+        index = list(range(point_cloud[keys.point]['x']["data"].shape[0]))
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
 

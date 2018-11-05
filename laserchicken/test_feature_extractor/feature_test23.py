@@ -28,6 +28,6 @@ class Test3FeatureExtractor(AbstractFeatureExtractor):
         return ['test3_a']
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
-        t2a, t2c = utils.get_features(targetpc, targetindex, self.requires())
+        t2a, t2c = utils.get_features(targetpc, self.requires(), targetindex)
         x, y, z = utils.get_point(targetpc, targetindex)
         return t2c - t2a - z  # z
