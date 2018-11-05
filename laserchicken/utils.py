@@ -62,7 +62,7 @@ def get_features(point_cloud, attribute_names, index=None):
     :param index: index of the point within the point cloud
     :return: list of values of the attributes of the point
     """
-    if not index:
+    if index is None:
         index = list(range(point_cloud[keys.point]['x']["data"].shape[0]))
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
