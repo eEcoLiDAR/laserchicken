@@ -7,10 +7,12 @@ import numpy as np
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
+from laserchicken.utils import get_xyz, get_point
 
 
 class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
     """Feature extractor for the point density."""
+    is_vectorized = True
 
     @classmethod
     def requires(cls):
@@ -37,7 +39,7 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         """
         return ['echo_ratio']
 
-    def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_index, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
@@ -57,17 +59,20 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         if target_index is None:
             raise ValueError('Target point index required')
 
-        xyz = self.get_neighborhood_positions(point_cloud, neighborhood)
-        n_cylinder = xyz.shape[0]
+        # xyz = self.get_neighborhood_positions(point_cloud, neighborhood)
+        xyz = get_xyz(point_cloud, neighborhoods)
+        n_cylinder = xyz.shape[2]
 
-        xyz0 = self.get_target_position(target_point_cloud, target_index)
+        x0, y0, z0 = get_point(target_point_cloud, target_index)
+        xyz0 = np.column_stack((x0, y0, z0))
 
-        n_sphere = np.sum(np.sum((xyz - xyz0) ** 2, 1) <=
-                          volume_description.radius ** 2)
+        difference = xyz - xyz0[:, :, None]
+        sum_of_squares = np.sum(difference ** 2, 1)
+        n_sphere = np.sum(sum_of_squares <= volume_description.radius ** 2, axis=1)
         return n_sphere / n_cylinder * 100.
 
     @staticmethod
-    def get_target_position(target_point_cloud, target_index):
+    def get_target_positions(target_point_cloud, target_index):
         x0 = target_point_cloud[point]['x']['data'][target_index]
         y0 = target_point_cloud[point]['y']['data'][target_index]
         z0 = target_point_cloud[point]['z']['data'][target_index]
@@ -87,3 +92,5 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         Needed for provenance.
         """
         return ()
+
+
