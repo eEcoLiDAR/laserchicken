@@ -150,7 +150,7 @@ def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values,
                                      target_idx_base, target_point_cloud, volume):
     chunk_size = 100000
     print('calculating {} in chunks'.format(extractor.provides()))
-    for chunk_no in range(np.math.ceil(n_targets / chunk_size)):
+    for chunk_no in range(int(np.math.ceil(n_targets / chunk_size))):
         i_start = chunk_no * chunk_size
         i_end = min((chunk_no + 1) * chunk_size, n_targets)
         target_indices = np.arange(i_start, i_end)
