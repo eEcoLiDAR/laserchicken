@@ -61,7 +61,9 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
 
         # xyz = self.get_neighborhood_positions(point_cloud, neighborhood)
         xyz = get_xyz(point_cloud, neighborhoods)
-        n_cylinder = xyz.shape[2]
+        mask_ = xyz.mask[:, 0, :]
+        is_false = mask_ == False
+        n_cylinder = np.sum(is_false, axis=1)
 
         x0, y0, z0 = get_point(target_point_cloud, target_index)
         xyz0 = np.column_stack((x0, y0, z0))
@@ -92,5 +94,3 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         Needed for provenance.
         """
         return ()
-
-
