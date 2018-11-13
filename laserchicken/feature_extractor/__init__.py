@@ -129,7 +129,7 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
         if target_idx_base != 0:
             if feature not in target_point_cloud[keys.point]:
                 continue
-            target_point_cloud[keys.point][feature]["data"] = np.append(target_point_cloud[keys.point][feature]["data"], feature_values[i])
+            np.append(target_point_cloud[keys.point][feature]["data"], feature_values[i])
         elif overwrite or (feature not in target_point_cloud[keys.point]):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
