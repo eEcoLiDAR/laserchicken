@@ -16,8 +16,8 @@ class TestExtractFeatures(unittest.TestCase):
     def test_extract_single_feature_ends_up_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
         _compute_features(target, ['test3_a'])
-        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data']) \
- \
+        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data'])
+
     @staticmethod
     def test_extract_only_requested_feature_ends_up_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
