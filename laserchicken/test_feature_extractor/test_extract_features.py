@@ -16,8 +16,8 @@ class TestExtractFeatures(unittest.TestCase):
     def test_extract_single_feature_ends_up_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
         _compute_features(target, ['test3_a'])
-        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data'])\
-
+        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data']) \
+ \
     @staticmethod
     def test_extract_only_requested_feature_ends_up_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
@@ -52,6 +52,17 @@ class TestExtractFeatures(unittest.TestCase):
         with raises(ValueError):
             target = test_tools.ComplexTestData().get_point_cloud()
             _compute_features(target, ['some_unknown_feature'])
+
+    @staticmethod
+    def test_vectorized_chunks():
+        """Should not throw error for non requested but provided features."""
+        n = 2000000  # enough to be too big for a single chunk
+        x = np.zeros(n)
+        y = np.zeros(n)
+        z = np.zeros(n)
+        target = test_tools.create_point_cloud(x, y, z)
+        feature_names = ['vectorized1']
+        _compute_features(target, feature_names)
 
 
 @pytest.fixture(scope='module', autouse=True)

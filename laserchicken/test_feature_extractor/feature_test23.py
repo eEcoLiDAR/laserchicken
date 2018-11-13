@@ -1,6 +1,8 @@
 """Test2 and Test3 feature extractors."""
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+import numpy as np
+
 from laserchicken import utils
+from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 
 
 class Test2FeatureExtractor(AbstractFeatureExtractor):
@@ -31,3 +33,20 @@ class Test3FeatureExtractor(AbstractFeatureExtractor):
         t2a, t2c = utils.get_features(targetpc, self.requires(), targetindex)
         x, y, z = utils.get_point(targetpc, targetindex)
         return t2c - t2a - z  # z
+
+
+class TestVectorizedFeatureExtractor(AbstractFeatureExtractor):
+    is_vectorized = True
+
+    @classmethod
+    def requires(cls):
+        return []
+
+    @classmethod
+    def provides(cls):
+        return ['vectorized1', 'vectorized2']
+
+    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume):
+        x = utils.get_features(targetpc, ['x'], targetindex)
+        x1 = np.array(list(x))[0]
+        return x1, x1

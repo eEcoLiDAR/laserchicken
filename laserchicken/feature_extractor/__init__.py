@@ -107,7 +107,6 @@ def _verify_feature_names(feature_names):
 
 
 def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, extractor, volume, overwrite, kwargs):
-    #n_targets = len(target_point_cloud[keys.point]["x"]["data"])
     n_targets = len(neighborhoods)
 
     for k in kwargs:
@@ -127,9 +126,11 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
 
     for i in range(n_features):
         feature = provided_features[i]
-        if (target_idx_base != 0):
+        if target_idx_base != 0:
+            if feature not in target_point_cloud[keys.point]:
+                continue
             target_point_cloud[keys.point][feature]["data"] = np.append(target_point_cloud[keys.point][feature]["data"], feature_values[i])
-        elif (overwrite or (feature not in target_point_cloud[keys.point])) and (target_idx_base == 0):
+        elif overwrite or (feature not in target_point_cloud[keys.point]):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
 
@@ -154,10 +155,9 @@ def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values,
         i_start = chunk_no * chunk_size
         i_end = min((chunk_no + 1) * chunk_size, n_targets)
         target_indices = np.arange(i_start, i_end)
-        print('stat',i_start,'end', i_end, 'target_indices', target_indices, 'n_targets',n_targets)
         point_values = extractor.extract(env_point_cloud, neighborhoods[i_start:i_end], target_point_cloud,
-                                         target_indices, volume)
-                                         # target_indices + target_idx_base, volume)
+                                         target_indices + target_idx_base, volume)
+
         if n_features > 1:
             for i in range(n_features):
                 feature_values[i][target_indices] = point_values[i]
