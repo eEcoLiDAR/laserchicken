@@ -80,10 +80,12 @@ def compute_sphere_neighborhood(environment_pc, target_pc, radius):
     neighborhoods = compute_cylinder_neighborhood(
         environment_pc, target_pc, radius)
 
+    counter = 0  # Target and neighborhood indices are going to be out of sync in loop below.
     for neighborhood_indices in neighborhoods:
         result = []
         for i, _ in enumerate(neighborhood_indices):
-            target_x, target_y, target_z = utils.get_point(target_pc, i)
+            target_x, target_y, target_z = utils.get_point(target_pc, counter)
+            counter += 1
             result_indices = []
             for j in neighborhood_indices[i]:
                 env_x, env_y, env_z = utils.get_point(environment_pc, j)
@@ -106,20 +108,24 @@ def compute_cell_neighborhood(environment_pc, target_pc, side_length):
     :return: indices of neighboring points from the environment point cloud for each target point
     """
 
-    max_radius = 0.5*math.sqrt((side_length ** 2) + (side_length ** 2))
+    max_radius = 0.5 * math.sqrt((side_length ** 2) + (side_length ** 2))
 
     neighbors = compute_cylinder_neighborhood(
         environment_pc, target_pc, max_radius)
 
+    counter = 0  # Target and neighborhood indices are going to be out of sync in loop below.
     for neighborhood_indices in neighbors:
         result = []
+
+        counter = 0  # Target and neighborhood indices are going to be out of sync in loop below.
         for i, _ in enumerate(neighborhood_indices):
-            target_x, target_y, _ = utils.get_point(target_pc, i)
+            target_x, target_y, _ = utils.get_point(target_pc, counter)
+            counter += 1
             neighbor_indices = neighborhood_indices[i]
             result_indices = []
             for j in neighbor_indices:
                 env_x, env_y, _ = utils.get_point(environment_pc, j)
-                if ((abs(target_x - env_x)) > 0.5*side_length) or ((abs(target_y - env_y)) > 0.5*side_length):
+                if ((abs(target_x - env_x)) > 0.5 * side_length) or ((abs(target_y - env_y)) > 0.5 * side_length):
                     continue
                 else:
                     result_indices.append(j)
@@ -141,10 +147,12 @@ def compute_cube_neighborhood(environment_pc, target_pc, side_length):
     neighbors = compute_cell_neighborhood(
         environment_pc, target_pc, side_length)
 
+    counter = 0
     for neighborhood_indices in neighbors:
         result = []
         for i, _ in enumerate(neighborhood_indices):
-            _, _, target_z = utils.get_point(target_pc, i)
+            _, _, target_z = utils.get_point(target_pc, counter)
+            counter += 1
             neighbor_indices = neighborhood_indices[i]
             result_indices = []
             for j in neighbor_indices:
@@ -167,7 +175,7 @@ def compute_neighborhoods(env_pc, target_pc, volume_description):
     :return: indices of neighboring points from the environment point cloud for each target point
     """
     volume_type = volume_description.get_type()
-    
+
     if volume_type == Cell.TYPE:
         neighbors1 = compute_cell_neighborhood(env_pc, target_pc, volume_description.side_length)
         for x in neighbors1:
