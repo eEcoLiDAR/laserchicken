@@ -66,17 +66,21 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
     _verify_feature_names(feature_names)
     wanted_feature_names = feature_names + [existing_feature for existing_feature in target_point_cloud[keys.point]]
     extended_features = _make_extended_feature_list(feature_names)
+    features_to_do = extended_features
 
-    for feature in extended_features:
-        if (target_idx_base == 0) and (not overwrite) and (feature in target_point_cloud[keys.point]):
+    while features_to_do:
+        feature_name = features_to_do.pop()
+
+        if (target_idx_base == 0) and (not overwrite) and (feature_name in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
 
+        extractor = FEATURES[feature_name]()
+
         if verbose:
-            sys.stdout.write('Feature "{}"\n'.format(feature))
+            sys.stdout.write('Feature(s) "{}"'.format(extractor.provides()))
             sys.stdout.flush()
             start = time.time()
 
-        extractor = FEATURES[feature]()
         _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base,
                                target_point_cloud, extractor, volume, overwrite, kwargs)
         utils.add_metadata(target_point_cloud, type(
@@ -86,6 +90,30 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
             elapsed = time.time() - start
             sys.stdout.write(' took {:.2f} seconds\n'.format(elapsed))
             sys.stdout.flush()
+
+        for provided_feature in extractor.provides():
+            if provided_feature in features_to_do:
+                features_to_do.remove(provided_feature)
+
+    # for feature in extended_features:
+    #     if (target_idx_base == 0) and (not overwrite) and (feature in target_point_cloud[keys.point]):
+    #         continue  # Skip feature calc if it is already there and we do not overwrite
+    #
+    #     if verbose:
+    #         sys.stdout.write('Feature "{}"\n'.format(feature))
+    #         sys.stdout.flush()
+    #         start = time.time()
+    #
+    #     extractor = FEATURES[feature]()
+    #     _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base,
+    #                            target_point_cloud, extractor, volume, overwrite, kwargs)
+    #     utils.add_metadata(target_point_cloud, type(
+    #         extractor).__module__, extractor.get_params())
+    #
+    #     if verbose:
+    #         elapsed = time.time() - start
+    #         sys.stdout.write(' took {:.2f} seconds\n'.format(elapsed))
+    #         sys.stdout.flush()
 
     _keep_only_wanted_features(target_point_cloud, wanted_feature_names)
 
@@ -116,7 +144,6 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
     feature_values = [np.empty(n_targets, dtype=np.float64)
                       for i in range(n_features)]
 
-    print("Number of targets: %d, number of features: %d" % (n_targets, n_features))
     if hasattr(extractor, 'is_vectorized'):
         _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
                                      target_idx_base, target_point_cloud, volume)
@@ -129,7 +156,9 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
         if target_idx_base != 0:
             if feature not in target_point_cloud[keys.point]:
                 continue
-            np.append(target_point_cloud[keys.point][feature]["data"], feature_values[i])
+
+            target_point_cloud[keys.point][feature]["data"] = np.hstack([target_point_cloud[keys.point][feature]["data"], feature_values[i]])
+
         elif overwrite or (feature not in target_point_cloud[keys.point]):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
