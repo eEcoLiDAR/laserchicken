@@ -116,8 +116,6 @@ def compute_cell_neighborhood(environment_pc, target_pc, side_length):
     counter = 0  # Target and neighborhood indices are going to be out of sync in loop below.
     for neighborhood_indices in neighbors:
         result = []
-
-        counter = 0  # Target and neighborhood indices are going to be out of sync in loop below.
         for i, _ in enumerate(neighborhood_indices):
             target_x, target_y, _ = utils.get_point(target_pc, counter)
             counter += 1
