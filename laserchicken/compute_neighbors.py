@@ -163,33 +163,41 @@ def compute_cube_neighborhood(environment_pc, target_pc, side_length):
         yield result
 
 
-def compute_neighborhoods(env_pc, target_pc, volume_description):
+def compute_neighborhoods(env_pc, target_pc, volume_description, sample_size=None):
     """
     Find a subset of points in a neighbourhood in the environment point cloud for each point in a target point cloud.
 
     :param env_pc: environment point cloud
     :param target_pc: point cloud that contains the points at which neighborhoods are to be calculated
     :param volume_description: volume object that describes the shape and size of the search volume
+    :param sample_size: maximum number of neighbors returned per target point; if None (default), all are returned
     :return: indices of neighboring points from the environment point cloud for each target point
     """
     volume_type = volume_description.get_type()
 
     if volume_type == Cell.TYPE:
-        neighbors1 = compute_cell_neighborhood(env_pc, target_pc, volume_description.side_length)
-        for x in neighbors1:
-            yield x
+        neighbors = compute_cell_neighborhood(env_pc, target_pc, volume_description.side_length)
     elif volume_type == Cube.TYPE:
         neighbors = compute_cube_neighborhood(env_pc, target_pc, volume_description.side_length)
-        for x in neighbors:
-            yield x
     elif volume_type == Sphere.TYPE:
         neighbors = compute_sphere_neighborhood(env_pc, target_pc, volume_description.radius)
-        for x in neighbors:
-            yield x
     elif volume_type == InfiniteCylinder.TYPE:
         neighbors = compute_cylinder_neighborhood(env_pc, target_pc, volume_description.radius)
-        for x in neighbors:
-            yield x
     else:
         raise ValueError(
             'Neighborhood computation error because volume type "{}" is unknown.'.format(volume_type))
+
+    for x in neighbors:
+        yield _subsample_if_necessary(x, sample_size)
+
+
+def _subsample_if_necessary(x, sample_size):
+    if sample_size:
+        sampled = [_subsample(elements, sample_size) if len(elements) > sample_size else elements for elements in x]
+        return sampled
+    else:
+        return x
+
+
+def _subsample(neighborhood, sample_size=None):
+    return np.random.choice(neighborhood, sample_size, replace=False)
