@@ -17,6 +17,30 @@ def get_point(point_cloud, index):
            point_cloud[keys.point]["z"]["data"][index]
 
 
+def get_xyz(sourcepc, neighborhoods):
+    """
+    Get x, y, z tuple of one or more points in a point cloud.
+    :param sourcepc:
+    :param neighborhoods:
+    :return:
+    """
+    xyz_grp = []
+    max_length = max(map(lambda x: len(x), neighborhoods))
+
+    xyz_grp = np.zeros((len(neighborhoods), 3, max_length))
+    mask = np.zeros((len(neighborhoods), 3, max_length))
+    for i, neighborhood in enumerate(neighborhoods):
+        n_neighbors = len(neighborhood)
+        if n_neighbors is 0:
+            continue
+        x, y, z = get_point(sourcepc, neighborhood)
+        xyz_grp[i, 0, :n_neighbors] = x
+        xyz_grp[i, 1, :n_neighbors] = y
+        xyz_grp[i, 2, :n_neighbors] = z
+        mask[i, :, :n_neighbors] = 1
+    return np.ma.MaskedArray(xyz_grp, mask == 0)
+
+
 def get_attribute_value(point_cloud, index, attribute_name):
     """
     Get value of a single attribute of a single point in a point cloud.
@@ -29,15 +53,17 @@ def get_attribute_value(point_cloud, index, attribute_name):
     return point_cloud[keys.point][attribute_name]["data"][index]
 
 
-def get_features(point_cloud, index, attribute_names):
+def get_features(point_cloud, attribute_names, index=None):
     """
     Get value of each attribute in a list for a single point in a point cloud.
 
     :param point_cloud: point cloud containing the point of interest
-    :param index: index of the point within the point cloud
     :param attribute_names: attribute names
+    :param index: index of the point within the point cloud
     :return: list of values of the attributes of the point
     """
+    if index is None:
+        index = list(range(point_cloud[keys.point]['x']["data"].shape[0]))
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
 

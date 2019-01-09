@@ -31,7 +31,7 @@ class TestUtils(unittest.TestCase):
         pc[keys.point]["color"] = {"type": "double", "data": cols}
         pc[keys.point]["flavor"] = {"type": "double", "data": flavs}
         x, y, z = utils.get_point(pc, 2)
-        c, f = utils.get_features(pc, 2, ("color", "flavor"))
+        c, f = utils.get_features(pc, ("color", "flavor"), 2)
         self.assertEqual(c, 0.5 * (x + y))
         self.assertEqual(f, 0.5 * (x - y))
 

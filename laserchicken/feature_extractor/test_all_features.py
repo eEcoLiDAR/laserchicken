@@ -48,6 +48,13 @@ def test_manyTargets_consistentOutput(feature):
                      [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
 
+@pytest.mark.parametrize("feature", feature_names)
+def test_manyTargetsBigEnvironment_consistentOutput(feature):
+    target_point_cloud = copy_point_cloud(_PC_260807)
+    compute_features(copy_point_cloud(_PC_1000), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
+                     [feature], volume=_CYLINDER)
+    _assert_consistent_attribute_length(target_point_cloud)
+
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_xAllZeros_consistentOutput(feature):
