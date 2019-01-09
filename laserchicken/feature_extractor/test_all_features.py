@@ -20,6 +20,7 @@ _TEST_FILE_NAME = 'AHN3.las'
 _TEST_NEIGHBORHOODS_FILE_NAME = 'AHN3_1000_random_neighbors.json'
 _TEST_DATA_SOURCE = 'testdata'
 
+_CYLINDER = InfiniteCylinder(4)
 _PC_260807 = read_las.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
 _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
