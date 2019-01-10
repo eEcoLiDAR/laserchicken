@@ -26,9 +26,12 @@ _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
 _PC_10 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=10, replace=False)))
-_1000_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
-_10_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_10, _CYLINDER))
-_260807_NEIGHBORHOODS_IN_10 = next(compute_neighbors.compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER))
+_1000_NEIGHBORHOODS_IN_260807 = next(
+    compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER, sample_size=500))
+_10_NEIGHBORHOODS_IN_260807 = next(
+    compute_neighbors.compute_neighborhoods(_PC_260807, _PC_10, _CYLINDER, sample_size=500))
+_260807_NEIGHBORHOODS_IN_10 = next(
+    compute_neighbors.compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER, sample_size=500))
 
 feature_names = [name for name in _feature_map()]
 
