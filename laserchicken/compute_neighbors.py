@@ -200,4 +200,4 @@ def _subsample_if_necessary(x, sample_size):
 
 
 def _subsample(neighborhood, sample_size=None):
-    return np.random.choice(neighborhood, sample_size, replace=False)
+    return list(np.random.choice(neighborhood, sample_size, replace=False))
