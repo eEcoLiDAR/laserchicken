@@ -6,7 +6,7 @@ import numpy as np
 from laserchicken import keys
 
 
-def generate_test_point_cloud():
+def generate_tiny_test_point_cloud():
     """Generate a simple but valid point cloud with 3 points."""
     pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
                        'y': {'type': 'double', 'data': np.array([2, 3, 4], dtype=np.float64)},
