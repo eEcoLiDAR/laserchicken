@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - General tests that all current and future feature extractors will be checked against.
+- Possibility to have a randomly subsampled (fixed) number of neighbors (eg for faster feature calculation) 
 
 ## Changed
+- Many feature calculations are done in a vectorized way
 
 ## Fixed
-- Fixed many feature extractors for corner cases (e.g. zero points)
+- Corner cases for many feature extractors (e.g. zero points)
 
 ## Removed
 
