@@ -265,7 +265,8 @@ class TestSpatialSelectionSHPFile(unittest.TestCase):
         pc_out = points_in_polygon_shp_file(pc_in, "testdata/ahn2_geometries_shp/ahn2_polygon.shp")
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
-        df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32)
+        # Seemingly redundant 'astype' call: since pandas 0.24 Dataframe() doesn't enforce the given dtype as before
+        df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32).astype(dtype=np.int32)
         df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
         assert (pd.DataFrame.equals(df, df_out))
 
