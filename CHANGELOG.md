@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Normalization module
 - General tests that all current and future feature extractors will be checked against.
 
 ## Changed
