@@ -79,7 +79,6 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         print('Timing Serial : {}'.format((time.time() - t0)))
         eigvals = np.array(eigvals)
 
-
         # print('self.neigh',self.neigh[-20])
         # print('eigvals_vect',eigvals_vect[-20])
         # print('eigvals',eigvals[-20])
@@ -106,27 +105,58 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         self.neigh = _1000_NEIGHBORHOODS_IN_260807
 
 
-class TestExtractNormalPlaneArtificialData(unittest.TestCase):
+class TestExtractNormalPlaneArtificialData0(unittest.TestCase):
     def test_from_eigen(self):
+        nvect = np.array([1., 2., 3.])
+        neighborhood, pc = create_point_cloud_in_plane_and_neighborhood(nvect)
         extractor = EigenValueVectorizeFeatureExtractor()
-        n1, n2, n3, slope_fit = extractor.extract(
-            self.pc, self.neighborhood, None, None, None)[3:]
-        np.testing.assert_allclose(self.nvect[0], n1[0])
-        np.testing.assert_allclose(self.nvect[1], n2[0])
-        np.testing.assert_allclose(self.nvect[2], n3[0])
-        np.testing.assert_allclose(slope_fit, self.slope)
 
-    def setUp(self):
-        """Generate some points in a plane."""
-        self.zaxis = np.array([0., 0., 1.])
-        self.nvect = np.array([1., 2., 3.])
-        self.nvect /= np.linalg.norm(self.nvect)
-        self.slope = np.dot(self.nvect, self.zaxis)
-        point = _generate_random_points_in_plane(self.nvect, dparam=0, npts=100)
-        self.pc = {keys.point: {'x': {'type': 'double', 'data': point[:, 0]},
-                                'y': {'type': 'double', 'data': point[:, 1]},
-                                'z': {'type': 'double', 'data': point[:, 2]}}}
-        self.neighborhood = [[3, 4, 5, 6, 7], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9], [1, 2, 7, 8, 9]]
+        n1, n2, n3, slope_fit = extractor.extract(pc, neighborhood, None, None, None)[3:]
+
+        np.testing.assert_allclose(nvect[0], n1[0])
+        np.testing.assert_allclose(nvect[1], n2[0])
+        np.testing.assert_allclose(nvect[2], n3[0])
+
+
+class TestExtractSlopeArtificialData(unittest.TestCase):
+    def test_001_has_slope_0(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 0., 1.]), 0.)
+
+    def test_011_has_slope_1(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 1., 1.]), 1.)
+
+    def test_0min11_has_slope_1(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., -1., 1.]), 1.)
+
+    def test_00251_has_slope_025(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 0.25, 1.]), 0.25)
+
+    def test_021_has_slope_2(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 2., 1.]), 2.)
+
+    def test_031_has_slope_3(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 3., 1.]), 3.)
+
+    def test_0205_has_slope_4(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 2., 0.5]), 4.)
+
+    @staticmethod
+    def assert_data_with_normal_vector_has_slope(nvect, expected_slope):
+        """Create random point cloud with normal vector nvect and assert that estimated slope has expected value."""
+        neighborhood, pc = create_point_cloud_in_plane_and_neighborhood(nvect)
+        extractor = EigenValueVectorizeFeatureExtractor()
+        slope = extractor.extract(pc, neighborhood, None, None, None)[6]
+        np.testing.assert_allclose(slope, expected_slope, atol=1e-6)
+
+
+def create_point_cloud_in_plane_and_neighborhood(nvect):
+    nvect /= np.linalg.norm(nvect)
+    point = _generate_random_points_in_plane(nvect, dparam=0, npts=100)
+    pc = {keys.point: {'x': {'type': 'double', 'data': point[:, 0]},
+                       'y': {'type': 'double', 'data': point[:, 1]},
+                       'z': {'type': 'double', 'data': point[:, 2]}}}
+    neighborhood = [[3, 4, 5, 6, 7], [1, 2, 7, 8, 9], [1, 7, 8, 9], [1, 2, 7, 9], [2, 7, 8, 9]]
+    return neighborhood, pc
 
 
 def _generate_random_points_in_plane(nvect, dparam, npts, eps=0.0):
