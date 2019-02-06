@@ -125,6 +125,9 @@ class TestExtractSlopeArtificialData(unittest.TestCase):
     def test_011_has_slope_1(self):
         self.assert_data_with_normal_vector_has_slope(np.array([0., 1., 1.]), 1.)
 
+    def test_01min1_has_slope_1(self):
+        self.assert_data_with_normal_vector_has_slope(np.array([0., 1., -1.]), 1.)
+
     def test_0min11_has_slope_1(self):
         self.assert_data_with_normal_vector_has_slope(np.array([0., -1., 1.]), 1.)
 
