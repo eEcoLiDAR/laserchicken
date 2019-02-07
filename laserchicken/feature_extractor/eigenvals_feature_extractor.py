@@ -30,8 +30,9 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         self._mask_rows_with_too_few_points(xyz_grp)
 
         e_vals, eigvects = self._get_eigen_vals_and_vects(xyz_grp)
-        normals = eigvects[:, :, 2]
-        slope = np.dot(normals, np.array([0., 0., 1.]))
+        normals = eigvects[:, :, 2]  # For all instances, take all elements of the 3th (smallest) vector.(normals, axis=1)
+        alpha = np.arccos(np.dot(normals, np.array([0., 0., 1.])))
+        slope = np.tan(alpha)
 
         return e_vals[:, 0], e_vals[:, 1], e_vals[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope
 
