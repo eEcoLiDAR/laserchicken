@@ -67,6 +67,23 @@ def get_features(point_cloud, attribute_names, index=None):
     return (point_cloud[keys.point][f]["data"][index] for f in attribute_names)
 
 
+def create_point_cloud(x, y, z):
+    """
+    Create a point cloud object given only the x y z values.
+
+    :param x: x attribute values
+    :param y: y attribute values
+    :param z: z attribute values
+    :return: point cloud object
+    """
+    return {keys.point: {'x': {'type': 'float', 'data': np.array(x)},
+                         'y': {'type': 'float', 'data': np.array(y)},
+                         'z': {'type': 'float', 'data': np.array(z)}},
+            keys.point_cloud: {},
+            keys.provenance: []
+            }
+
+
 def copy_point_cloud(source_point_cloud, array_mask=None):
     """
     Makes a deep copy of a point cloud dict using the array mask when copying the points.

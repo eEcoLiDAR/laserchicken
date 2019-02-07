@@ -95,26 +95,6 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
             if provided_feature in features_to_do:
                 features_to_do.remove(provided_feature)
 
-    # for feature in extended_features:
-    #     if (target_idx_base == 0) and (not overwrite) and (feature in target_point_cloud[keys.point]):
-    #         continue  # Skip feature calc if it is already there and we do not overwrite
-    #
-    #     if verbose:
-    #         sys.stdout.write('Feature "{}"\n'.format(feature))
-    #         sys.stdout.flush()
-    #         start = time.time()
-    #
-    #     extractor = FEATURES[feature]()
-    #     _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base,
-    #                            target_point_cloud, extractor, volume, overwrite, kwargs)
-    #     utils.add_metadata(target_point_cloud, type(
-    #         extractor).__module__, extractor.get_params())
-    #
-    #     if verbose:
-    #         elapsed = time.time() - start
-    #         sys.stdout.write(' took {:.2f} seconds\n'.format(elapsed))
-    #         sys.stdout.flush()
-
     _keep_only_wanted_features(target_point_cloud, wanted_feature_names)
 
 
