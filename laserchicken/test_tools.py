@@ -105,21 +105,22 @@ property double offset
         return "POLYGON(( 1.5 10.0, 1.5 -10.0, -1.5 -10.0, -1.5 1.0, 1.5 10.0 ))"
 
 
-def create_point_cloud(x, y, z):
+def create_point_cloud(x, y, z, normalized_z=None):
     """
     Create a point cloud object given only the x y z values.
 
     :param x: x attribute values
     :param y: y attribute values
     :param z: z attribute values
+    :param normalized_z: optional normalized z attribute values
     :return: point cloud object
     """
-    return {keys.point: {'x': {'type': 'float', 'data': np.array(x)},
-                         'y': {'type': 'float', 'data': np.array(y)},
-                         'z': {'type': 'float', 'data': np.array(z)}},
-            keys.point_cloud: {},
-            keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]
-            }
+    point_cloud = {keys.point: {'x': {'type': 'float', 'data': np.array(x)}, 'y': {'type': 'float', 'data': np.array(y)},
+                            'z': {'type': 'float', 'data': np.array(z)}}, keys.point_cloud: {},
+               keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]}
+    if normalized_z is not None:
+        point_cloud[keys.point][keys.normalized_height] = {'type': 'float', 'data': np.array(normalized_z)}
+    return point_cloud
 
 
 def create_points_in_xy_grid(z_function):

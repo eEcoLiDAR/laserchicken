@@ -10,6 +10,7 @@ class RangeZFeatureExtractor(AbstractFeatureExtractor):
 
     DEFAULT_MAX = float('NaN')
     DEFAULT_MIN = float('NaN')
+    DATA_KEY = 'z'
 
     @classmethod
     def requires(cls):
@@ -19,9 +20,9 @@ class RangeZFeatureExtractor(AbstractFeatureExtractor):
     def provides(cls):
         return ['max_z', 'min_z', 'range_z']
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
+    def extract(self, source_point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         if neighborhood:
-            z = sourcepc[point]['z']['data'][neighborhood]
+            z = source_point_cloud[point][self.DATA_KEY]['data'][neighborhood]
             max_z = np.max(z) if len(z) > 0 else self.DEFAULT_MAX
             min_z = np.min(z) if len(z) > 0 else self.DEFAULT_MIN
             range_z = max_z - min_z
