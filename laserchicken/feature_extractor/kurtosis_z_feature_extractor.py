@@ -7,6 +7,8 @@ from laserchicken.keys import point
 
 class KurtosisZFeatureExtractor(AbstractFeatureExtractor):
     """Calculates the variation on the z axis."""
+    DATA_KEY = 'z'
+
     @classmethod
     def requires(cls):
         return []
@@ -17,7 +19,7 @@ class KurtosisZFeatureExtractor(AbstractFeatureExtractor):
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
-            z = sourcepc[point]['z']['data'][neighborhood]
+            z = sourcepc[point][self.DATA_KEY]['data'][neighborhood]
             kurtosis_z = stat.kurtosis(z)
         else:
             kurtosis_z = np.NaN

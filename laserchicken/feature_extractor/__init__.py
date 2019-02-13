@@ -25,6 +25,7 @@ from .skew_norm_z_feature_extractor import SkewNormZFeatureExtractor
 from .mean_std_coeff_norm_z_feature_extractor import MeanStdCoeffNormZFeatureExtractor
 from .var_norm_z_feature_extractor import VarianceNormZFeatureExtractor
 from .range_norm_z_feature_extractor import RangeNormZFeatureExtractor
+from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
 
 
 def _feature_map(module_name=__name__):
