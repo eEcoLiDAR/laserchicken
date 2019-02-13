@@ -17,7 +17,7 @@ from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtracto
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .median_z_feature_extractor import MedianZFeatureExtractor
 from .range_z_feature_extractor import RangeZFeatureExtractor
-from .var_z_feature_extractor import VariationZFeatureExtractor
+from .var_z_feature_extractor import VarianceZFeatureExtractor
 from .mean_std_coeff_z_feature_extractor import MeanStdCoeffZFeatureExtractor
 from .skew_z_feature_extractor import SkewZFeatureExtractor
 from .kurtosis_z_feature_extractor import KurtosisZFeatureExtractor
