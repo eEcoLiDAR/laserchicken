@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.stats.stats as stat
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point

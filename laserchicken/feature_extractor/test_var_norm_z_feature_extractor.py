@@ -2,9 +2,7 @@ import unittest
 
 import numpy as np
 
-from laserchicken import read_las
 from laserchicken.feature_extractor.var_norm_z_feature_extractor import VarianceNormZFeatureExtractor
-from laserchicken.feature_extractor.var_z_feature_extractor import VarianceZFeatureExtractor
 from laserchicken.test_tools import create_point_cloud
 
 
