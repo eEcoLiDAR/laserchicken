@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Many feature calculations are done in a vectorized way
 - z_entropy feature renamed to entropy_z for consistency
+- density_absolute_mean feature renamed to density_absolute_mean_z for consistency
 
 ## Fixed
 - Corner cases for many feature extractors (e.g. zero points)

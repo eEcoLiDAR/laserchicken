@@ -6,7 +6,7 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/23.
 import numpy as np
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
-from laserchicken.keys import point
+from laserchicken.keys import point, normalized_height
 
 # classification according to
 # http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
@@ -43,7 +43,7 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['pulse_penetration_ratio', 'density_absolute_mean']
+        return ['pulse_penetration_ratio', 'density_absolute_mean_z', 'density_absolute_mean_norm_z']
 
     def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
@@ -66,10 +66,11 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
             ground_indices, len(neighborhood))
 
         non_ground_indices = [i for i in neighborhood if not _is_ground(i, point_cloud)]
-        density_absolute_mean = self._get_density_absolute_mean(
-            non_ground_indices, point_cloud)
+        density_absolute_mean_z = self._get_density_absolute_mean(non_ground_indices, point_cloud, 'z')
+        density_absolute_mean_norm_z = self._get_density_absolute_mean(
+            non_ground_indices, point_cloud, normalized_height)
 
-        return pulse_penetration_ratio, density_absolute_mean
+        return pulse_penetration_ratio, density_absolute_mean_z, density_absolute_mean_norm_z
 
     @staticmethod
     def _get_ground_indices(point_cloud, ground_tags):
@@ -85,10 +86,9 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         n_ground = len(ground_indices)
         return float(n_ground) / n_total
 
-    @staticmethod
-    def _get_density_absolute_mean(non_ground_indices, source_point_cloud):
+    def _get_density_absolute_mean(self, non_ground_indices, source_point_cloud, height_key):
         n_non_ground = len(non_ground_indices)
-        z_non_ground = source_point_cloud[point]['z']["data"][non_ground_indices]
+        z_non_ground = source_point_cloud[point][height_key]["data"][non_ground_indices]
         if n_non_ground == 0:
             density_absolute_mean = 0.
         else:
