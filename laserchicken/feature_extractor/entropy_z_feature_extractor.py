@@ -5,11 +5,13 @@ from laserchicken import keys
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 
 
-class EntropyFeatureExtractor(AbstractFeatureExtractor):
+class EntropyZFeatureExtractor(AbstractFeatureExtractor):
     # TODO: make this settable from command line
     layer_thickness = 0.5
     z_min = None
     z_max = None
+
+    DATA_KEY = "z"
 
     @classmethod
     def requires(cls):
@@ -17,7 +19,7 @@ class EntropyFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return ['z_entropy']
+        return ['entropy_z']
 
     def get_params(self):
         p = [self.layer_thickness]
@@ -30,7 +32,7 @@ class EntropyFeatureExtractor(AbstractFeatureExtractor):
     def extract(self, source_pc, neighborhood, target_pc, target_index, volume_description):
         if len(neighborhood) == 0:
             return 0
-        z = source_pc[keys.point]["z"]["data"][neighborhood]
+        z = source_pc[keys.point][self.DATA_KEY]["data"][neighborhood]
         _z_min = np.min(z) if self.z_min is None else self.z_min
         _z_max = np.max(z) if self.z_max is None else self.z_max
         if _z_min == _z_max:

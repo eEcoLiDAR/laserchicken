@@ -11,7 +11,7 @@ from laserchicken import keys, utils
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
-from .entropy_feature_extractor import EntropyFeatureExtractor
+from .entropy_z_feature_extractor import EntropyZFeatureExtractor
 from .percentile_feature_extractor import PercentileFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
@@ -26,6 +26,7 @@ from .mean_std_coeff_norm_z_feature_extractor import MeanStdCoeffNormZFeatureExt
 from .var_norm_z_feature_extractor import VarianceNormZFeatureExtractor
 from .range_norm_z_feature_extractor import RangeNormZFeatureExtractor
 from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
+from .entropy_norm_z_feature_extractor import EntropyNormZFeatureExtractor
 
 
 def _create_feature_map(module_name=__name__):
