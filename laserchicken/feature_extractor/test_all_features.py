@@ -7,8 +7,9 @@ import numpy as np
 from laserchicken import compute_neighbors
 from laserchicken import keys
 from laserchicken import read_las
+from laserchicken import read_ply
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
-from laserchicken.keys import point
+from laserchicken.keys import point, normalized_height
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 from laserchicken.feature_extractor import *
@@ -18,12 +19,12 @@ from . import compute_features
 
 np.random.seed(1234)
 
-_TEST_FILE_NAME = 'AHN3.las'
+_TEST_FILE_NAME = 'AHN3.ply'
 _TEST_NEIGHBORHOODS_FILE_NAME = 'AHN3_1000_random_neighbors.json'
 _TEST_DATA_SOURCE = 'testdata'
 
 _CYLINDER = InfiniteCylinder(4)
-_PC_260807 = read_las.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
+_PC_260807 = read_ply.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
 _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
 _PC_10 = copy_point_cloud(_PC_260807, array_mask=(
@@ -37,13 +38,13 @@ _260807_NEIGHBORHOODS_IN_10 = next(
 
 feature_names = [name for name in _create_feature_map()]
 
+
 def test_no_duplicate_feature_registrations():
     pairs = _find_name_extractor_pairs(__name__)
     for name, _ in pairs:
         matches = [extractor for extractor_name, extractor in pairs if extractor_name is name]
         np.testing.assert_equal(len(matches), 1,
                                 'Duplicate registrations for key "{}" by extractors: {}'.format(name, matches))
-
 
 
 @pytest.mark.parametrize("feature", feature_names)
@@ -60,6 +61,7 @@ def test_manyTargets_consistentOutput(feature):
     compute_features(copy_point_cloud(_PC_10), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
                      [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
+
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_manyTargetsBigEnvironment_consistentOutput(feature):
@@ -140,11 +142,13 @@ def test_inputNotChanged(feature):
     assert json.dumps(original_neighborhoods) == json.dumps(neighborhoods)
 
 
-def _create_point_cloud(x=None, y=None, z=None, n=10):
+def _create_point_cloud(x=None, y=None, z=None, norm_z=None, n=10):
     tag = GROUND_TAGS[0]
     pc = {point: {'x': {'data': np.array([x if x is not None else i for i in range(n)]), 'type': 'float'},
                   'y': {'data': np.array([y if y is not None else i for i in range(n)]), 'type': 'float'},
                   'z': {'data': np.array([z if z is not None else i for i in range(n)]), 'type': 'float'},
+                  normalized_height: {'data': np.array([norm_z if norm_z is not None else i for i in range(n)]),
+                                      'type': 'float'},
                   'raw_classification': {'data': np.array([i if i % 2 == 0 else tag for i in range(n)]),
                                          'type': 'float'}}}
     return pc
