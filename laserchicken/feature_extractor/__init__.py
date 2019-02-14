@@ -28,19 +28,26 @@ from .range_norm_z_feature_extractor import RangeNormZFeatureExtractor
 from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
 
 
-def _feature_map(module_name=__name__):
+def _create_feature_map(module_name=__name__):
     """Construct a mapping from feature names to feature extractor classes."""
+    name_extractor_pairs = _find_name_extractor_pairs(module_name)
+    return {feature_name: extractor for feature_name, extractor in name_extractor_pairs}
+
+
+def _find_name_extractor_pairs(module_name):
     module = importlib.import_module(module_name)
-    return {feature_name: extractor
-            for name, extractor in vars(module).items() if re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name)
-            for feature_name in extractor.provides()
-            }
+    name_extractor_pairs = [(feature_name, extractor)
+                            for name, extractor in vars(module).items() if
+                            re.match('^[A-Z][a-zA-Z0-9_]*FeatureExtractor$', name)
+                            for feature_name in extractor.provides()]
+    return name_extractor_pairs
 
 
-FEATURES = _feature_map()
+FEATURES = _create_feature_map()
 
 
-def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, feature_names, volume, overwrite=False,
+def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, feature_names, volume,
+                     overwrite=False,
                      verbose=True, **kwargs):
     """
     Compute features for each target and store result as point attributes in target point cloud.
@@ -119,7 +126,8 @@ def _verify_feature_names(feature_names):
                          .format(', '.join(unknown_features), ', '.join(FEATURES.keys())))
 
 
-def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, extractor, volume, overwrite, kwargs):
+def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, extractor, volume,
+                           overwrite, kwargs):
     n_targets = len(neighborhoods)
 
     for k in kwargs:
@@ -130,8 +138,9 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
                       for i in range(n_features)]
 
     if hasattr(extractor, 'is_vectorized'):
-        _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
-                                     target_idx_base, target_point_cloud, volume)
+        _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets,
+                                         neighborhoods,
+                                         target_idx_base, target_point_cloud, volume)
     else:
         _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets,
                                           neighborhoods, target_idx_base, target_point_cloud, volume)
@@ -142,7 +151,8 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
             if feature not in target_point_cloud[keys.point]:
                 continue
 
-            target_point_cloud[keys.point][feature]["data"] = np.hstack([target_point_cloud[keys.point][feature]["data"], feature_values[i]])
+            target_point_cloud[keys.point][feature]["data"] = np.hstack(
+                [target_point_cloud[keys.point][feature]["data"], feature_values[i]])
 
         elif overwrite or (feature not in target_point_cloud[keys.point]):
             target_point_cloud[keys.point][feature] = {
