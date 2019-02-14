@@ -5,6 +5,7 @@ from laserchicken.keys import normalized_height
 import numpy as np
 
 from laserchicken.test_tools import create_point_cloud
+from laserchicken.utils import add_metadata
 from laserchicken.volume_specification import Cell
 
 
@@ -24,7 +25,9 @@ def normalize(point_cloud, cell_size=None):
             for neighborhood in neighborhood_set:
                 _, min_z, _ = range_extractor().extract(point_cloud, neighborhood, None, None, None)
                 point_cloud[keys.point][normalized_height]['data'][neighborhood] = z[neighborhood] - min_z
-
+    import sys
+    module = sys.modules[__name__]
+    add_metadata(point_cloud, module, {'cell_size':cell_size})
     return point_cloud
 
 
