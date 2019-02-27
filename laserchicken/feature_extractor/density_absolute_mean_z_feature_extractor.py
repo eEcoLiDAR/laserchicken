@@ -17,8 +17,9 @@ def _is_ground(i, point_cloud):
     return point_cloud[point]['raw_classification']["data"][i] in GROUND_TAGS
 
 
-class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
+class DensityAbsoluteMeanZFeatureExtractor(AbstractFeatureExtractor):
     """Feature extractor for the point density."""
+    DATA_KEY = 'z'
 
     @classmethod
     def requires(cls):
@@ -43,7 +44,7 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['pulse_penetration_ratio']
+        return ['density_absolute_mean_z']
 
     def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
@@ -58,14 +59,12 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         """
         if 'raw_classification' not in point_cloud[point]:
             raise ValueError(
-                'Missing raw_classification attribute which is necessary for calculating pulse_penetratio and '
-                'density_absolute_mean features.')
+                'Missing raw_classification attribute which is necessary for calculating density_absolute_mean.')
 
-        ground_indices = [i for i in neighborhood if _is_ground(i, point_cloud)]
-        pulse_penetration_ratio = self._get_pulse_penetration_ratio(
-            ground_indices, len(neighborhood))
+        non_ground_indices = [i for i in neighborhood if not _is_ground(i, point_cloud)]
+        density_absolute_mean_z = self._get_density_absolute_mean(non_ground_indices, point_cloud)
 
-        return pulse_penetration_ratio
+        return density_absolute_mean_z
 
     @staticmethod
     def _get_ground_indices(point_cloud, ground_tags):
@@ -75,11 +74,15 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
                 index_grd.append(ipt)
         return index_grd
 
-    @staticmethod
-    def _get_pulse_penetration_ratio(ground_indices, n_total_points):
-        n_total = max(n_total_points, 1)
-        n_ground = len(ground_indices)
-        return float(n_ground) / n_total
+    def _get_density_absolute_mean(self, non_ground_indices, source_point_cloud):
+        n_non_ground = len(non_ground_indices)
+        z_non_ground = source_point_cloud[point][self.DATA_KEY]["data"][non_ground_indices]
+        if n_non_ground == 0:
+            density_absolute_mean = 0.
+        else:
+            density_absolute_mean = float(
+                len(z_non_ground[z_non_ground > np.mean(z_non_ground)])) / n_non_ground * 100.
+        return density_absolute_mean
 
     def get_params(self):
         """

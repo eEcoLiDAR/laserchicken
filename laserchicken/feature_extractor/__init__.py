@@ -29,6 +29,8 @@ from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
 from .entropy_norm_z_feature_extractor import EntropyNormZFeatureExtractor
 from .median_norm_z_feature_extractor import MedianNormZFeatureExtractor
 from .percentile_norm_z_feature_extractor import PercentileNormZFeatureExtractor
+from .density_absolute_mean_z_feature_extractor import DensityAbsoluteMeanZFeatureExtractor
+from .density_absolute_mean_norm_z_feature_extractor import DensityAbsoluteMeanNormZFeatureExtractor
 
 
 def _create_feature_map(module_name=__name__):
