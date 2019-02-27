@@ -28,6 +28,7 @@ from .range_norm_z_feature_extractor import RangeNormZFeatureExtractor
 from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
 from .entropy_norm_z_feature_extractor import EntropyNormZFeatureExtractor
 from .median_norm_z_feature_extractor import MedianNormZFeatureExtractor
+from .percentile_norm_z_feature_extractor import PercentileNormZFeatureExtractor
 
 
 def _create_feature_map(module_name=__name__):
