@@ -74,15 +74,8 @@ def _read_block(block, ply_body):
 
 
 def _cast(value, value_type):
-    if value_type == 'float':
-        dtype = np.float32
-    elif value_type == 'double':
-        dtype = np.float64
-    elif value_type == 'int':
-        dtype = np.int32
-    else:
-        raise ValueError('Invalid type: {}'.format(value_type))
-    return dtype(value)
+    dtype = np.dtype(value_type)
+    return dtype.type(value)
 
 
 def _read_elements(ply_body, properties, property_names, block_type, number_of_elements):
@@ -101,14 +94,7 @@ def _get_properties(block):
     properties = {}
     property_names = []
     for prop in block['properties']:
-        if prop['type'] == 'float':
-            dtype = np.float32
-        elif prop['type'] == 'double':
-            dtype = np.float64
-        elif prop['type'] == 'int':
-            dtype = np.int32
-        else:
-            raise ValueError('Property has no valid type: {}'.format(prop))
+        dtype = np.dtype(prop['type'])
         property_name = prop['name']
         properties[property_name] = {'type': prop['type'], 'data': np.zeros(block['number_of_elements'], dtype)}
         property_names.append(property_name)

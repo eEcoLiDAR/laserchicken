@@ -1,12 +1,13 @@
 import numpy as np
-import scipy.stats.stats as stat
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
 
 
-class VariationZFeatureExtractor(AbstractFeatureExtractor):
+class VarianceZFeatureExtractor(AbstractFeatureExtractor):
     """Calculates the variation on the z axis."""
+    DATA_KEY = 'z'
+
     @classmethod
     def requires(cls):
         return []
@@ -17,7 +18,7 @@ class VariationZFeatureExtractor(AbstractFeatureExtractor):
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
-            z = sourcepc[point]['z']['data'][neighborhood]
+            z = sourcepc[point][self.DATA_KEY]['data'][neighborhood]
             var_z = np.var(z)
         else:
             var_z = np.NaN

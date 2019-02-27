@@ -5,7 +5,8 @@ from laserchicken.keys import point
 
 
 class MeanStdCoeffZFeatureExtractor(AbstractFeatureExtractor):
-    """Calculates mean, standard deviation and the ration between the two."""
+    """Calculates mean, standard deviation and the ratio between the two."""
+    DATA_KEY = 'z'
 
     @classmethod
     def requires(cls):
@@ -17,7 +18,7 @@ class MeanStdCoeffZFeatureExtractor(AbstractFeatureExtractor):
 
     def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
         if neighborhood:
-            z = sourcepc[point]['z']['data'][neighborhood]
+            z = sourcepc[point][self.DATA_KEY]['data'][neighborhood]
             mean_z = np.mean(z)
             std_z = np.std(z)
             coeff_var_z = std_z / mean_z
