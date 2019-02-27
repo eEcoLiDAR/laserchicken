@@ -7,6 +7,8 @@ import numpy as np
 from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
+from laserchicken.keys import point
+from laserchicken.test_tools import create_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 
 
@@ -16,10 +18,8 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
     def test_pulse(self):
         """Pulse extractor on artificial data should yield expected feature values."""
         extractor = PulsePenetrationFeatureExtractor()
-        pp_ratio, density_absolute_mean = extractor.extract(
-            self.point_cloud, self.neighborhood, None, None, None)
+        pp_ratio = extractor.extract(self.point_cloud, self.neighborhood, None, None, None)
         self.assertEqual(pp_ratio, self.expected_pp_ratio)
-        self.assertEqual(density_absolute_mean, 50.)
 
     def _set_plane_data(self):
         """Create two planes of ground point at z = +- 0.1."""

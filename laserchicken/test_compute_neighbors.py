@@ -86,6 +86,21 @@ class TestComputeNeighbors(unittest.TestCase):
         neighborhood = next(neighborhoods)
         assert_equal(len(neighborhood[0]), 4)
 
+    def test_cell_grid_sample_size(self):
+        _, points = create_points_in_xy_grid(lambda x, y: np.random.rand())
+        point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])
+        targets = create_point_cloud(np.array([4.5]), np.array([4.5]), np.array([4.5]))  # Center of grid
+        neighborhoods = compute_neighborhoods(point_cloud, targets, Cell(5), sample_size=3)
+        neighborhood = next(neighborhoods)
+        assert_equal(len(neighborhood[0]), 3)
+
+    def test_cell_grid_larger_sample_size(self):
+        _, points = create_points_in_xy_grid(lambda x, y: np.random.rand())
+        point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])
+        targets = create_point_cloud(np.array([4.5]), np.array([4.5]), np.array([4.5]))  # Center of grid
+        neighborhoods = compute_neighborhoods(point_cloud, targets, Cell(5), sample_size=10000)  # Result 36 neighbors
+        _ = next(neighborhoods)
+
     def test_cell_grid_origin(self):
         _, points = create_points_in_xy_grid(lambda x, y: np.random.rand())
         point_cloud = create_point_cloud(points[:, 0], points[:, 1], points[:, 2])

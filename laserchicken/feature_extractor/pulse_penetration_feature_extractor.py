@@ -6,11 +6,15 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/23.
 import numpy as np
 
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
-from laserchicken.keys import point
+from laserchicken.keys import point, normalized_height
 
 # classification according to
 # http://www.asprs.org/wp-content/uploads/2010/12/LAS_1-4_R6.pdf
 GROUND_TAGS = [2]
+
+
+def _is_ground(i, point_cloud):
+    return point_cloud[point]['raw_classification']["data"][i] in GROUND_TAGS
 
 
 class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
@@ -39,7 +43,7 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['pulse_penetration_ratio', 'density_absolute_mean']
+        return ['pulse_penetration_ratio']
 
     def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
@@ -57,16 +61,11 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
                 'Missing raw_classification attribute which is necessary for calculating pulse_penetratio and '
                 'density_absolute_mean features.')
 
-        class_neighbors = [point_cloud[point]['raw_classification']["data"][n] for n in neighborhood]
-
-        ground_indices = self._get_ground_indices(class_neighbors, GROUND_TAGS)
-
+        ground_indices = [i for i in neighborhood if _is_ground(i, point_cloud)]
         pulse_penetration_ratio = self._get_pulse_penetration_ratio(
-            ground_indices, class_neighbors)
-        density_absolute_mean = self._get_density_absolute_mean(
-            ground_indices, point_cloud)
+            ground_indices, len(neighborhood))
 
-        return pulse_penetration_ratio, density_absolute_mean
+        return pulse_penetration_ratio
 
     @staticmethod
     def _get_ground_indices(point_cloud, ground_tags):
@@ -77,21 +76,10 @@ class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
         return index_grd
 
     @staticmethod
-    def _get_pulse_penetration_ratio(ground_indices, class_neighbors):
-        n_total = np.max((len(class_neighbors), 1))
+    def _get_pulse_penetration_ratio(ground_indices, n_total_points):
+        n_total = max(n_total_points, 1)
         n_ground = len(ground_indices)
         return float(n_ground) / n_total
-
-    @staticmethod
-    def _get_density_absolute_mean(ground_indices, source_point_cloud):
-        n_ground = len(ground_indices)
-        z_ground = source_point_cloud[point]['z']["data"][ground_indices]
-        if n_ground == 0:
-            density_absolute_mean = 0.
-        else:
-            density_absolute_mean = float(
-                len(z_ground[z_ground > np.mean(z_ground)])) / n_ground * 100.
-        return density_absolute_mean
 
     def get_params(self):
         """

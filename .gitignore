@@ -105,3 +105,5 @@ ENV/
 .idea/tasks.xml
 .idea/eEcoLiDAR.iml
 .idea/misc.xml
+.idea/dictionaries/
+.idea/inspectionProfiles/
