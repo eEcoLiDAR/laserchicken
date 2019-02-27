@@ -6,7 +6,7 @@ from laserchicken.feature_extractor.median_norm_z_feature_extractor import Media
 from laserchicken.test_tools import create_point_cloud
 
 
-class TestMedianZFeatureExtractor(unittest.TestCase):
+class TestMedianNormZFeatureExtractor(unittest.TestCase):
     def test_use_norm_z(self):
         x = y = np.array([0, 0, 0])
         z = np.array([2, 2, 2])
