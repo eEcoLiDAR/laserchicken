@@ -4,16 +4,16 @@ import unittest
 import itertools
 import numpy as np
 from laserchicken import read_las, keys
-from laserchicken.feature_extractor.percentile_feature_extractor import PercentileFeatureExtractor
+from laserchicken.feature_extractor.percentile_z_feature_extractor import PercentileZFeatureExtractor
 
 
-class TestPercentileFeatureExtractorArtificialData(unittest.TestCase):
+class TestPercentileZFeatureExtractorArtificialData(unittest.TestCase):
     """Test percentile feature extractor on artificial data."""
 
     point_cloud = None
 
     def test_percentile(self):
-        extractor = PercentileFeatureExtractor()
+        extractor = PercentileZFeatureExtractor()
         per = extractor.extract(self.point_cloud, self.index, None, None, None)
         test_values = np.linspace(0.1, 1.0, 10)
         self.assertTrue(np.allclose(per, test_values))
@@ -48,7 +48,7 @@ class TestPercentileFeatureExtractorRealData(unittest.TestCase):
     def test_percentile(self):
         """Compute the percentile of a given selection."""
 
-        extractor = PercentileFeatureExtractor()
+        extractor = PercentileZFeatureExtractor()
         extractor.extract(self.point_cloud, self.index, None, None, None)
 
     def setUp(self):
