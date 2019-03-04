@@ -18,8 +18,7 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
     def test_pulse(self):
         """Pulse extractor on artificial data should yield expected feature values."""
         extractor = PulsePenetrationFeatureExtractor()
-        pp_ratio, _ = extractor.extract(
-            self.point_cloud, self.neighborhood, None, None, None)
+        pp_ratio = extractor.extract(self.point_cloud, self.neighborhood, None, None, None)
         self.assertEqual(pp_ratio, self.expected_pp_ratio)
 
     def _set_plane_data(self):
@@ -69,23 +68,6 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
 
         # theo val
         self.expected_pp_ratio = float(self.points_per_plane) / n_points
-
-
-class TestDensityAbsoluteMeanFeatureExtractorArtificialData(unittest.TestCase):
-    def test_simle_case_correct(self):
-        """Check that one out of 4 points above mean of only vegetation points yields a value of 25"""
-        ground = 2  # Ground tag
-        veg = 4  # Medium vegetation tag
-        x = y = z = np.array([10, 10, 10, 1, 1, 1, 2])
-        point_cloud = create_point_cloud(x, y, z)
-        point_cloud[point]['raw_classification'] = {'data': np.array([ground, ground, ground, veg, veg, veg, veg]),
-                                                    'type': 'double'}
-        neighborhood = list(range(len(x)))
-
-        extractor = PulsePenetrationFeatureExtractor()
-        _, density_absolute_mean = extractor.extract(point_cloud, neighborhood, None, None, None)
-
-        self.assertAlmostEqual(density_absolute_mean, 25)
 
 
 class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):

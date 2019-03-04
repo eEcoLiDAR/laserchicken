@@ -3,9 +3,12 @@ import scipy.stats.stats as stats
 from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
 from laserchicken.keys import point
 
+PERCENTILES = range(10, 110, 10)
 
-class PercentileFeatureExtractor(AbstractFeatureExtractor):
+
+class PercentileZFeatureExtractor(AbstractFeatureExtractor):
     """Height percentiles feature extractor class."""
+    DATA_KEY = 'z'
 
     @classmethod
     def requires(cls):
@@ -30,20 +33,21 @@ class PercentileFeatureExtractor(AbstractFeatureExtractor):
 
         :return: List of feature names
         """
-        return ['perc_' + str(i) for i in range(10, 110, 10)]
+        return ['perc_{}_z'.format(i) for i in PERCENTILES]
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
+    def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
         :param point_cloud: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
-        :target_index: index of the target point in the target pointcloud
+        :param target_index: index of the target point within the target point cloud
+        :param volume_description: cell, sphere, cylinder or voxel size description
+        :target_index: index of the target point in the target point cloud
         :return: feature value
         """
-        z = sourcepc[point]['z']['data'][neighborhood]
-        percentiles = range(10, 110, 10)
-        return [stats.scoreatpercentile(z, p) for p in percentiles]
+        z = point_cloud[point][self.DATA_KEY]['data'][neighborhood]
+        return [stats.scoreatpercentile(z, p) for p in PERCENTILES]
 
     def get_params(self):
         """
