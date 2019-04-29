@@ -13,7 +13,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return ['eigenv_1', 'eigenv_2', 'eigenv_3', 'normal_vector_1', 'normal_vector_2', 'normal_vector_3', 'slope']
+        return ['eigenv_1', 'eigenv_2', 'eigenv_3', 'normal_vector_1', 'normal_vector_2', 'normal_vector_3', 'slope', 'alpha']
 
     @staticmethod
     def _get_cov(xyz):
@@ -34,7 +34,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         alpha = np.arccos(np.dot(normals, np.array([0., 0., 1.])))
         slope = np.tan(alpha)
 
-        return e_vals[:, 0], e_vals[:, 1], e_vals[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope
+        return e_vals[:, 0], e_vals[:, 1], e_vals[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope, alpha
 
     def _get_eigen_vals_and_vects(self, xyz_grp):
         cov_mat = self._get_cov(xyz_grp)
