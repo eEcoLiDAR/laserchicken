@@ -41,6 +41,8 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         eigval, eigvects = np.linalg.eig(cov_mat)
         e = np.sort(eigval, axis=1)[:, ::-1]  # Sorting to make result identical to serial implementation.
         return e, eigvects
+        # indices = sorted(range(eigval.shape[1]), key=lambda i: eigval[:, i], reverse=True)
+        # return eigval[:,indices], eigvects[:,:,indices]
 
     @staticmethod
     def _mask_rows_with_too_few_points(xyz_grp):
