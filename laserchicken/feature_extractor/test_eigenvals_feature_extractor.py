@@ -23,7 +23,6 @@ class TestExtractEigenValues(unittest.TestCase):
         rand_indices = [random.randint(0, num_all_pc_points)
                         for _ in range(20)]
         target_point_cloud = utils.copy_point_cloud(point_cloud, rand_indices)
-        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         radius = 2.5
         neighbors = compute_neighbors.compute_cylinder_neighborhood(
             point_cloud, target_point_cloud, radius)
