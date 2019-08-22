@@ -30,7 +30,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         self._mask_rows_with_too_few_points(xyz_grp)
 
         e_vals, eigvects = self._get_eigen_vals_and_vects(xyz_grp)
-        normals = eigvects[:, :, 2]  # For all instances, take all elements of the 3th (smallest) vector.(normals, axis=1)
+        normals = eigvects[:, :, 2]  # For all instances, take all elements of the 3th vector (= normal vector).
         alpha = np.arccos(np.dot(normals, np.array([0., 0., 1.])))
         slope = np.tan(alpha)
 
@@ -39,8 +39,36 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
     def _get_eigen_vals_and_vects(self, xyz_grp):
         cov_mat = self._get_cov(xyz_grp)
         eigval, eigvects = np.linalg.eig(cov_mat)
-        e = np.sort(eigval, axis=1)[:, ::-1]  # Sorting to make result identical to serial implementation.
-        return e, eigvects
+        return self._sort(eigval, eigvects)
+
+    def _sort(self, eigval, eigvects):
+        val_indices = np.argsort(eigval, axis=1)[:, ::-1]
+        ordered_vects = self._reorder_vects(eigvects, val_indices)
+        ordered_eigval = np.take_along_axis(eigval, val_indices, axis=1)
+        return ordered_eigval, ordered_vects
+
+    @staticmethod
+    def _reorder_vects_old(eigvects, new_vector_indices):
+        """
+        Swaps the order of the eigen vectors according to the given new indices. Note that each single vector is kept
+        unchanged.
+        :param eigvects:
+        :param new_vector_indices:
+        :return: The input eigen vectors in their new order.
+        """
+        # I'm reordering vectors in the last two dimensions while keeping the first dimension unchanged. I can't find
+        # any existing functions that do this exactly the way it needs to be sorted. Therefore I have to transpose
+        # and reshape and even repeat some indices to get the behavior I'm looking for.
+        vects_t = eigvects.transpose([0, 2, 1])  # The eigen vectors used to be column vectors. Making row vectors here.
+        flattened_vects_t = vects_t.reshape(-1, 3 * 3)  # Flatten the (eigen) vector dimension
+        vect_indices = np.zeros_like(flattened_vects_t, dtype=np.int) + [0, 1, 2, 0, 1, 2, 0, 1, 2]  # 0,1,2 for x,y,z
+        vect_indices[:, :3] += new_vector_indices[:, 0:1] * 3  # Because x,y,z, indices have to be increased by 3.
+        vect_indices[:, 3:6] += new_vector_indices[:, 1:2] * 3
+        vect_indices[:, 6:9] += new_vector_indices[:, 2:3] * 3
+        ordered_flattened_vects_t = np.take_along_axis(flattened_vects_t, vect_indices, axis=1)
+        ordered_vects_t = ordered_flattened_vects_t.reshape(eigvects.shape)
+        ordered_vects = ordered_vects_t
+        return ordered_vects.transpose([0, 2, 1])
 
     @staticmethod
     def _mask_rows_with_too_few_points(xyz_grp):
