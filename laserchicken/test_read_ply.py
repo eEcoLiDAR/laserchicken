@@ -13,11 +13,13 @@ class TestReadPly(unittest.TestCase):
     _test_dir = 'TestLoad_dir'
     _test_file_name = 'example.ply'
     _test_file_without_comments_name = 'example_without_comments.ply'
+    _test_file_with_invalid_comments_name = 'example_with_invalid_comments.ply'
     _las_file_name = '5points.las'
     _test_data_source = 'testdata'
     las_file_path = os.path.join(_test_dir, _las_file_name)
     test_file_path = os.path.join(_test_dir, _test_file_name)
     test_file_without_comments_path = os.path.join(_test_dir, _test_file_without_comments_name)
+    test_file_with_invalid_comments_path = os.path.join(_test_dir, _test_file_with_invalid_comments_name)
 
     def test_nonexistentFile_error(self):
         # Catch most specific subclass of FileNotFoundException (3.6) and IOError (2.7).
@@ -63,6 +65,13 @@ class TestReadPly(unittest.TestCase):
         offset = point_cloud['offset']['data'][0]
         np.testing.assert_allclose(offset, 12.1)
 
+    def test_correctPointCloudWithInvalidComments(self):
+        """Invalid comments should not cause error."""
+        data = read(self.test_file_with_invalid_comments_path)
+        point_cloud = data['pointcloud']
+        offset = point_cloud['offset']['data'][0]
+        np.testing.assert_allclose(offset, 12.1)
+
     def test_allLogEntriesContainAllColumns(self):
         log = read(self.test_file_path)['log']
 
@@ -85,8 +94,10 @@ class TestReadPly(unittest.TestCase):
     def setUp(self):
         os.mkdir(self._test_dir)
         shutil.copyfile(os.path.join(self._test_data_source, self._test_file_name), self.test_file_path)
-        shutil.copyfile(os.path.join(
-            self._test_data_source, self._test_file_without_comments_name), self.test_file_without_comments_path)
+        shutil.copyfile(os.path.join(self._test_data_source, self._test_file_without_comments_name),
+                        self.test_file_without_comments_path)
+        shutil.copyfile(os.path.join(self._test_data_source, self._test_file_with_invalid_comments_name),
+                        self.test_file_with_invalid_comments_path)
         shutil.copyfile(os.path.join(self._test_data_source, self._las_file_name), self.las_file_path)
 
     def tearDown(self):

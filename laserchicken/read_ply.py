@@ -53,7 +53,10 @@ def _read_header(ply):
 
 
 def _read_log(comments):
-    log = ast.literal_eval(''.join(comments)) if comments else []
+    try:
+        log = ast.literal_eval(''.join(comments)) if comments else []
+    except(SyntaxError):  # Log can't be read. Maybe a ply file with 'regular' comments and no log.
+        log = []
     for i, entry in enumerate(log):
         if 'time' in entry:
             entry['time'] = parser.parse(entry['time'])
