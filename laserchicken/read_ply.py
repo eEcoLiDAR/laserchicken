@@ -53,7 +53,7 @@ def _read_header(ply):
 
 
 def _read_log(comments):
-    log = ast.literal_eval(''.join(comments))
+    log = ast.literal_eval(''.join(comments)) if comments else []
     for i, entry in enumerate(log):
         if 'time' in entry:
             entry['time'] = parser.parse(entry['time'])
