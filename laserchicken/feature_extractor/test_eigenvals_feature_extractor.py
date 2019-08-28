@@ -23,7 +23,6 @@ class TestExtractEigenValues(unittest.TestCase):
         rand_indices = [random.randint(0, num_all_pc_points)
                         for _ in range(20)]
         target_point_cloud = utils.copy_point_cloud(point_cloud, rand_indices)
-        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         radius = 2.5
         neighbors = compute_neighbors.compute_cylinder_neighborhood(
             point_cloud, target_point_cloud, radius)
@@ -106,6 +105,27 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
 
 
 class TestExtractNormalPlaneArtificialData0(unittest.TestCase):
+    def test_regression(self):
+        n_x = 3
+        slope_ = 1.0
+        x_, y_ = np.meshgrid(range(n_x), range(n_x))
+        x = x_.flatten()
+        y = y_.flatten()
+        z = [slope_ * x[i] for i in range(len(x))]
+
+        dim = (1, 3, len(x))
+        mask = np.zeros(dim)
+        xyz_grp = np.ma.MaskedArray(np.zeros(dim), mask == 0)
+        xyz_grp[0, 0, :] = x
+        xyz_grp[0, 1, :] = y
+        xyz_grp[0, 2, :] = z
+
+        point_cloud = create_point_cloud(xyz_grp[0, 0, :], xyz_grp[0, 1, :], xyz_grp[0, 2, :])
+        extractor = EigenValueVectorizeFeatureExtractor()
+        neighborhoods = [list(range(len(x)))]
+        normals = np.array(extractor.extract(point_cloud, neighborhoods, point_cloud, None, None)[3:6])[:, 0]
+        np.testing.assert_allclose(normals, np.array((-np.sqrt(2) / 2, 0, np.sqrt(2) / 2)))
+
     def test_from_eigen(self):
         nvect = np.array([1., 2., 3.])
         neighborhood, pc = create_point_cloud_in_plane_and_neighborhood(nvect)
@@ -154,7 +174,12 @@ class TestExtractSlopeArtificialData(unittest.TestCase):
 
 def create_point_cloud_in_plane_and_neighborhood(nvect):
     nvect /= np.linalg.norm(nvect)
-    point = _generate_random_points_in_plane(nvect, dparam=0, npts=100)
+    points = _generate_random_points_in_plane(nvect, dparam=0, npts=100)
+    neighborhood, pc = create_point_cloud_and_neighborhoods(points)
+    return neighborhood, pc
+
+
+def create_point_cloud_and_neighborhoods(point):
     pc = {keys.point: {'x': {'type': 'double', 'data': point[:, 0]},
                        'y': {'type': 'double', 'data': point[:, 1]},
                        'z': {'type': 'double', 'data': point[:, 2]}}}
