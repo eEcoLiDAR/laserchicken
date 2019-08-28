@@ -48,7 +48,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         return ordered_eigval, ordered_vects
 
     @staticmethod
-    def _reorder_vects_old(eigvects, new_vector_indices):
+    def _reorder_vects(eigvects, new_vector_indices):
         """
         Swaps the order of the eigen vectors according to the given new indices. Note that each single vector is kept
         unchanged.
