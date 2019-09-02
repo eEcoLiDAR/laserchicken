@@ -137,6 +137,15 @@ class TestExtractNormalPlaneArtificialData0(unittest.TestCase):
         np.testing.assert_allclose(nvect[1], n2[0])
         np.testing.assert_allclose(nvect[2], n3[0])
 
+    def test_normal_always_up(self):
+        """Tests whether resulting normals are always pointing upwards (positive z component). As this should happen
+        by chance a lot already, we test many times to make sure results are positive consistently."""
+        z_of_normals = []
+        for i in range(100):
+            neighborhood, pc = create_point_cloud_in_plane_and_neighborhood()
+            z_of_normals += list(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[5])
+        np.testing.assert_array_less(np.zeros_like(z_of_normals), z_of_normals)
+
 
 class TestExtractSlopeArtificialData(unittest.TestCase):
     def test_001_has_slope_0(self):
@@ -172,7 +181,10 @@ class TestExtractSlopeArtificialData(unittest.TestCase):
         np.testing.assert_allclose(slope, expected_slope, atol=1e-6)
 
 
-def create_point_cloud_in_plane_and_neighborhood(nvect):
+def create_point_cloud_in_plane_and_neighborhood(nvect=None):
+    if nvect is None:
+        nvect = np.random.randn(3)
+
     nvect /= np.linalg.norm(nvect)
     points = _generate_random_points_in_plane(nvect, dparam=0, npts=100)
     neighborhood, pc = create_point_cloud_and_neighborhoods(points)
