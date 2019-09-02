@@ -146,8 +146,24 @@ class TestExtractNormalPlaneArtificialData0(unittest.TestCase):
             z_of_normals += list(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[5])
         np.testing.assert_array_less(np.zeros_like(z_of_normals), z_of_normals)
 
+    def test_normal_unit_length(self):
+        """Tests whether resulting normals are unit length"""
+        neighborhood, pc = create_point_cloud_in_plane_and_neighborhood()
+        normals = np.array(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[3:6])
+        lengths = np.sum(normals * normals, axis=0)
+        np.testing.assert_almost_equal(np.ones_like(lengths), lengths)
+
 
 class TestExtractSlopeArtificialData(unittest.TestCase):
+    def test_positive_slope(self):
+        """Tests whether resulting slopes are always positive. As this should happen
+        by chance a lot already, we test many times to make sure results are positive consistently."""
+        slopes = []
+        for i in range(100):
+            neighborhood, pc = create_point_cloud_in_plane_and_neighborhood()
+            slopes += list(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[6])
+        np.testing.assert_array_less(np.zeros_like(slopes), slopes)
+
     def test_001_has_slope_0(self):
         self.assert_data_with_normal_vector_has_slope(np.array([0., 0., 1.]), 0.)
 
