@@ -1,5 +1,5 @@
 from laserchicken import keys
-from laserchicken.feature_extractor import VarianceZFeatureExtractor
+from laserchicken.feature_extractor.var_z_feature_extractor import VarianceZFeatureExtractor
 
 
 class VarianceNormZFeatureExtractor(VarianceZFeatureExtractor):

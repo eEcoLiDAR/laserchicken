@@ -1,4 +1,4 @@
-from laserchicken.feature_extractor import PercentileZFeatureExtractor
+from laserchicken.feature_extractor.percentile_z_feature_extractor import PercentileZFeatureExtractor
 from laserchicken.keys import normalized_height
 
 PERCENTILES = range(10, 110, 10)

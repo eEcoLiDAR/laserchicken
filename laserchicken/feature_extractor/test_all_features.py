@@ -1,21 +1,17 @@
-import importlib
 import json
 import os
 
 import pytest
-import numpy as np
+
 from laserchicken import compute_neighbors
-from laserchicken import keys
-from laserchicken import read_las
 from laserchicken import read_ply
+from laserchicken.feature_extractor import *
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
 from laserchicken.keys import point, normalized_height
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
-from laserchicken.feature_extractor import *
-
-from . import _create_feature_map, _find_name_extractor_pairs
 from . import compute_features
+from .feature_map import create_default_feature_map, _find_name_extractor_pairs
 
 np.random.seed(1234)
 
@@ -36,7 +32,7 @@ _10_NEIGHBORHOODS_IN_260807 = next(
 _260807_NEIGHBORHOODS_IN_10 = next(
     compute_neighbors.compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER, sample_size=500))
 
-feature_names = [name for name in _create_feature_map()]
+feature_names = [name for name in create_default_feature_map()]
 
 
 def test_no_duplicate_feature_registrations():

@@ -6,6 +6,7 @@ import pytest
 from pytest import raises
 
 from laserchicken import feature_extractor, keys, test_tools
+from laserchicken.feature_extractor import feature_map
 from laserchicken.volume_specification import Sphere
 
 from . import __name__ as test_module_name
@@ -68,9 +69,9 @@ class TestExtractFeatures(unittest.TestCase):
 @pytest.fixture(scope='module', autouse=True)
 def override_features():
     """Overwrite the available feature extractors with test feature extractors."""
-    feature_extractor.FEATURES = feature_extractor._create_feature_map(test_module_name)
+    feature_extractor.FEATURES = feature_map.create_default_feature_map(test_module_name)
     yield
-    feature_extractor.FEATURES = feature_extractor._create_feature_map(feature_extractor.__name__)
+    feature_extractor.FEATURES = feature_map.create_default_feature_map(feature_map.__name__)
 
 
 def _compute_features(target, feature_names, overwrite=False):
