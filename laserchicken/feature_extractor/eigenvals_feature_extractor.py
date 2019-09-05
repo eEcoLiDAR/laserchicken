@@ -13,7 +13,7 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
 
     @classmethod
     def provides(cls):
-        return ['eigenv_1', 'eigenv_2', 'eigenv_3', 'normal_vector_1', 'normal_vector_2', 'normal_vector_3', 'slope']
+        return ['eigenv_1', 'eigenv_2', 'eigenv_3', 'normal_vector_1', 'normal_vector_2', 'normal_vector_3', 'slope', 'alpha']
 
     @staticmethod
     def _get_cov(xyz):
@@ -29,12 +29,13 @@ class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
         xyz_grp = get_xyz(sourcepc, neighborhoods)
         self._mask_rows_with_too_few_points(xyz_grp)
 
+        #the selected eigenvector need nit be the one corresponding to the samllest eigenvalue as e_vals return is sorted where as the eigvects aren't
         e_vals, eigvects = self._get_eigen_vals_and_vects(xyz_grp)
         normals = eigvects[:, :, 2]  # For all instances, take all elements of the 3th (smallest) vector.(normals, axis=1)
         alpha = np.arccos(np.dot(normals, np.array([0., 0., 1.])))
         slope = np.tan(alpha)
 
-        return e_vals[:, 0], e_vals[:, 1], e_vals[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope
+        return e_vals[:, 0], e_vals[:, 1], e_vals[:, 2], normals[:, 0], normals[:, 1], normals[:, 2], slope, alpha
 
     def _get_eigen_vals_and_vects(self, xyz_grp):
         cov_mat = self._get_cov(xyz_grp)
