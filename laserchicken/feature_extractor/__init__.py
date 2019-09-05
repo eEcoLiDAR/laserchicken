@@ -53,7 +53,7 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
         if (target_idx_base == 0) and (not overwrite) and (feature_name in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
 
-        extractor = FEATURES[feature_name]()
+        extractor = FEATURES[feature_name]
 
         if verbose:
             sys.stdout.write('Feature(s) "{}"'.format(extractor.provides()))
@@ -169,7 +169,7 @@ def _remove_duplicates(feature_list):
 def _make_extended_feature_list_helper(feature_names):
     feature_list = feature_names
     for feature_name in feature_names:
-        extractor = FEATURES[feature_name]()
+        extractor = FEATURES[feature_name]
         dependencies = extractor.requires()
         feature_list.extend(dependencies)
         feature_list.extend(_make_extended_feature_list_helper(dependencies))
