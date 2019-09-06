@@ -67,15 +67,9 @@ class TestExtractFeatures(unittest.TestCase):
         feature_names = ['vectorized1']
         _compute_features(target, feature_names)
 
-
-@pytest.fixture(scope='function', autouse=True)
-def override_features():
-    """Overwrite the available feature extractors with test feature extractors."""
-    feature_map._get_default_extractors = _get_test_extractors
-    feature_extractor.FEATURES = feature_map.create_default_feature_map()
-    yield
-    feature_extractor.FEATURES = feature_map.create_default_feature_map()
-
+    def setUp(self) -> None:
+        feature_map._get_default_extractors = _get_test_extractors
+        feature_extractor.FEATURES = feature_map.create_default_feature_map()
 
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
