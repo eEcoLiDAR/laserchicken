@@ -1,7 +1,7 @@
 """Abstract feature extractor."""
 
 
-class AbstractFeatureExtractor(object):
+class FeatureExtractor(object):
     """Abstract feature extractor class."""
 
     @classmethod

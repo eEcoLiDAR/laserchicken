@@ -5,7 +5,7 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/23.
 
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point, normalized_height
 
 # classification according to
@@ -17,7 +17,7 @@ def _is_ground(i, point_cloud):
     return point_cloud[point]['raw_classification']["data"][i] in GROUND_TAGS
 
 
-class PulsePenetrationFeatureExtractor(AbstractFeatureExtractor):
+class PulsePenetrationFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
 
     @classmethod

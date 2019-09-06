@@ -1,16 +1,20 @@
 """Feature extractor module."""
 
-
 import numpy as np
 import sys
 
 import time
 
 from laserchicken import keys, utils
-from laserchicken.feature_extractor.feature_map import create_default_feature_map
-
+from laserchicken.feature_extractor.feature_map import create_default_feature_map, _create_name_extractor_pairs
+from laserchicken.feature_extractor.abc import FeatureExtractor
 
 FEATURES = create_default_feature_map()
+
+
+def register_new_feature_extractor(extractor: FeatureExtractor):
+    for name, extractor in _create_name_extractor_pairs([extractor]):
+        FEATURES[name] = extractor
 
 
 def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, feature_names, volume,

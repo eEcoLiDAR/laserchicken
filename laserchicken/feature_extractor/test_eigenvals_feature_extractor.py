@@ -6,7 +6,7 @@ import unittest
 import numpy as np
 
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
@@ -234,7 +234,7 @@ def _generate_random_points_in_plane(nvect, dparam, npts, eps=0.0):
     return np.column_stack((x, y, z))
 
 
-class EigenValueSerial(AbstractFeatureExtractor):
+class EigenValueSerial(FeatureExtractor):
     """Old serial implementation. Used to test the current (vectorized) implementation against."""
 
     @classmethod

@@ -5,12 +5,12 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/21
 
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point
 from laserchicken.utils import get_xyz, get_point
 
 
-class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
+class EchoRatioFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
     is_vectorized = True
 

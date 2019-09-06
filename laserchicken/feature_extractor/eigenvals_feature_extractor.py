@@ -1,10 +1,10 @@
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.utils import get_xyz
 
 
-class EigenValueVectorizeFeatureExtractor(AbstractFeatureExtractor):
+class EigenValueVectorizeFeatureExtractor(FeatureExtractor):
     is_vectorized = True
 
     @classmethod

@@ -1,12 +1,12 @@
 import scipy.stats.stats as stats
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point
 
 PERCENTILES = range(10, 110, 10)
 
 
-class PercentileZFeatureExtractor(AbstractFeatureExtractor):
+class PercentileZFeatureExtractor(FeatureExtractor):
     """Height percentiles feature extractor class."""
     DATA_KEY = 'z'
 

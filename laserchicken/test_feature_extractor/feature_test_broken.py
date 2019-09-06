@@ -1,8 +1,8 @@
 """Broken feature extractor."""
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 
 
-class TestBrokenFeatureExtractor(AbstractFeatureExtractor):
+class TestBrokenFeatureExtractor(FeatureExtractor):
     """Feature extractor that fails to add the feature in promises to provide to target."""
 
     @classmethod

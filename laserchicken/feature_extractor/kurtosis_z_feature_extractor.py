@@ -1,11 +1,11 @@
 import numpy as np
 import scipy.stats.stats as stat
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point
 
 
-class KurtosisZFeatureExtractor(AbstractFeatureExtractor):
+class KurtosisZFeatureExtractor(FeatureExtractor):
     """Calculates the variation on the z axis."""
     DATA_KEY = 'z'
 

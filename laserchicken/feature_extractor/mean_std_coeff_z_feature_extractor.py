@@ -1,10 +1,10 @@
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point
 
 
-class MeanStdCoeffZFeatureExtractor(AbstractFeatureExtractor):
+class MeanStdCoeffZFeatureExtractor(FeatureExtractor):
     """Calculates mean, standard deviation and the ratio between the two."""
     DATA_KEY = 'z'
 

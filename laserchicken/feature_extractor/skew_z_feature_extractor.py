@@ -1,11 +1,11 @@
 import numpy as np
 import scipy.stats.stats as stat
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point
 
 
-class SkewZFeatureExtractor(AbstractFeatureExtractor):
+class SkewZFeatureExtractor(FeatureExtractor):
     """Calculates the skew on the z axis."""
     DATA_KEY = 'z'
 

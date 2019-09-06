@@ -2,6 +2,7 @@
 import unittest
 
 from laserchicken import feature_extractor
+from laserchicken.test_feature_extractor import Test1FeatureExtractor
 
 
 class FeatureMapTests(unittest.TestCase):
@@ -17,5 +18,14 @@ class FeatureMapTests(unittest.TestCase):
                              'perc_20_norm_z', 'perc_30_norm_z', 'perc_40_norm_z', 'perc_50_norm_z', 'perc_60_norm_z',
                              'perc_70_norm_z', 'perc_80_norm_z', 'perc_90_norm_z', 'perc_100_norm_z',
                              'density_absolute_mean_z', 'density_absolute_mean_norm_z']
+        for feature in expected_features:
+            self.assertIn(feature, feature_extractor.FEATURES)
+
+    def test_feature_map_contains_new_feature_after_registration(self):
+        test_feature_extractor = Test1FeatureExtractor()
+        expected_features = test_feature_extractor.provides()
+
+        feature_extractor.register_new_feature_extractor(test_feature_extractor)
+
         for feature in expected_features:
             self.assertIn(feature, feature_extractor.FEATURES)

@@ -26,11 +26,11 @@ from .var_z_feature_extractor import VarianceZFeatureExtractor
 def create_default_feature_map():
     """Construct a mapping from feature names to feature extractor classes."""
     extractors = _get_default_extractors()
-    name_extractor_pairs = _find_name_extractor_pairs(extractors)
+    name_extractor_pairs = _create_name_extractor_pairs(extractors)
     return {feature_name: extractor for feature_name, extractor in name_extractor_pairs}
 
 
-def _find_name_extractor_pairs(extractors = None):
+def _create_name_extractor_pairs(extractors = None):
     if extractors is None:
         extractors = _get_default_extractors()
     name_extractor_pairs = [(feature_name, extractor)

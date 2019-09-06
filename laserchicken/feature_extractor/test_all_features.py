@@ -11,7 +11,7 @@ from laserchicken.keys import point, normalized_height
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 from . import compute_features
-from .feature_map import create_default_feature_map, _find_name_extractor_pairs
+from .feature_map import create_default_feature_map, _create_name_extractor_pairs
 
 np.random.seed(1234)
 
@@ -36,7 +36,7 @@ feature_names = [name for name in create_default_feature_map()]
 
 
 def test_no_duplicate_feature_registrations():
-    pairs = _find_name_extractor_pairs()
+    pairs = _create_name_extractor_pairs()
     for name, _ in pairs:
         matches = [extractor for extractor_name, extractor in pairs if extractor_name is name]
         np.testing.assert_equal(len(matches), 1,
