@@ -67,9 +67,9 @@ class TestExtractFeatures(unittest.TestCase):
         feature_names = ['vectorized1']
         _compute_features(target, feature_names)
 
-    def setUp(self) -> None:
-        feature_map._get_default_extractors = _get_test_extractors
-        feature_extractor.FEATURES = feature_map.create_default_feature_map()
+    # def setUp(self) -> None:
+    #     feature_map._get_default_extractors = _get_test_extractors
+    #     feature_extractor.FEATURES = feature_map.create_default_feature_map()
 
 
 def _compute_features(target, feature_names, overwrite=False):
