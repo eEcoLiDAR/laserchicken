@@ -71,6 +71,7 @@ class TestExtractFeatures(unittest.TestCase):
         feature_map._get_default_extractors = _get_test_extractors
         feature_extractor.FEATURES = feature_map.create_default_feature_map()
 
+
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
     feature_extractor.compute_features({}, neighborhoods, 0, target, feature_names, Sphere(5), overwrite)
