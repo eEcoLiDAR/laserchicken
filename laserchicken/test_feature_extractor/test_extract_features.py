@@ -68,7 +68,7 @@ class TestExtractFeatures(unittest.TestCase):
         _compute_features(target, feature_names)
 
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def override_features():
     """Overwrite the available feature extractors with test feature extractors."""
     feature_map._get_default_extractors = _get_test_extractors

@@ -30,7 +30,9 @@ def create_default_feature_map():
     return {feature_name: extractor for feature_name, extractor in name_extractor_pairs}
 
 
-def _find_name_extractor_pairs(extractors):
+def _find_name_extractor_pairs(extractors = None):
+    if extractors is None:
+        extractors = _get_default_extractors()
     name_extractor_pairs = [(feature_name, extractor)
                             for extractor in extractors
                             for feature_name in extractor.provides()]

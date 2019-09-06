@@ -36,7 +36,7 @@ feature_names = [name for name in create_default_feature_map()]
 
 
 def test_no_duplicate_feature_registrations():
-    pairs = _find_name_extractor_pairs(__name__)
+    pairs = _find_name_extractor_pairs()
     for name, _ in pairs:
         matches = [extractor for extractor_name, extractor in pairs if extractor_name is name]
         np.testing.assert_equal(len(matches), 1,
