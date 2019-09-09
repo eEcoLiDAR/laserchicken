@@ -13,7 +13,7 @@ class FeatureMapTests(unittest.TestCase):
                              'range_z', 'var_z', 'mean_z', 'std_z', 'coeff_var_z', 'skew_z', 'kurto_z', 'skew_norm_z',
                              'mean_norm_z', 'std_norm_z', 'coeff_var_norm_z', 'var_norm_z', 'max_norm_z', 'min_norm_z',
                              'range_norm_z', 'kurto_norm_z', 'entropy_norm_z', 'median_norm_z',
-                             'density_absolute_mean_z', 'density_absolute_mean_norm_z']
+                             'density_absolute_mean_z', 'density_absolute_mean_norm_z','perc_15_z', 'perc_99_normalized_height']
         for feature in expected_features:
             self.assertIn(feature, feature_extractor.FEATURES)
 
