@@ -1,12 +1,11 @@
 import numpy as np
-import scipy.stats.stats as stat
 
 from laserchicken.feature_extractor.abc import FeatureExtractor
 from laserchicken.keys import point
 
 
 class RangeZFeatureExtractor(FeatureExtractor):
-    """Calculates the max, min and range and max on the z axis."""
+    """Calculates the max, min and range on the z axis."""
 
     DEFAULT_MAX = float('NaN')
     DEFAULT_MIN = float('NaN')
