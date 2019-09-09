@@ -50,7 +50,7 @@ class PercentileZFeatureExtractor(FeatureExtractor):
         :return: feature value
         """
         z = point_cloud[point][self.DATA_KEY]['data'][neighborhood]
-        return [stats.scoreatpercentile(z, p) for p in PERCENTILES]
+        return stats.scoreatpercentile(z, self.percentile)
 
     def get_params(self):
         """
