@@ -2,7 +2,7 @@
 import numpy as np
 
 from laserchicken import utils
-from laserchicken.feature_extractor.abc import FeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 
 
 class Test2FeatureExtractor(FeatureExtractor):

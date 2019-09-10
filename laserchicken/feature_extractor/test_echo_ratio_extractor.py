@@ -7,7 +7,7 @@ import numpy as np
 
 from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighborhoods
-from laserchicken.feature_extractor.abc import FeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.volume_specification import Sphere, InfiniteCylinder

@@ -5,7 +5,7 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/21
 
 import numpy as np
 
-from laserchicken.feature_extractor.abc import FeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
 from laserchicken.utils import get_xyz, get_point
 

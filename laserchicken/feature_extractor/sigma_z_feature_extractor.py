@@ -6,7 +6,7 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/20
 import numpy as np
 from numpy.linalg import LinAlgError
 
-from laserchicken.feature_extractor.abc import FeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.utils import get_point, fit_plane
 
 

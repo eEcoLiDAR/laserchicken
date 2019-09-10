@@ -6,7 +6,7 @@ import unittest
 import numpy as np
 
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
-from laserchicken.feature_extractor.abc import FeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
