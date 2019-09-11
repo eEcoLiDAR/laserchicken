@@ -18,8 +18,7 @@ class BandRatioFeatureExtractor(FeatureExtractor):
         self.lower_limit = lower_limit
         self.upper_limit = upper_limit
 
-    @classmethod
-    def requires(cls):
+    def requires(self):
         """
         Get a list of names of the point attributes that are needed for this feature extraction.
 
@@ -28,10 +27,9 @@ class BandRatioFeatureExtractor(FeatureExtractor):
 
         :return: List of feature names
         """
-        return ['band_ratio_{}-{}'.format()]
+        return []
 
-    @classmethod
-    def provides(cls):
+    def provides(self):
         """
         Get a list of names of the feature values.
 
@@ -41,7 +39,7 @@ class BandRatioFeatureExtractor(FeatureExtractor):
 
         :return: List of feature names
         """
-        return ['band_ratio']
+        return ['band_ratio_{}-{}'.format(self.lower_limit, self.upper_limit)]
 
     def extract(self, point_cloud, neighborhoods, target_point_cloud, target_index, volume_description):
         """
@@ -54,16 +52,21 @@ class BandRatioFeatureExtractor(FeatureExtractor):
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
-        if volume_description.TYPE is not 'infinite cylinder' and volume_description.TYPE is not 'cell':
+        supported_volumes = ['infinite cylinder', 'cell']
+        if volume_description.TYPE not in supported_volumes:
             raise ValueError('The volume must be a cylinder')
 
         xyz = get_xyz(point_cloud, neighborhoods)
         z = xyz[:, 2, :]
-        return np.sum((z < self.upper_limit) * (z > self.lower_limit)) / xyz.shape[2]
+        n_total_points = xyz.shape[2]
+        n_masked_points_per_neighborhood = xyz.mask[:, 2, :].sum(axis=1)
+        n_points_per_neighborhood = -n_masked_points_per_neighborhood + n_total_points
+        n_points_within_band = np.sum((z < self.upper_limit) * (z > self.lower_limit), axis=1)
+        return n_points_within_band / n_points_per_neighborhood
 
     def get_params(self):
         """
-        Return a tuple of parameters involved in the current feature extractorobject.
+        Return a tuple of parameters involved in the current feature extractor object.
 
         Needed for provenance.
         """
