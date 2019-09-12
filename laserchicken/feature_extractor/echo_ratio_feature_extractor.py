@@ -44,7 +44,7 @@ class EchoRatioFeatureExtractor(FeatureExtractor):
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param point_cloud: environment (search space) point cloud
-        :param neighborhood: array of indices of points within the point_cloud argument
+        :param neighborhoods: array of array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
         :param target_index: index of the target point in the target point cloud
         :param volume_description: volume object that describes the shape and size of the search volume
@@ -69,7 +69,7 @@ class EchoRatioFeatureExtractor(FeatureExtractor):
         difference = xyz - xyz0[:, :, None]
         sum_of_squares = np.sum(difference ** 2, 1)
         n_sphere = np.sum(sum_of_squares <= volume_description.radius ** 2, axis=1)
-        return n_sphere / n_cylinder * 100.
+        return n_sphere / n_cylinder
 
     @staticmethod
     def get_target_positions(target_point_cloud, target_index):

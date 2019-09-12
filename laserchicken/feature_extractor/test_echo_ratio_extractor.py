@@ -119,7 +119,7 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
 
         # theoretical value of the echo ratio
         self.theo_val = (self.npt_sphere + 1) / \
-                        (self.npt_sphere + self.npt_cyl + 1) * 100
+                        (self.npt_sphere + self.npt_cyl + 1)
 
 
 class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
@@ -137,7 +137,7 @@ class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         """
         self.radius = 0.5
         targets = np.array([[10., 0., 5.], [10., 10., 5.], [0., 0., 5.], [0., 10., 5.]])  # Grid w. steps 10 & height 5
-        self.echo_ratios = np.array([0., 0.9, 0.5, 0.8]) * 100  # Percentage
+        self.echo_ratios = np.array([0., 0.9, 0.5, 0.8])
         environment_parts = [self._create_environment_part(t, ratio, self.radius) for t, ratio in zip(targets,
                                                                                                       self.echo_ratios)]
         environment = np.vstack(environment_parts)
@@ -158,7 +158,7 @@ class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         :param radius:
         :return: numpy array
         """
-        ratio = 0.01 * echo_ratio  # Convert from percentage
+        ratio = echo_ratio  # Convert from percentage
         n_outside = 10
         n_inside = int(n_outside * ratio / (1 - ratio))
         outside_sphere = np.zeros((n_outside, 3)) + target + np.array([0., 0., 2 * radius])
@@ -175,7 +175,7 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
     target_pc_sequential = None
     target_pc_vector = None
     cyl = None
-    targetpc_index = None
+    target_pc_index = None
 
     def test_valid(self):
         """Compute the echo ratio for a sphere/cylinder at different target points."""
@@ -205,7 +205,7 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         random.seed(102938482634)
         self.target_pc_sequential = self._get_random_targets()
         self.target_pc_vector = utils.copy_point_cloud(self.target_pc_sequential)
-        self.targetpc_index = 0
+        self.target_pc_index = 0
         # volume descriptions
         radius = 0.5
         self.cyl = InfiniteCylinder(radius)
@@ -220,8 +220,8 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points)
                         for p in range(20)]
-        x,y,z = utils.get_point(self.point_cloud, rand_indices)
-        return create_point_cloud(x,y,z)
+        x, y, z = utils.get_point(self.point_cloud, rand_indices)
+        return create_point_cloud(x, y, z)
 
 
 class EchoRatioFeatureExtractorSequential(FeatureExtractor):
@@ -276,7 +276,7 @@ class EchoRatioFeatureExtractorSequential(FeatureExtractor):
         sum_of_squares = np.sum(squared, 1)
         n_sphere = np.sum(sum_of_squares <=
                           volume_description.radius ** 2)
-        return n_sphere / n_cylinder * 100.
+        return n_sphere / n_cylinder
 
     @staticmethod
     def get_target_position(target_point_cloud, target_index):

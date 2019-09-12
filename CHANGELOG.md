@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.3.1 - 2019-08-28
 ## Added
-- Python 3.7 testing and support
+- Percentiles 1-100
+- Percentiles normalized height 1-100
+- Band ratio feature extractor 
 
 ## Changed
+- Echo ratio no longer gives percentage (removed factor 100)
 
 ## Fixed
 - Bug in reading ply file with comments in unexpected format
