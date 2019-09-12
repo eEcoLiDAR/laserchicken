@@ -15,9 +15,9 @@ class TestPercentileZFeatureExtractorArtificialData(unittest.TestCase):
         xyz = np.array([list(p) for p in list(itertools.product(np.linspace(0, 1, 11), repeat=3))])
         point_cloud = create_point_cloud(xyz[:, 0], xyz[:, 1], xyz[:, 2])
         expected = np.linspace(0.1, 1.0, 10)
-        extractor = PercentileZFeatureExtractor()
+        extractors = [PercentileZFeatureExtractor(p) for p in range(10, 110, 10)]
 
-        percentiles = extractor.extract(point_cloud, range(len(xyz)), None, None, None)
+        percentiles = [e.extract(point_cloud, range(len(xyz)), None, None, None) for e in extractors]
 
         np.testing.assert_allclose(percentiles, expected)
 

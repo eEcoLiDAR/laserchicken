@@ -1,4 +1,4 @@
-from laserchicken.feature_extractor import MedianZFeatureExtractor
+from laserchicken.feature_extractor.median_z_feature_extractor import MedianZFeatureExtractor
 from laserchicken.keys import normalized_height
 
 

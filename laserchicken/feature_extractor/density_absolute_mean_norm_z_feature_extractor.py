@@ -5,7 +5,7 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/23.
 
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.feature_extractor.density_absolute_mean_z_feature_extractor import \
     DensityAbsoluteMeanZFeatureExtractor
 from laserchicken.keys import point, normalized_height

@@ -17,14 +17,13 @@ def get_point(point_cloud, index):
            point_cloud[keys.point]["z"]["data"][index]
 
 
-def get_xyz(sourcepc, neighborhoods):
+def get_xyz_per_neighborhood(sourcepc, neighborhoods):
     """
-    Get x, y, z tuple of one or more points in a point cloud.
+    Get x, y, z tuple for each point in a neighborhood for each neighborhood.
     :param sourcepc:
     :param neighborhoods:
-    :return:
+    :return: 3d tensor as a masked array
     """
-    xyz_grp = []
     max_length = max(map(lambda x: len(x), neighborhoods))
 
     xyz_grp = np.zeros((len(neighborhoods), 3, max_length))
@@ -38,6 +37,29 @@ def get_xyz(sourcepc, neighborhoods):
         xyz_grp[i, 1, :n_neighbors] = y
         xyz_grp[i, 2, :n_neighbors] = z
         mask[i, :, :n_neighbors] = 1
+    return np.ma.MaskedArray(xyz_grp, mask == 0)
+
+
+def get_attributes_per_neighborhood(point_cloud, neighborhoods, attribute_names):
+    """
+    Get attribute values for each point in a neighborhood for each neighborhood.
+    :param point_cloud:
+    :param neighborhoods:
+    :param attribute_names: list of attribute names
+    :return: 3d tensor as a masked array
+    """
+    max_length = max(map(lambda x: len(x), neighborhoods))
+
+    xyz_grp = np.zeros((len(neighborhoods), (len(attribute_names)), max_length))
+    mask = np.zeros((len(neighborhoods), (len(attribute_names)), max_length))
+    for i_neighborhood, neighborhood in enumerate(neighborhoods):
+        n_neighbors = len(neighborhood)
+        if n_neighbors is 0:
+            continue
+        for i_attribute, attribute_name in enumerate(attribute_names):
+            attribute = get_attribute_value(point_cloud, neighborhood, attribute_name)
+            xyz_grp[i_neighborhood, i_attribute, :n_neighbors] = attribute
+        mask[i_neighborhood, :, :n_neighbors] = 1
     return np.ma.MaskedArray(xyz_grp, mask == 0)
 
 

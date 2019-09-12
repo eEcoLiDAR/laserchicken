@@ -1,9 +1,9 @@
 """Test1 feature extractor."""
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken import utils
 
 
-class Test1FeatureExtractor(AbstractFeatureExtractor):
+class Test1FeatureExtractor(FeatureExtractor):
     @classmethod
     def requires(cls):
         return []

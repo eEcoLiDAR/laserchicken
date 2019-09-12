@@ -5,12 +5,12 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/21
 
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
-from laserchicken.utils import get_xyz, get_point
+from laserchicken.utils import get_xyz_per_neighborhood, get_point
 
 
-class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
+class EchoRatioFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
     is_vectorized = True
 
@@ -60,7 +60,7 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
             raise ValueError('Target point index required')
 
         # xyz = self.get_neighborhood_positions(point_cloud, neighborhood)
-        xyz = get_xyz(point_cloud, neighborhoods)
+        xyz = get_xyz_per_neighborhood(point_cloud, neighborhoods)
         n_cylinder = np.sum(xyz.mask[:, 0, :] == False, axis=1, dtype=float)
 
         x0, y0, z0 = get_point(target_point_cloud, target_index)

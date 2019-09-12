@@ -1,4 +1,4 @@
-from laserchicken.feature_extractor import RangeZFeatureExtractor
+from laserchicken.feature_extractor.test_range_z_feature_extractor import RangeZFeatureExtractor
 from laserchicken.keys import normalized_height
 
 

@@ -2,10 +2,10 @@
 import numpy as np
 
 from laserchicken import utils
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 
 
-class Test2FeatureExtractor(AbstractFeatureExtractor):
+class Test2FeatureExtractor(FeatureExtractor):
     @classmethod
     def requires(cls):
         return ['test1_b']
@@ -20,7 +20,7 @@ class Test2FeatureExtractor(AbstractFeatureExtractor):
         return [x + t1b, y + t1b, z + t1b]  # x + 3z/2, y + 3z/2, 5z/2
 
 
-class Test3FeatureExtractor(AbstractFeatureExtractor):
+class Test3FeatureExtractor(FeatureExtractor):
     @classmethod
     def requires(cls):
         return ['test1_a', 'test2_c']
@@ -35,7 +35,7 @@ class Test3FeatureExtractor(AbstractFeatureExtractor):
         return t2c - t2a - z  # z
 
 
-class TestVectorizedFeatureExtractor(AbstractFeatureExtractor):
+class TestVectorizedFeatureExtractor(FeatureExtractor):
     is_vectorized = True
 
     @classmethod
