@@ -1,7 +1,7 @@
 import numpy as np
 
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
-from laserchicken.utils import get_xyz
+from laserchicken.utils import get_xyz_per_neighborhood
 
 
 class EigenValueVectorizeFeatureExtractor(FeatureExtractor):
@@ -19,7 +19,7 @@ class EigenValueVectorizeFeatureExtractor(FeatureExtractor):
         if not (isinstance(neighborhoods[0], list) or isinstance(neighborhoods[0], range)):
             neighborhoods = [neighborhoods]
 
-        xyz_grp = get_xyz(sourcepc, neighborhoods)
+        xyz_grp = get_xyz_per_neighborhood(sourcepc, neighborhoods)
         self._mask_rows_with_too_few_points(xyz_grp)
 
         e_vals, eigvects = self._get_eigen_values_and_vectors(xyz_grp)

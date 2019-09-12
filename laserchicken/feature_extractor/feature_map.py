@@ -1,3 +1,4 @@
+from laserchicken import keys
 from laserchicken.feature_extractor.band_ratio_feature_extractor import BandRatioFeatureExtractor
 from .density_absolute_mean_norm_z_feature_extractor import DensityAbsoluteMeanNormZFeatureExtractor
 from .density_absolute_mean_z_feature_extractor import DensityAbsoluteMeanZFeatureExtractor
@@ -64,8 +65,9 @@ def _get_default_extractors():
             PercentileNormZFeatureExtractor(),
             DensityAbsoluteMeanZFeatureExtractor(),
             DensityAbsoluteMeanNormZFeatureExtractor(),
-            BandRatioFeatureExtractor(-100, 1),
-            BandRatioFeatureExtractor(1, 2),
-            BandRatioFeatureExtractor(2, 3)] \
+            BandRatioFeatureExtractor(None, 1, data_key=keys.normalized_height),
+            BandRatioFeatureExtractor(1, 2, data_key=keys.normalized_height),
+            BandRatioFeatureExtractor(2, 3, data_key=keys.normalized_height),
+            BandRatioFeatureExtractor(3, None, data_key=keys.normalized_height)] \
            + [PercentileZFeatureExtractor(p) for p in range(1, 101)] \
            + [PercentileNormZFeatureExtractor(p) for p in range(1, 101)]

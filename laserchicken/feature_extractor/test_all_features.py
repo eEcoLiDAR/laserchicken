@@ -100,21 +100,34 @@ def test_zeroPoints_consistentOutput(feature):
 
 
 @pytest.mark.parametrize("feature", feature_names)
+def test_compute_same_number_of_attributes_as_promised(feature):
+    n = 0
+    pc = _create_point_cloud(n=n)
+    n_attributes_before = len(pc[keys.point])
+    n_promised_attributes = len(create_default_feature_map()[feature].provides())
+
+    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
+
+    n_attributes_after = len(pc[keys.point])
+    np.testing.assert_equal(n_attributes_after - n_attributes_before, n_promised_attributes)
+
+
+@pytest.mark.parametrize("feature", feature_names)
 def test_zeroNeighbors_consistentOutput(feature):
-    _test_consistent_output_with_n_neighbors(feature, 0)
+    _assert_consistent_output_with_n_neighbors(feature, 0)
 
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_oneNeighbor_consistentOutput(feature):
-    _test_consistent_output_with_n_neighbors(feature, 1)
+    _assert_consistent_output_with_n_neighbors(feature, 1)
 
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_twoNeighbors_consistentOutput(feature):
-    _test_consistent_output_with_n_neighbors(feature, 2)
+    _assert_consistent_output_with_n_neighbors(feature, 2)
 
 
-def _test_consistent_output_with_n_neighbors(feature, n_neighbors):
+def _assert_consistent_output_with_n_neighbors(feature, n_neighbors):
     n_points = 10
     pc = _create_point_cloud(n=n_points)
     compute_features(pc, [range(n_neighbors) for _ in range(n_points)], 0, pc, [feature], volume=_CYLINDER)

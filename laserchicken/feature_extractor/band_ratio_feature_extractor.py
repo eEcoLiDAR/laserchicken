@@ -7,16 +7,24 @@ import numpy as np
 
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
-from laserchicken.utils import get_xyz, get_point
+from laserchicken.utils import get_xyz_per_neighborhood, get_point, get_attributes_per_neighborhood
+
+
+def _to_unmasked_array(masked_array):
+    """Creates a 'normal' numpy array from a masked array, inputting nans for masked values."""
+    data = masked_array.data
+    data[masked_array.mask] = np.nan
+    return data
 
 
 class BandRatioFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
     is_vectorized = True
 
-    def __init__(self, lower_limit, upper_limit):
+    def __init__(self, lower_limit, upper_limit, data_key='z'):
         self.lower_limit = lower_limit
         self.upper_limit = upper_limit
+        self.data_key = data_key
 
     def requires(self):
         """
@@ -39,14 +47,20 @@ class BandRatioFeatureExtractor(FeatureExtractor):
 
         :return: List of feature names
         """
-        return ['band_ratio_{}-{}'.format(self.lower_limit, self.upper_limit)]
+        name = 'band_ratio_'
+        if self.lower_limit:
+            name += str(self.lower_limit) + '<'
+        name += self.data_key
+        if self.upper_limit:
+            name += '<' + str(self.upper_limit)
+        return [name]
 
     def extract(self, point_cloud, neighborhoods, target_point_cloud, target_index, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param point_cloud: environment (search space) point cloud
-        :param neighborhood: array of indices of points within the point_cloud argument
+        :param neighborhoods: array of array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
         :param target_index: index of the target point in the target point cloud
         :param volume_description: volume object that describes the shape and size of the search volume
@@ -56,13 +70,15 @@ class BandRatioFeatureExtractor(FeatureExtractor):
         if volume_description.TYPE not in supported_volumes:
             raise ValueError('The volume must be a cylinder')
 
-        xyz = get_xyz(point_cloud, neighborhoods)
-        z = xyz[:, 2, :]
-        n_total_points = xyz.shape[2]
-        n_masked_points_per_neighborhood = xyz.mask[:, 2, :].sum(axis=1)
+        attribute = get_attributes_per_neighborhood(point_cloud, neighborhoods, [self.data_key])
+        z = attribute[:, 0, :]
+        n_total_points = attribute.shape[2]
+        n_masked_points_per_neighborhood = attribute.mask[:, 0, :].sum(axis=1)
         n_points_per_neighborhood = -n_masked_points_per_neighborhood + n_total_points
-        n_points_within_band = np.sum((z < self.upper_limit) * (z > self.lower_limit), axis=1)
-        return n_points_within_band / n_points_per_neighborhood
+        is_point_below_upper_limit = z < self.upper_limit if self.upper_limit else np.ones_like(z)
+        is_point_above_lower_limit = z > self.lower_limit if self.lower_limit else np.ones_like(z)
+        n_points_within_band = np.sum(is_point_below_upper_limit * is_point_above_lower_limit, axis=1)
+        return _to_unmasked_array(n_points_within_band / n_points_per_neighborhood)
 
     def get_params(self):
         """
@@ -70,4 +86,4 @@ class BandRatioFeatureExtractor(FeatureExtractor):
 
         Needed for provenance.
         """
-        return (self.lower_limit, self.upper_limit)
+        return (self.lower_limit, self.upper_limit, self.data_key)
