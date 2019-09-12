@@ -9,7 +9,7 @@ from laserchicken.feature_extractor import *
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
 from laserchicken.keys import point, normalized_height
 from laserchicken.utils import copy_point_cloud
-from laserchicken.volume_specification import InfiniteCylinder
+from laserchicken.volume_specification import InfiniteCylinder, Cell
 from . import compute_features
 from .feature_map import create_default_feature_map, _create_name_extractor_pairs
 
@@ -32,7 +32,8 @@ _10_NEIGHBORHOODS_IN_260807 = next(
 _260807_NEIGHBORHOODS_IN_10 = next(
     compute_neighbors.compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER, sample_size=500))
 
-feature_names = [name for name in create_default_feature_map()]
+features_by_name = create_default_feature_map()
+feature_names = [name for name in features_by_name]
 
 
 def test_no_duplicate_feature_registrations():
@@ -97,19 +98,6 @@ def test_zeroPoints_consistentOutput(feature):
     pc = _create_point_cloud(n=n)
     compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
-
-
-@pytest.mark.parametrize("feature", feature_names)
-def test_compute_same_number_of_attributes_as_promised(feature):
-    n = 0
-    pc = _create_point_cloud(n=n)
-    n_attributes_before = len(pc[keys.point])
-    n_promised_attributes = len(create_default_feature_map()[feature].provides())
-
-    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
-
-    n_attributes_after = len(pc[keys.point])
-    np.testing.assert_equal(n_attributes_after - n_attributes_before, n_promised_attributes)
 
 
 @pytest.mark.parametrize("feature", feature_names)
