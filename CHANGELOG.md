@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Echo ratio no longer gives percentage (removed factor 100)
+- Normalize method returns nothing as normalized height is added to the original point cloud already.
 
 ## Fixed
 - Bug in reading ply file with comments in unexpected format
