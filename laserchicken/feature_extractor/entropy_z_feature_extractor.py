@@ -1,4 +1,4 @@
-"""Shannan entropy calculation. For more info see https://rdrr.io/cran/lidR/man/entropy.html"""
+"""Entropy"""
 
 import numpy as np
 from laserchicken import keys
