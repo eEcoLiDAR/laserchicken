@@ -52,8 +52,8 @@ property float z
 class ComplexTestData(object):
     """Test data within this class should all be in sync (reflect the same data)."""
 
-    comments = [{"module": "filter", "time": str(dt.datetime(2018, 1, 18, 16, 1, 0))},
-                {"module": "filter", "time": str(dt.datetime(2018, 2, 4, 13, 11, 0))}]
+    comments = [{"module": "filter", "time": dt.datetime(2018, 1, 18, 16, 1, 0)},
+                {"module": "filter", "time": dt.datetime(2018, 2, 4, 13, 11, 0)}]
 
     def get_point_cloud(self):
         """Get the point cloud data."""
