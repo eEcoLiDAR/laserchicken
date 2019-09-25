@@ -48,10 +48,10 @@ class BandRatioFeatureExtractor(FeatureExtractor):
         :return: List of feature names
         """
         name = 'band_ratio_'
-        if self.lower_limit:
+        if self.lower_limit is not None:
             name += str(self.lower_limit) + '<'
         name += self.data_key
-        if self.upper_limit:
+        if self.upper_limit is not None:
             name += '<' + str(self.upper_limit)
         return [name]
 

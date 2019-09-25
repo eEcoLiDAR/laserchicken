@@ -88,8 +88,17 @@ class TestBandRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
     def test_provides_simple(self):
         self.assertEqual(['band_ratio_6<z<20'], BandRatioFeatureExtractor(6, 20).provides())
 
-    def test_provides_with_only_one_limit(self):
+    def test_provides_with_only_upper_limit(self):
         self.assertEqual(['band_ratio_z<20'], BandRatioFeatureExtractor(None, 20).provides())
+
+    def test_provides_with_only_lower_limit(self):
+        self.assertEqual(['band_ratio_20<z'], BandRatioFeatureExtractor(20, None).provides())
+
+    def test_provides_with_zero_lower_limit(self):
+        self.assertEqual(['band_ratio_0<z'], BandRatioFeatureExtractor(0, None).provides())
+
+    def test_provides_with_zero_upper_limit(self):
+        self.assertEqual(['band_ratio_z<0'], BandRatioFeatureExtractor(None, 0).provides())
 
     def test_provides_with_data_key(self):
         self.assertEqual(['band_ratio_1<normalized_height<3'],
