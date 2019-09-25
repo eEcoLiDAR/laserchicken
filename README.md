@@ -7,39 +7,47 @@
 
 Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Included features:
 
- - point_density
+ - band_ratio_1<normalized_height<2
+ - band_ratio_2<normalized_height<3
+ - band_ratio_3<normalized_height
+ - band_ratio_normalized_height<1
+ - coeff_var_norm_z
+ - coeff_var_z
+ - density_absolute_mean_norm_z
+ - density_absolute_mean_z
  - echo_ratio
  - eigenv_1
  - eigenv_2
  - eigenv_3
- - z_entropy
- - max_z
- - min_z
- - mean_z
- - median_z
- - std_z
- - var_z
- - range
- - coeff_var_z
- - skew_z
+ - entropy_norm_z
+ - entropy_z
+ - kurto_norm_z
  - kurto_z
+ - max_norm_z
+ - max_z
+ - mean_norm_z
+ - mean_z
+ - median_norm_z
+ - median_z
+ - min_norm_z
+ - min_z
  - normal_vector_1
  - normal_vector_2
  - normal_vector_3
- - slope
- - perc_10
- - perc_20
- - perc_30
- - perc_40
- - perc_50
- - perc_60
- - perc_70
- - perc_80
- - perc_90
- - perc_100
+ - perc_1_normalized_height through perc_100_normalized_height
+ - perc_1_z through perc_100_z
+ - point_density
  - pulse_penetration_ratio
- - density_absolute_mean
+ - range_norm_z
+ - range_z
  - sigma_z
+ - skew_norm_z
+ - skew_z
+ - slope
+ - std_norm_z
+ - std_z
+ - var_norm_z
+ - var_z'
 
 **Feature testing**
 
