@@ -6,7 +6,7 @@ import unittest
 import numpy as np
 
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
@@ -23,7 +23,6 @@ class TestExtractEigenValues(unittest.TestCase):
         rand_indices = [random.randint(0, num_all_pc_points)
                         for _ in range(20)]
         target_point_cloud = utils.copy_point_cloud(point_cloud, rand_indices)
-        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         radius = 2.5
         neighbors = compute_neighbors.compute_cylinder_neighborhood(
             point_cloud, target_point_cloud, radius)
@@ -106,6 +105,27 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
 
 
 class TestExtractNormalPlaneArtificialData0(unittest.TestCase):
+    def test_regression(self):
+        n_x = 3
+        slope_ = 1.0
+        x_, y_ = np.meshgrid(range(n_x), range(n_x))
+        x = x_.flatten()
+        y = y_.flatten()
+        z = [slope_ * x[i] for i in range(len(x))]
+
+        dim = (1, 3, len(x))
+        mask = np.zeros(dim)
+        xyz_grp = np.ma.MaskedArray(np.zeros(dim), mask == 0)
+        xyz_grp[0, 0, :] = x
+        xyz_grp[0, 1, :] = y
+        xyz_grp[0, 2, :] = z
+
+        point_cloud = create_point_cloud(xyz_grp[0, 0, :], xyz_grp[0, 1, :], xyz_grp[0, 2, :])
+        extractor = EigenValueVectorizeFeatureExtractor()
+        neighborhoods = [list(range(len(x)))]
+        normals = np.array(extractor.extract(point_cloud, neighborhoods, point_cloud, None, None)[3:6])[:, 0]
+        np.testing.assert_allclose(normals, np.array((-np.sqrt(2) / 2, 0, np.sqrt(2) / 2)))
+
     def test_from_eigen(self):
         nvect = np.array([1., 2., 3.])
         neighborhood, pc = create_point_cloud_in_plane_and_neighborhood(nvect)
@@ -117,8 +137,33 @@ class TestExtractNormalPlaneArtificialData0(unittest.TestCase):
         np.testing.assert_allclose(nvect[1], n2[0])
         np.testing.assert_allclose(nvect[2], n3[0])
 
+    def test_normal_always_up(self):
+        """Tests whether resulting normals are always pointing upwards (positive z component). As this should happen
+        by chance a lot already, we test many times to make sure results are positive consistently."""
+        z_of_normals = []
+        for i in range(100):
+            neighborhood, pc = create_point_cloud_in_plane_and_neighborhood()
+            z_of_normals += list(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[5])
+        np.testing.assert_array_less(np.zeros_like(z_of_normals), z_of_normals)
+
+    def test_normal_unit_length(self):
+        """Tests whether resulting normals are unit length"""
+        neighborhood, pc = create_point_cloud_in_plane_and_neighborhood()
+        normals = np.array(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[3:6])
+        lengths = np.sum(normals * normals, axis=0)
+        np.testing.assert_almost_equal(np.ones_like(lengths), lengths)
+
 
 class TestExtractSlopeArtificialData(unittest.TestCase):
+    def test_positive_slope(self):
+        """Tests whether resulting slopes are always positive. As this should happen
+        by chance a lot already, we test many times to make sure results are positive consistently."""
+        slopes = []
+        for i in range(100):
+            neighborhood, pc = create_point_cloud_in_plane_and_neighborhood()
+            slopes += list(EigenValueVectorizeFeatureExtractor().extract(pc, neighborhood, None, None, None)[6])
+        np.testing.assert_array_less(np.zeros_like(slopes), slopes)
+
     def test_001_has_slope_0(self):
         self.assert_data_with_normal_vector_has_slope(np.array([0., 0., 1.]), 0.)
 
@@ -152,9 +197,17 @@ class TestExtractSlopeArtificialData(unittest.TestCase):
         np.testing.assert_allclose(slope, expected_slope, atol=1e-6)
 
 
-def create_point_cloud_in_plane_and_neighborhood(nvect):
+def create_point_cloud_in_plane_and_neighborhood(nvect=None):
+    if nvect is None:
+        nvect = np.random.randn(3)
+
     nvect /= np.linalg.norm(nvect)
-    point = _generate_random_points_in_plane(nvect, dparam=0, npts=100)
+    points = _generate_random_points_in_plane(nvect, dparam=0, npts=100)
+    neighborhood, pc = create_point_cloud_and_neighborhoods(points)
+    return neighborhood, pc
+
+
+def create_point_cloud_and_neighborhoods(point):
     pc = {keys.point: {'x': {'type': 'double', 'data': point[:, 0]},
                        'y': {'type': 'double', 'data': point[:, 1]},
                        'z': {'type': 'double', 'data': point[:, 2]}}}
@@ -181,7 +234,7 @@ def _generate_random_points_in_plane(nvect, dparam, npts, eps=0.0):
     return np.column_stack((x, y, z))
 
 
-class EigenValueSerial(AbstractFeatureExtractor):
+class EigenValueSerial(FeatureExtractor):
     """Old serial implementation. Used to test the current (vectorized) implementation against."""
 
     @classmethod

@@ -5,12 +5,12 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/21
 
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
-from laserchicken.utils import get_xyz, get_point
+from laserchicken.utils import get_xyz_per_neighborhood, get_point
 
 
-class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
+class EchoRatioFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
     is_vectorized = True
 
@@ -44,7 +44,7 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param point_cloud: environment (search space) point cloud
-        :param neighborhood: array of indices of points within the point_cloud argument
+        :param neighborhoods: array of array of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
         :param target_index: index of the target point in the target point cloud
         :param volume_description: volume object that describes the shape and size of the search volume
@@ -60,7 +60,7 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
             raise ValueError('Target point index required')
 
         # xyz = self.get_neighborhood_positions(point_cloud, neighborhood)
-        xyz = get_xyz(point_cloud, neighborhoods)
+        xyz = get_xyz_per_neighborhood(point_cloud, neighborhoods)
         n_cylinder = np.sum(xyz.mask[:, 0, :] == False, axis=1, dtype=float)
 
         x0, y0, z0 = get_point(target_point_cloud, target_index)
@@ -69,7 +69,7 @@ class EchoRatioFeatureExtractor(AbstractFeatureExtractor):
         difference = xyz - xyz0[:, :, None]
         sum_of_squares = np.sum(difference ** 2, 1)
         n_sphere = np.sum(sum_of_squares <= volume_description.radius ** 2, axis=1)
-        return n_sphere / n_cylinder * 100.
+        return n_sphere / n_cylinder
 
     @staticmethod
     def get_target_positions(target_point_cloud, target_index):

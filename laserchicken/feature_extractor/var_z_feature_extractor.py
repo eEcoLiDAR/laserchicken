@@ -1,10 +1,10 @@
 import numpy as np
 
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
 
 
-class VarianceZFeatureExtractor(AbstractFeatureExtractor):
+class VarianceZFeatureExtractor(FeatureExtractor):
     """Calculates the variation on the z axis."""
     DATA_KEY = 'z'
 

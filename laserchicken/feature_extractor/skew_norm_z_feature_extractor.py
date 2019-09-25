@@ -1,5 +1,5 @@
 from laserchicken import keys
-from laserchicken.feature_extractor import SkewZFeatureExtractor
+from laserchicken.feature_extractor.test_skew_z_feature_extractor import SkewZFeatureExtractor
 
 
 class SkewNormZFeatureExtractor(SkewZFeatureExtractor):

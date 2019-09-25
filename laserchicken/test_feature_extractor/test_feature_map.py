@@ -1,30 +1,38 @@
 """Test that the map from feature names to extractor classes is correct."""
-import pytest
+import unittest
 
 from laserchicken import feature_extractor
-
-from . import __name__ as test_module_name
-from . import Test1FeatureExtractor, Test2FeatureExtractor, Test3FeatureExtractor, TestBrokenFeatureExtractor, TestVectorizedFeatureExtractor
+from laserchicken.test_feature_extractor import Test1FeatureExtractor
 
 
-@pytest.fixture(scope='module', autouse=True)
-def override_features():
-    """Overwrite the available feature extractors with test feature extractors."""
-    feature_extractor.FEATURES = feature_extractor._create_feature_map(test_module_name)
-    yield
-    feature_extractor.FEATURES = feature_extractor._create_feature_map(feature_extractor.__name__)
+class FeatureMapTests(unittest.TestCase):
 
+    def test__feature_map(self):
+        expected_features = ['point_density', 'echo_ratio', 'eigenv_1', 'eigenv_2', 'eigenv_3', 'normal_vector_1',
+                             'normal_vector_2', 'normal_vector_3', 'slope', 'entropy_z', 'pulse_penetration_ratio',
+                             'sigma_z', 'median_z', 'max_z', 'min_z',
+                             'range_z', 'var_z', 'mean_z', 'std_z', 'coeff_var_z', 'skew_z', 'kurto_z', 'skew_norm_z',
+                             'mean_norm_z', 'std_norm_z', 'coeff_var_norm_z', 'var_norm_z', 'max_norm_z', 'min_norm_z',
+                             'range_norm_z', 'kurto_norm_z', 'entropy_norm_z', 'median_norm_z',
+                             'density_absolute_mean_z', 'density_absolute_mean_norm_z', 'perc_15_z',
+                             'perc_99_normalized_height']
+        for feature in expected_features:
+            self.assertIn(feature, feature_extractor.FEATURES)
 
-def test__feature_map():
-    feature_map = {
-        'test1_a': Test1FeatureExtractor,
-        'test1_b': Test1FeatureExtractor,
-        'test2_a': Test2FeatureExtractor,
-        'test2_b': Test2FeatureExtractor,
-        'test2_c': Test2FeatureExtractor,
-        'test3_a': Test3FeatureExtractor,
-        'test_broken': TestBrokenFeatureExtractor,
-        'vectorized1': TestVectorizedFeatureExtractor,
-        'vectorized2': TestVectorizedFeatureExtractor,
-    }
-    assert feature_map == feature_extractor._create_feature_map(test_module_name)
+    def test_feature_map_contains_new_feature_after_registration(self):
+        test_feature_extractor = Test1FeatureExtractor()
+        expected_features = test_feature_extractor.provides()
+
+        feature_extractor.register_new_feature_extractor(test_feature_extractor)
+
+        for feature in expected_features:
+            self.assertIn(feature, feature_extractor.FEATURES)
+
+    def test_list_all_feature_names_contains_items(self):
+        names = feature_extractor.list_feature_names()
+        self.assertGreater(len(names), 0)
+
+    def test_list_all_feature_names_are_strings(self):
+        names = feature_extractor.list_feature_names()
+        for name in names:
+            self.assertEqual(type(name), str)

@@ -6,9 +6,11 @@ import pytest
 from pytest import raises
 
 from laserchicken import feature_extractor, keys, test_tools
+from laserchicken.feature_extractor import feature_map
+from laserchicken.test_feature_extractor import Test1FeatureExtractor
 from laserchicken.volume_specification import Sphere
-
-from . import __name__ as test_module_name
+from .feature_test23 import Test2FeatureExtractor, Test3FeatureExtractor, TestVectorizedFeatureExtractor
+from .feature_test_broken import TestBrokenFeatureExtractor
 
 
 class TestExtractFeatures(unittest.TestCase):
@@ -56,6 +58,7 @@ class TestExtractFeatures(unittest.TestCase):
     @staticmethod
     def test_vectorized_chunks():
         """Should not throw error for non requested but provided features."""
+        feature_map._get_default_extractors = _get_test_extractors
         n = 2000000  # enough to be too big for a single chunk
         x = np.zeros(n)
         y = np.zeros(n)
@@ -64,16 +67,22 @@ class TestExtractFeatures(unittest.TestCase):
         feature_names = ['vectorized1']
         _compute_features(target, feature_names)
 
+    def setUp(self) -> None:
+        self.original_function = feature_map._get_default_extractors
+        feature_map._get_default_extractors = _get_test_extractors
+        feature_extractor.FEATURES = feature_map.create_default_feature_map()
 
-@pytest.fixture(scope='module', autouse=True)
-def override_features():
-    """Overwrite the available feature extractors with test feature extractors."""
-    feature_extractor.FEATURES = feature_extractor._create_feature_map(test_module_name)
-    yield
-    feature_extractor.FEATURES = feature_extractor._create_feature_map(feature_extractor.__name__)
+    def tearDown(self) -> None:
+        feature_map._get_default_extractors = self.original_function
+        feature_extractor.FEATURES = feature_map.create_default_feature_map()
 
 
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
     feature_extractor.compute_features({}, neighborhoods, 0, target, feature_names, Sphere(5), overwrite)
     return target
+
+
+def _get_test_extractors():
+    return [Test1FeatureExtractor(), Test2FeatureExtractor(), Test3FeatureExtractor(), TestVectorizedFeatureExtractor(),
+            TestBrokenFeatureExtractor()]

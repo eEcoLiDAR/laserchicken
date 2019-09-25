@@ -4,8 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.1 - 2019-08-28
+## Added
+- Percentiles 1-100
+- Percentiles normalized height 1-100
+- Band ratio feature extractor 
+- Function to list available feature extractors
+
+## Changed
+- Echo ratio no longer gives percentage (removed factor 100)
+
+## Fixed
+- Bug in reading ply file with comments in unexpected format
+- Bug in normal vector and slope
+
 ## 0.3.0 - 2019-02-27
-### Added
+## Added
 - Normalization module
 - General tests that all current and future feature extractors will be checked against.
 - Possibility to have a randomly subsampled (fixed) number of neighbors (eg for faster feature calculation)

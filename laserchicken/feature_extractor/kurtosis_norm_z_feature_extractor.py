@@ -1,5 +1,5 @@
 from laserchicken import keys
-from laserchicken.feature_extractor import KurtosisZFeatureExtractor
+from laserchicken.feature_extractor.kurtosis_z_feature_extractor import KurtosisZFeatureExtractor
 
 
 class KurtosisNormZFeatureExtractor(KurtosisZFeatureExtractor):

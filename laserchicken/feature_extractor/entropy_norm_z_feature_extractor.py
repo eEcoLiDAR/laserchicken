@@ -1,7 +1,7 @@
 """Shannan entropy calculation. For more info see https://rdrr.io/cran/lidR/man/entropy.html"""
 
 from laserchicken import keys
-from laserchicken.feature_extractor import EntropyZFeatureExtractor
+from laserchicken.feature_extractor.entropy_z_feature_extractor import EntropyZFeatureExtractor
 
 
 class EntropyNormZFeatureExtractor(EntropyZFeatureExtractor):

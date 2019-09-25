@@ -1,17 +1,10 @@
-import os
-import shutil
 import unittest
-import pytest
 
 import numpy as np
-import pandas as pd
-from numpy.testing import assert_almost_equal, assert_equal
 
 from laserchicken import keys
 from laserchicken.keys import point, normalized_height
 from laserchicken.normalization import normalize
-from laserchicken.spatial_selections import points_in_polygon_wkt, points_in_polygon_wkt_file, \
-    points_in_polygon_shp_file
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.utils import get_attribute_value
 
@@ -46,5 +39,4 @@ class TestNormalize(unittest.TestCase):
         point_cloud = create_point_cloud([0, 0, 5], [0, 0, 0], [1, 2, 3])
         point_cloud.pop(keys.provenance, None)  # Remove any provenance data
         normalized_point_cloud = normalize(point_cloud, cell_size=2)
-        print(point_cloud)
         self.assertTrue(keys.provenance in normalized_point_cloud)

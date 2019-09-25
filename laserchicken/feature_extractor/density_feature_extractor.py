@@ -1,9 +1,9 @@
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
 from laserchicken.volume_specification import Sphere, InfiniteCylinder
 
 
-class PointDensityFeatureExtractor(AbstractFeatureExtractor):
+class PointDensityFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
 
     @classmethod

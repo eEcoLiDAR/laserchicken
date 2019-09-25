@@ -1,5 +1,5 @@
 from laserchicken import keys
-from laserchicken.feature_extractor import MeanStdCoeffZFeatureExtractor
+from laserchicken.feature_extractor.mean_std_coeff_z_feature_extractor import MeanStdCoeffZFeatureExtractor
 
 
 class MeanStdCoeffNormZFeatureExtractor(MeanStdCoeffZFeatureExtractor):

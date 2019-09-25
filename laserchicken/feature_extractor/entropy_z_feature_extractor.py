@@ -2,10 +2,10 @@
 
 import numpy as np
 from laserchicken import keys
-from laserchicken.feature_extractor.abc import AbstractFeatureExtractor
+from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 
 
-class EntropyZFeatureExtractor(AbstractFeatureExtractor):
+class EntropyZFeatureExtractor(FeatureExtractor):
     # TODO: make this settable from command line
     layer_thickness = 0.5
     z_min = None
