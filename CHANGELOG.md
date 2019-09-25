@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Percentiles 1-100
 - Percentiles normalized height 1-100
 - Band ratio feature extractor 
+- Function to list available feature extractors
 
 ## Changed
 - Echo ratio no longer gives percentage (removed factor 100)

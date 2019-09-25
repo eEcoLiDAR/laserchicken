@@ -9,11 +9,13 @@ class FeatureMapTests(unittest.TestCase):
 
     def test__feature_map(self):
         expected_features = ['point_density', 'echo_ratio', 'eigenv_1', 'eigenv_2', 'eigenv_3', 'normal_vector_1',
-                             'normal_vector_2', 'normal_vector_3', 'slope', 'entropy_z', 'pulse_penetration_ratio', 'sigma_z', 'median_z', 'max_z', 'min_z',
+                             'normal_vector_2', 'normal_vector_3', 'slope', 'entropy_z', 'pulse_penetration_ratio',
+                             'sigma_z', 'median_z', 'max_z', 'min_z',
                              'range_z', 'var_z', 'mean_z', 'std_z', 'coeff_var_z', 'skew_z', 'kurto_z', 'skew_norm_z',
                              'mean_norm_z', 'std_norm_z', 'coeff_var_norm_z', 'var_norm_z', 'max_norm_z', 'min_norm_z',
                              'range_norm_z', 'kurto_norm_z', 'entropy_norm_z', 'median_norm_z',
-                             'density_absolute_mean_z', 'density_absolute_mean_norm_z','perc_15_z', 'perc_99_normalized_height']
+                             'density_absolute_mean_z', 'density_absolute_mean_norm_z', 'perc_15_z',
+                             'perc_99_normalized_height']
         for feature in expected_features:
             self.assertIn(feature, feature_extractor.FEATURES)
 
@@ -25,3 +27,12 @@ class FeatureMapTests(unittest.TestCase):
 
         for feature in expected_features:
             self.assertIn(feature, feature_extractor.FEATURES)
+
+    def test_list_all_feature_names_contains_items(self):
+        names = feature_extractor.list_feature_names()
+        self.assertGreater(len(names), 0)
+
+    def test_list_all_feature_names_are_strings(self):
+        names = feature_extractor.list_feature_names()
+        for name in names:
+            self.assertEqual(type(name), str)
