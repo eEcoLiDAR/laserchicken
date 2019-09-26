@@ -34,8 +34,8 @@ Toolkit for handling point clouds created using airborne laser scanning (ALS). F
  - normal_vector_1
  - normal_vector_2
  - normal_vector_3
- - perc_1_normalized_height through perc_100_normalized_height
- - perc_1_z through perc_100_z
+ - perc_1_normalized_height until perc_100_normalized_height
+ - perc_1_z until perc_100_z
  - point_density
  - pulse_penetration_ratio
  - range_norm_z
