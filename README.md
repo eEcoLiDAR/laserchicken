@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="https://raw.githubusercontent.com/eEcoLiDAR/laserchicken/master/laserchicken_logo.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/eEcoLiDAR/laserchicken/master/laserchicken_logo.png" width="500"/>
 </p>
 
 [![Build Status](https://travis-ci.org/eEcoLiDAR/laserchicken.svg?branch=master)](https://travis-ci.org/eEcoLiDAR/laserchicken)
