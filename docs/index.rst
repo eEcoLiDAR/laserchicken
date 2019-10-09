@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Laserchicken's documentation!
+Welcome to Laserchicken's documentation! 
 ========================================
 Laserchicken is a user-extendable, cross-platform Python tool for
 extracting statistical properties (features in machine learning jargon)
