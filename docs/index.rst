@@ -212,9 +212,4 @@ Example from the tutorial notebook::
    write(point_cloud, 'my_output.ply')
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
