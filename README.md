@@ -8,7 +8,9 @@
 [![DOI](https://zenodo.org/badge/95649056.svg)](https://zenodo.org/badge/latestdoi/95649056)
 [![Documentation Status](https://readthedocs.org/projects/laserchicken/badge/?version=latest)](https://laserchicken.readthedocs.io/en/latest/?badge=latest)
 
-Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Included features:
+Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our [user manual](https://readthedocs.org/projects/laserchicken/badge/?version=latest).
+
+Included features:
 
  - band_ratio_1<normalized_height<2
  - band_ratio_2<normalized_height<3
@@ -94,15 +96,6 @@ Tested for correctness using a simple case with artificial data against manually
 *point_density*
 
 Tested for correctness on artificial data.
-
-
-**Volumes**
-
-The following volume types are supported:
-- Infinite cylinder
-- Sphere
-- Cell
-- Cube
 
 
 
