@@ -116,6 +116,8 @@ Example from the tutorial notebook::
    volume = Sphere(5)
    neighbors = compute_neighborhoods(point_cloud, targets, volume)
 
+Note that in the above example, neighbors is a generator and can only be iterated once. If you would want to do multiple calculations without recalculating the neighbors, you can copy the neighbors to a list. This is not done by default because neighbors can quickly grow quite large so that available RAM unnecessarily becomes the bottle neck.
+
 Features
 --------
 
