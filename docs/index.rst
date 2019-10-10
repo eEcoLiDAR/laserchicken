@@ -201,6 +201,12 @@ Which outputs something like::
     'var_norm_z',
     'var_z']
 
+Below is an example. The figure visualizes the slope feature for a small neighborhood size. We used the same target point cloud as the environment point cloud. The image was generated using mayavi plotting software (https://docs.enthought.com/mayavi/mayavi/).
+
+.. image:: figures/slope.png
+  :width: 450
+  :alt: slope on small point cloud
+
 Export
 ------
 
