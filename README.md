@@ -8,7 +8,7 @@
 [![DOI](https://zenodo.org/badge/95649056.svg)](https://zenodo.org/badge/latestdoi/95649056)
 [![Documentation Status](https://readthedocs.org/projects/laserchicken/badge/?version=latest)](https://laserchicken.readthedocs.io/en/latest/?badge=latest)
 
-Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our [user manual](https://readthedocs.org/projects/laserchicken/badge/?version=latest) and our (very modest) [tutorial](https://github.com/eEcoLiDAR/laserchicken/blob/master/tutorial.ipynb).
+Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our [user manual](https://laserchicken.readthedocs.io/) and our (very modest) [tutorial](https://github.com/eEcoLiDAR/laserchicken/blob/master/tutorial.ipynb).
 
 Included features:
 
