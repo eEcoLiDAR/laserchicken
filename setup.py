@@ -21,6 +21,7 @@ setup(
     packages=['laserchicken'],
     install_requires=required,
     long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
