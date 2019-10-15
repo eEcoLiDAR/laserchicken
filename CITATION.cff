@@ -1,0 +1,54 @@
+# YAML 1.2
+---
+abstract: "Laserchicken is a toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our user manual and our (very modest) tutorial."
+authors:
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Meijer
+    given-names: Christiaan
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Goncalves
+    given-names: Romulo
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Renaud
+    given-names: Nico
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Andela
+    given-names: Bouwe
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Dzigan
+    given-names: Yifat
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Diblen
+    given-names: Faruk
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Ranguelova
+    given-names: Elena
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Oord
+    given-names: Gijs
+    name-particle: "van den"
+  -
+    affiliation: "Institute for Biodiversity and Ecosystem Dynamics, University of Amsterdam"
+    family-names: Koma
+    given-names: Zsófia
+cff-version: "1.0.3"
+date-released: 2019-10-15
+doi: "10.5281/zenodo.1219422"
+keywords:
+  - "airborne laser scanning"
+  - "machine learning"
+  - "point cloud"
+  - "digital terrain map"
+license: "Apache-2.0"
+message: "If you use this software, please cite it using these metadata."
+title: "Laserchicken: toolkit for ALS point clouds"
+version: "0.3.1"
+...
