@@ -18,51 +18,9 @@ Prerequisites:
 pip install laserchicken
 ```
 
-Included features:
 
- - band_ratio_1<normalized_height<2
- - band_ratio_2<normalized_height<3
- - band_ratio_3<normalized_height
- - band_ratio_normalized_height<1
- - coeff_var_norm_z
- - coeff_var_z
- - density_absolute_mean_norm_z
- - density_absolute_mean_z
- - echo_ratio
- - eigenv_1
- - eigenv_2
- - eigenv_3
- - entropy_norm_z
- - entropy_z
- - kurto_norm_z
- - kurto_z
- - max_norm_z
- - max_z
- - mean_norm_z
- - mean_z
- - median_norm_z
- - median_z
- - min_norm_z
- - min_z
- - normal_vector_1
- - normal_vector_2
- - normal_vector_3
- - perc_1_normalized_height until perc_100_normalized_height
- - perc_1_z until perc_100_z
- - point_density
- - pulse_penetration_ratio
- - range_norm_z
- - range_z
- - sigma_z
- - skew_norm_z
- - skew_z
- - slope
- - std_norm_z
- - std_z
- - var_norm_z
- - var_z'
 
-**Feature testing**
+## Feature testing
 
 All features were tested for the following general conditions:
 - Output consistent point clouds and don't crash with artificial data, real data, all zero data (x, y or z), data without points, data with very low number of neighbors (0, 1, 2)
