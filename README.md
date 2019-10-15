@@ -10,6 +10,14 @@
 
 Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our [user manual](https://laserchicken.readthedocs.io/) and our (very modest) [tutorial](https://github.com/eEcoLiDAR/laserchicken/blob/master/tutorial.ipynb).
 
+# Installation
+Prerequisites:
+- Python 3.5 or higher
+- pip
+```
+pip install laserchicken
+```
+
 Included features:
 
  - band_ratio_1<normalized_height<2
