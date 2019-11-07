@@ -164,7 +164,7 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
     point_cloud = None
     target_pc_sequential = None
     target_pc_vector = None
-    cyl = None
+    cylinder = None
     target_pc_index = None
 
     def test_valid(self):
@@ -175,15 +175,15 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
 
     def _run_extractor(self, extractor, target_pc):
         result = []
-        for target_index, neighbors in enumerate(self.cylinder_index):
-            current = extractor.extract(self.point_cloud, neighbors, target_pc, target_index, self.cyl)
+        for target_index, neighbors in enumerate(self.cylinder_neighborhoods):
+            current = extractor.extract(self.point_cloud, neighbors, target_pc, target_index, self.cylinder)
             result += [current]
         return np.array(result)
 
     def _run_vectorized_extractor(self, extractor, target_pc):
         result = []
-        for target_index, neighbors in enumerate(self.cylinder_index):
-            current = extractor.extract(self.point_cloud, [neighbors], target_pc, target_index, self.cyl)
+        for target_index, neighbors in enumerate(self.cylinder_neighborhoods):
+            current = extractor.extract(self.point_cloud, [neighbors], target_pc, target_index, self.cylinder)
             result += [current]
         return np.array(result)
 
@@ -198,12 +198,9 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         self.target_pc_index = 0
         # volume descriptions
         radius = 0.5
-        self.cyl = InfiniteCylinder(radius)
-        self.neighbors = compute_neighborhoods(
-            self.point_cloud, self.target_pc_sequential, self.cyl)
-        self.cylinder_index = []
-        for x in self.neighbors:
-            self.cylinder_index += x
+        self.cylinder = InfiniteCylinder(radius)
+        self.cylinder_neighborhoods = compute_neighborhoods(self.point_cloud, self.target_pc_sequential, self.cylinder)
+
 
     def _get_random_targets(self):
         """Get a random target pc."""

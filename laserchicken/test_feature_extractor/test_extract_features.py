@@ -2,7 +2,6 @@
 import unittest
 
 import numpy as np
-import pytest
 from pytest import raises
 
 from laserchicken import feature_extractor, keys, test_tools
@@ -78,7 +77,7 @@ class TestExtractFeatures(unittest.TestCase):
 
 
 def _compute_features(target, feature_names, overwrite=False):
-    neighborhoods = [[] for i in range(len(target["vertex"]["x"]["data"]))]
+    neighborhoods = ([] for _ in range(len(target["vertex"]["x"]["data"])))
     feature_extractor.compute_features({}, neighborhoods, 0, target, feature_names, Sphere(5), overwrite)
     return target
 

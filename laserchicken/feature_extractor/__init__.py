@@ -13,7 +13,7 @@ FEATURES = create_default_feature_map()
 
 
 def list_feature_names():
-    return FEATURES#[feature_name for feature_name in FEATURES]
+    return FEATURES  # [feature_name for feature_name in FEATURES]
 
 
 def register_new_feature_extractor(extractor: FeatureExtractor):
@@ -109,8 +109,7 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
         setattr(extractor, k, kwargs[k])
     provided_features = extractor.provides()
     n_features = len(provided_features)
-    feature_values = [np.empty(n_targets, dtype=np.float64)
-                      for i in range(n_features)]
+    feature_values = [np.empty(n_targets, dtype=np.float64) for _ in range(n_features)]
 
     if hasattr(extractor, 'is_vectorized'):
         _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets,

@@ -176,16 +176,10 @@ class TestDensityFeatureOnRealData(unittest.TestCase):
 
     def test_sphere_index(self):
         """Compute the density for a sphere given as index of the source pc."""
-        neighbors = compute_neighborhoods(self.point_cloud,
-                                          self.target_point_cloud,
-                                          self.sphere)
-        neighbors_index = []
-        for x in neighbors:
-            neighbors_index += x
-
+        neighborhoods = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.sphere)
         extractor = PointDensityFeatureExtractor()
-        for index in neighbors_index:
-            extractor.extract(self.point_cloud, index, None, None, self.sphere)
+        for neighborhood in neighborhoods:
+            extractor.extract(self.point_cloud, neighborhood, None, None, self.sphere)
 
     def test_cylinder_index(self):
         """Compute the density for a cylinder given as index of source pc."""
