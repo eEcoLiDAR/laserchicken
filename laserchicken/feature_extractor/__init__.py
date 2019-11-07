@@ -143,7 +143,7 @@ def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values,
         i_start = chunk_no * chunk_size
         i_end = min((chunk_no + 1) * chunk_size, n_targets)
         target_indices = np.arange(i_start, i_end)
-        current_neighborhoods = itertools.islice(neighborhoods, i_end - i_start)
+        current_neighborhoods = list(itertools.islice(neighborhoods, i_end - i_start))
         point_values = extractor.extract(env_point_cloud, current_neighborhoods, target_point_cloud,
                                          target_indices, volume)
 
