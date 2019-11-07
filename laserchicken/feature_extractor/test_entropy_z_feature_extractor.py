@@ -23,8 +23,8 @@ class TestExtractEntropy(unittest.TestCase):
 
         target_idx_base = 0
 
-        feature_extractor.compute_features(self.point_cloud, neighborhoods, target_idx_base, target_point_cloud,
-                                               ["entropy_z"], InfiniteCylinder(5), layer_thickness=0.1)
+        feature_extractor.compute_features(self.point_cloud, neighborhoods, target_point_cloud, ["entropy_z"],
+                                           InfiniteCylinder(5), layer_thickness=0.1)
 
 
         for i in range(n_targets):

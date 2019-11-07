@@ -29,8 +29,8 @@ class TestExtractEigenValues(unittest.TestCase):
 
         target_idx_base = 0
         for x in neighbors:
-            feature_extractor.compute_features(point_cloud, x, target_idx_base, target_point_cloud,
-                                               ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
+            feature_extractor.compute_features(point_cloud, x, target_point_cloud, ["eigenv_1", "eigenv_2", "eigenv_3"],
+                                               InfiniteCylinder(5))
             target_idx_base += len(x)
 
         self.assertEqual("laserchicken.feature_extractor.eigenvals_feature_extractor",
@@ -42,8 +42,7 @@ class TestExtractEigenValues(unittest.TestCase):
         a = np.array([5])
         pc = create_point_cloud(a, a, a)
 
-        feature_extractor.compute_features(
-            pc, [[0]], 0, pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
+        feature_extractor.compute_features(pc, [[0]], pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
         eigen_val_123 = np.array(
             [pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])

@@ -44,16 +44,16 @@ def test_no_duplicate_feature_registrations():
 @pytest.mark.parametrize("feature", feature_names)
 def test_completeTile_consistentOutput(feature):
     target_point_cloud = copy_point_cloud(_PC_1000)
-    compute_features(copy_point_cloud(_PC_260807), _1000_NEIGHBORHOODS_IN_260807, 0, target_point_cloud,
-                     [feature], volume=_CYLINDER)
+    compute_features(copy_point_cloud(_PC_260807), _1000_NEIGHBORHOODS_IN_260807, target_point_cloud, [feature],
+                     volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
 
 
 @pytest.mark.parametrize("feature", feature_names)
 def test_manyTargets_consistentOutput(feature):
     target_point_cloud = copy_point_cloud(_PC_260807)
-    compute_features(copy_point_cloud(_PC_10), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
-                     [feature], volume=_CYLINDER)
+    compute_features(copy_point_cloud(_PC_10), _260807_NEIGHBORHOODS_IN_10, target_point_cloud, [feature],
+                     volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
 
 
@@ -61,7 +61,7 @@ def test_manyTargets_consistentOutput(feature):
 def test_xAllZeros_consistentOutput(feature):
     n = 10
     pc = _create_point_cloud(x=0, n=n)
-    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -69,7 +69,7 @@ def test_xAllZeros_consistentOutput(feature):
 def test_yAllZeros_consistentOutput(feature):
     n = 10
     pc = _create_point_cloud(y=0, n=n)
-    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -77,7 +77,7 @@ def test_yAllZeros_consistentOutput(feature):
 def test_zAllZeros_consistentOutput(feature):
     n = 10
     pc = _create_point_cloud(z=0, n=n)
-    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -85,7 +85,7 @@ def test_zAllZeros_consistentOutput(feature):
 def test_zeroPoints_consistentOutput(feature):
     n = 0
     pc = _create_point_cloud(n=n)
-    compute_features(pc, [[] for _ in range(n)], 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [[] for _ in range(n)], pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -107,7 +107,7 @@ def test_twoNeighbors_consistentOutput(feature):
 def _assert_consistent_output_with_n_neighbors(feature, n_neighbors):
     n_points = 10
     pc = _create_point_cloud(n=n_points)
-    compute_features(pc, [range(n_neighbors) for _ in range(n_points)], 0, pc, [feature], volume=_CYLINDER)
+    compute_features(pc, [range(n_neighbors) for _ in range(n_points)], pc, [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(pc)
 
 
@@ -120,8 +120,7 @@ def test_inputNotChanged(feature):
     original_neighborhoods = _10_NEIGHBORHOODS_IN_260807
     neighborhoods = [[e for e in l] for l in original_neighborhoods]
 
-    compute_features(environment, neighborhoods, 0, targets, [feature],
-                     volume=_CYLINDER)
+    compute_features(environment, neighborhoods, targets, [feature], volume=_CYLINDER)
 
     _assert_attributes_not_changed(original_environment, environment)
     _assert_attributes_not_changed(original_targets, targets)

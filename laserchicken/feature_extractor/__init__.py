@@ -1,13 +1,13 @@
 """Feature extractor module."""
-
-import numpy as np
+import itertools
 import sys
-
 import time
 
+import numpy as np
+
 from laserchicken import keys, utils
-from laserchicken.feature_extractor.feature_map import create_default_feature_map, _create_name_extractor_pairs
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
+from laserchicken.feature_extractor.feature_map import create_default_feature_map, _create_name_extractor_pairs
 
 FEATURES = create_default_feature_map()
 
@@ -21,8 +21,7 @@ def register_new_feature_extractor(extractor: FeatureExtractor):
         FEATURES[name] = extractor
 
 
-def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, feature_names, volume,
-                     overwrite=False,
+def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature_names, volume, overwrite=False,
                      verbose=True, **kwargs):
     """
     Compute features for each target and store result as point attributes in target point cloud.
@@ -35,7 +34,7 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
     >>> neighborhoods = []
     >>> for x in neighbors:
     >>>   neighborhoods += x
-    >>> compute_features(point_cloud, neighborhoods, target_point_cloud, ['eigenv_1', 'kurto_z'], volume)
+    >>> compute_features(point_cloud,neighborhoods,['eigenv_1', 'kurto_z'],volume,)
     >>> eigenv_1 = target_point_cloud[point]['eigenv_1']['data']
 
     Results of the example above are stored in the target point cloud as extra point attributes.
@@ -58,7 +57,7 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
     while features_to_do:
         feature_name = features_to_do[0]
 
-        if (target_idx_base == 0) and (not overwrite) and (feature_name in target_point_cloud[keys.point]):
+        if (not overwrite) and (feature_name in target_point_cloud[keys.point]):
             continue  # Skip feature calc if it is already there and we do not overwrite
 
         extractor = FEATURES[feature_name]
@@ -68,8 +67,7 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
             sys.stdout.flush()
             start = time.time()
 
-        _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base,
-                               target_point_cloud, extractor, volume, overwrite, kwargs)
+        _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs)
         utils.add_metadata(target_point_cloud, type(
             extractor).__module__, extractor.get_params())
 
@@ -101,9 +99,8 @@ def _verify_feature_names(feature_names):
                          .format(', '.join(unknown_features), ', '.join(FEATURES.keys())))
 
 
-def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, target_point_cloud, extractor, volume,
-                           overwrite, kwargs):
-    n_targets = len(neighborhoods)
+def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs):
+    n_targets = len(target_point_cloud[keys.point]['x']['data'])
 
     for k in kwargs:
         setattr(extractor, k, kwargs[k])
@@ -113,31 +110,24 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_idx_base, targ
 
     if hasattr(extractor, 'is_vectorized'):
         _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets,
-                                         neighborhoods,
-                                         target_idx_base, target_point_cloud, volume)
+                                         neighborhoods, target_point_cloud, volume)
     else:
         _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets,
-                                          neighborhoods, target_idx_base, target_point_cloud, volume)
+                                          neighborhoods, target_point_cloud, volume)
 
     for i in range(n_features):
         feature = provided_features[i]
-        if target_idx_base != 0:
-            if feature not in target_point_cloud[keys.point]:
-                continue
 
-            target_point_cloud[keys.point][feature]["data"] = np.hstack(
-                [target_point_cloud[keys.point][feature]["data"], feature_values[i]])
-
-        elif overwrite or (feature not in target_point_cloud[keys.point]):
+        if overwrite or (feature not in target_point_cloud[keys.point]):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
 
 
 def _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
-                                      target_idx_base, target_point_cloud, volume):
+                                      target_point_cloud, volume):
     for target_index in range(n_targets):
         point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
-                                         target_index + target_idx_base, volume)
+                                         target_index, volume)
         if n_features > 1:
             for i in range(n_features):
                 feature_values[i][target_index] = point_values[i]
@@ -146,15 +136,16 @@ def _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values
 
 
 def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
-                                     target_idx_base, target_point_cloud, volume):
+                                     target_point_cloud, volume):
     chunk_size = 100000
     print('calculating {} in chunks'.format(extractor.provides()))
     for chunk_no in range(int(np.math.ceil(n_targets / chunk_size))):
         i_start = chunk_no * chunk_size
         i_end = min((chunk_no + 1) * chunk_size, n_targets)
         target_indices = np.arange(i_start, i_end)
-        point_values = extractor.extract(env_point_cloud, neighborhoods[i_start:i_end], target_point_cloud,
-                                         target_indices + target_idx_base, volume)
+        current_neighborhoods = itertools.islice(neighborhoods, i_end - i_start)
+        point_values = extractor.extract(env_point_cloud, current_neighborhoods, target_point_cloud,
+                                         target_indices, volume)
 
         if n_features > 1:
             for i in range(n_features):
