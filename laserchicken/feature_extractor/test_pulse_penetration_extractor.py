@@ -7,8 +7,6 @@ import numpy as np
 from laserchicken import keys, read_las, utils
 from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
-from laserchicken.keys import point
-from laserchicken.test_tools import create_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 
 
@@ -82,8 +80,7 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
     def test_valid(self):
         """Compute the echo ratio for a sphere/cylinder at different target points without crashing."""
         # read the data
-        self.point_cloud = read_las.read(os.path.join(
-            self._test_data_source, self._test_file_name))
+        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
 
         # get the target point clouds
         random.seed(102938482634)
@@ -93,17 +90,12 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
         # volume descriptions
         radius = 0.5
         self.cyl = InfiniteCylinder(radius)
-        neighbors = compute_neighborhoods(
-            self.point_cloud, self.target_point_cloud, self.cyl)
-
-        cylinder_index = []
-        for x in neighbors:
-            cylinder_index += x
+        neighborhoods = compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cyl)
 
         # extractor
         extractor = PulsePenetrationFeatureExtractor()
-        for index in cylinder_index:
-            extractor.extract(self.point_cloud, index, None, None, None)
+        for neighborhood in neighborhoods:
+            extractor.extract(self.point_cloud, neighborhood, None, None, None)
 
     def _get_random_targets(self):
         """Get a random target pc."""

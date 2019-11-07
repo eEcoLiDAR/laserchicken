@@ -19,12 +19,10 @@ def normalize(point_cloud, cell_size=None):
     else:
         targets = create_spanning_grid(point_cloud, cell_size)
 
-        neighborhood_sets = compute_neighborhoods(point_cloud, targets, Cell(cell_size), sample_size=None)
-
-        for neighborhood_set in neighborhood_sets:
-            for neighborhood in neighborhood_set:
-                _, min_z, _ = range_extractor().extract(point_cloud, neighborhood, None, None, None)
-                point_cloud[keys.point][normalized_height]['data'][neighborhood] = z[neighborhood] - min_z
+        neighborhoods = compute_neighborhoods(point_cloud, targets, Cell(cell_size), sample_size=None)
+        for neighborhood in neighborhoods:
+            _, min_z, _ = range_extractor().extract(point_cloud, neighborhood, None, None, None)
+            point_cloud[keys.point][normalized_height]['data'][neighborhood] = z[neighborhood] - min_z
     import sys
     module = sys.modules[__name__]
     add_metadata(point_cloud, module, {'cell_size':cell_size})

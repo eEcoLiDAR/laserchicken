@@ -27,8 +27,8 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         # extractor = EchoRatioFeatureExtractor()
         extractor = EchoRatioFeatureExtractor()
         per = extractor.extract(
-            self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, self.cyl)
-        np.testing.assert_allclose(per, self.theo_val)
+            self.point_cloud, self.neighborhoods, self.target_point_cloud, self.indexpc, self.cylinder)
+        np.testing.assert_allclose(per, self.theoretical_value)
 
     def test_invalid(self):
         """ Must raise TypeError as we do not provide correct indexes."""
@@ -36,19 +36,16 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         extractor = EchoRatioFeatureExtractor()
         # target point cloud must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl,
-                              None, self.indexpc, self.cyl)
+            extractor.extract(self.point_cloud, self.neighborhoods, None, self.indexpc, self.cylinder)
 
         # target index must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl,
-                              self.target_point_cloud, None, self.cyl)
+            extractor.extract(self.point_cloud, self.neighborhoods, self.target_point_cloud, None, self.cylinder)
 
         # volume must be a cylinder
         with pytest.raises(ValueError):
             sphere = Sphere(self.radius)
-            extractor.extract(self.point_cloud, self.index_cyl,
-                              self.target_point_cloud, self.indexpc, sphere)
+            extractor.extract(self.point_cloud, self.neighborhoods, self.target_point_cloud, self.indexpc, sphere)
 
     @staticmethod
     def _get_pc(xyz):
@@ -109,17 +106,11 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         self.indexpc = 0
 
         # create the volume/neighborhood
-        self.cyl = InfiniteCylinder(self.radius + 1E-3)
-        neighbors = compute_neighborhoods(
-            self.point_cloud, self.target_point_cloud, self.cyl)
-
-        self.index_cyl = []
-        for x in neighbors:
-            self.index_cyl += x
+        self.cylinder = InfiniteCylinder(self.radius + 1E-3)
+        self.neighborhoods = list(compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cylinder))
 
         # theoretical value of the echo ratio
-        self.theo_val = (self.npt_sphere + 1) / \
-                        (self.npt_sphere + self.npt_cyl + 1)
+        self.theoretical_value = (self.npt_sphere + 1) / (self.npt_sphere + self.npt_cyl + 1)
 
 
 class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
@@ -146,8 +137,7 @@ class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         self.environment_pc = create_point_cloud(environment[:, 0], environment[:, 1], environment[:, 2])
 
         self.cylinder = InfiniteCylinder(self.radius)
-        self.neighbors = list(compute_neighborhoods(
-            self.environment_pc, self.target_pc, self.cylinder))[0]
+        self.neighbors = list(compute_neighborhoods(self.environment_pc, self.target_pc, self.cylinder))
 
     @staticmethod
     def _create_environment_part(target, echo_ratio, radius):

@@ -78,9 +78,6 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         print('Timing Serial : {}'.format((time.time() - t0)))
         eigvals = np.array(eigvals)
 
-        # print('self.neigh',self.neigh[-20])
-        # print('eigvals_vect',eigvals_vect[-20])
-        # print('eigvals',eigvals[-20])
         np.testing.assert_allclose(eigvals_vect, eigvals)
 
     def setUp(self):
@@ -98,7 +95,7 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         _PC_260807 = read_las.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
         _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
             np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
-        _1000_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
+        _1000_NEIGHBORHOODS_IN_260807 = list(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
 
         self.point_cloud = _PC_260807
         self.neigh = _1000_NEIGHBORHOODS_IN_260807

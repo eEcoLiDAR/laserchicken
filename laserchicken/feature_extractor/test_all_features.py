@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from laserchicken import compute_neighbors
+from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken import read_ply
 from laserchicken.feature_extractor import *
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
@@ -25,12 +25,9 @@ _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
 _PC_10 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=10, replace=False)))
-_1000_NEIGHBORHOODS_IN_260807 = next(
-    compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER, sample_size=500))
-_10_NEIGHBORHOODS_IN_260807 = next(
-    compute_neighbors.compute_neighborhoods(_PC_260807, _PC_10, _CYLINDER, sample_size=500))
-_260807_NEIGHBORHOODS_IN_10 = next(
-    compute_neighbors.compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER, sample_size=500))
+_1000_NEIGHBORHOODS_IN_260807 = list(compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER, sample_size=500))
+_10_NEIGHBORHOODS_IN_260807 = list(compute_neighborhoods(_PC_260807, _PC_10, _CYLINDER, sample_size=500))
+_260807_NEIGHBORHOODS_IN_10 = list(compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER, sample_size=500))
 
 features_by_name = create_default_feature_map()
 feature_names = [name for name in features_by_name]
@@ -56,14 +53,6 @@ def test_completeTile_consistentOutput(feature):
 def test_manyTargets_consistentOutput(feature):
     target_point_cloud = copy_point_cloud(_PC_260807)
     compute_features(copy_point_cloud(_PC_10), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
-                     [feature], volume=_CYLINDER)
-    _assert_consistent_attribute_length(target_point_cloud)
-
-
-@pytest.mark.parametrize("feature", feature_names)
-def test_manyTargetsBigEnvironment_consistentOutput(feature):
-    target_point_cloud = copy_point_cloud(_PC_260807)
-    compute_features(copy_point_cloud(_PC_1000), _260807_NEIGHBORHOODS_IN_10, 0, target_point_cloud,
                      [feature], volume=_CYLINDER)
     _assert_consistent_attribute_length(target_point_cloud)
 
