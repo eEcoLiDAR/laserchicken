@@ -156,53 +156,6 @@ class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         return np.vstack((inside_sphere, outside_sphere))
 
 
-class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
-    """Test echo ratio extractor on real data and make sure it doesn't crash."""
-
-    _test_file_name = 'AHN3.las'
-    _test_data_source = 'testdata'
-    point_cloud = None
-    target_pc_sequential = None
-    target_pc_vector = None
-    cylinder = None
-    target_pc_index = None
-
-    def test_valid(self):
-        """Compute the echo ratio for a sphere/cylinder at different target points."""
-        result_seq = self._run_extractor(EchoRatioFeatureExtractorSequential(), self.target_pc_sequential)
-        result_vec = self._run_vectorized_extractor(EchoRatioFeatureExtractor(), self.target_pc_vector)
-        np.testing.assert_allclose(result_vec[:, 0], result_seq, atol=1e-7)
-
-    def _run_extractor(self, extractor, target_pc):
-        result = []
-        for target_index, neighbors in enumerate(self.cylinder_neighborhoods):
-            current = extractor.extract(self.point_cloud, neighbors, target_pc, target_index, self.cylinder)
-            result += [current]
-        return np.array(result)
-
-    def setUp(self):
-        # read the data
-        self.point_cloud = read_las.read(os.path.join(
-            self._test_data_source, self._test_file_name))
-        # get the target point clouds
-        random.seed(102938482634)
-        self.target_pc_sequential = self._get_random_targets()
-        self.target_pc_vector = utils.copy_point_cloud(self.target_pc_sequential)
-        self.target_pc_index = 0
-        # volume descriptions
-        radius = 0.5
-        self.cylinder = InfiniteCylinder(radius)
-        self.cylinder_neighborhoods = compute_neighborhoods(self.point_cloud, self.target_pc_sequential, self.cylinder)
-
-    def _get_random_targets(self):
-        """Get a random target pc."""
-        num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
-        rand_indices = [random.randint(0, num_all_pc_points)
-                        for p in range(20)]
-        x, y, z = utils.get_point(self.point_cloud, rand_indices)
-        return create_point_cloud(x, y, z)
-
-
 class EchoRatioFeatureExtractorSequential(FeatureExtractor):
     """Feature extractor for the point density."""
 
