@@ -180,13 +180,6 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
             result += [current]
         return np.array(result)
 
-    def _run_vectorized_extractor(self, extractor, target_pc):
-        result = []
-        for target_index, neighbors in enumerate(self.cylinder_neighborhoods):
-            current = extractor.extract(self.point_cloud, [neighbors], target_pc, target_index, self.cylinder)
-            result += [current]
-        return np.array(result)
-
     def setUp(self):
         # read the data
         self.point_cloud = read_las.read(os.path.join(
@@ -200,7 +193,6 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
         radius = 0.5
         self.cylinder = InfiniteCylinder(radius)
         self.cylinder_neighborhoods = compute_neighborhoods(self.point_cloud, self.target_pc_sequential, self.cylinder)
-
 
     def _get_random_targets(self):
         """Get a random target pc."""
