@@ -17,21 +17,15 @@ class TestExtractEigenValues(unittest.TestCase):
     def test_eigenvalues_in_cylinders(self):
         """Test provenance added (This should actually be part the general feature extractor test suite)."""
         random.seed(102938482634)
-        point_cloud = read_las.read(
-            os.path.join('testdata', 'AHN3.las'))
+        point_cloud = read_las.read(os.path.join('testdata', 'AHN3.las'))
         num_all_pc_points = len(point_cloud[keys.point]["x"]["data"])
-        rand_indices = [random.randint(0, num_all_pc_points)
-                        for _ in range(20)]
+        rand_indices = [random.randint(0, num_all_pc_points) for _ in range(20)]
         target_point_cloud = utils.copy_point_cloud(point_cloud, rand_indices)
         radius = 2.5
-        neighbors = compute_neighbors.compute_cylinder_neighborhood(
-            point_cloud, target_point_cloud, radius)
+        neighbors = compute_neighbors.compute_cylinder_neighborhood(point_cloud, target_point_cloud, radius)
 
-        target_idx_base = 0
-        for x in neighbors:
-            feature_extractor.compute_features(point_cloud, x, target_point_cloud, ["eigenv_1", "eigenv_2", "eigenv_3"],
-                                               InfiniteCylinder(5))
-            target_idx_base += len(x)
+        feature_extractor.compute_features(point_cloud, neighbors, target_point_cloud,
+                                           ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
         self.assertEqual("laserchicken.feature_extractor.eigenvals_feature_extractor",
                          target_point_cloud[keys.provenance][0]["module"])
@@ -44,8 +38,7 @@ class TestExtractEigenValues(unittest.TestCase):
 
         feature_extractor.compute_features(pc, [[0]], pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
-        eigen_val_123 = np.array(
-            [pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])
+        eigen_val_123 = np.array([pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])
         assert not np.any(np.isnan(eigen_val_123))
         assert not np.any(np.isinf(eigen_val_123))
 
