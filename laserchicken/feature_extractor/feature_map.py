@@ -9,8 +9,7 @@ from .entropy_norm_z_feature_extractor import EntropyNormZFeatureExtractor
 from .entropy_z_feature_extractor import EntropyZFeatureExtractor
 from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
 from .kurtosis_z_feature_extractor import KurtosisZFeatureExtractor
-from .mean_std_coeff_norm_z_feature_extractor import MeanStdCoeffNormZFeatureExtractor
-from .mean_std_coeff_z_feature_extractor import MeanStdCoeffZFeatureExtractor
+from .mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
 from .median_norm_z_feature_extractor import MedianNormZFeatureExtractor
 from .median_z_feature_extractor import MedianZFeatureExtractor
 from .percentile_norm_z_feature_extractor import PercentileNormZFeatureExtractor
@@ -49,14 +48,15 @@ def _get_default_extractors():
             PulsePenetrationFeatureExtractor(),
             SigmaZFeatureExtractor(),
             MedianZFeatureExtractor(),
-            RangeFeatureExtractor(),
             VarianceZFeatureExtractor(),
-            MeanStdCoeffZFeatureExtractor(),
+            MeanStdCoeffFeatureExtractor(),
+            MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height),
+            MeanStdCoeffFeatureExtractor(data_key=keys.intensity),
             SkewZFeatureExtractor(),
             KurtosisZFeatureExtractor(),
             SkewNormZFeatureExtractor(),
-            MeanStdCoeffNormZFeatureExtractor(),
             VarianceNormZFeatureExtractor(),
+            RangeFeatureExtractor(),
             RangeFeatureExtractor(data_key=keys.normalized_height),
             RangeFeatureExtractor(data_key=keys.intensity),
             KurtosisNormZFeatureExtractor(),

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.2 - 2019-11-
+## Added
+- Features:
+    'max_intensity', 'min_intensity', 'range_intensity', 'mean_intensity', 'std_intensity', 'coeff_var_intensity'
+
+## Changed
+- Features renamed:
+    'max_norm_z', 'min_norm_z', 'range_norm_z', 'mean_norm_z', 'std_norm_z', 'coeff_var_norm_z'
+    'min_normalized_height', 'max_normalized_height', 'range_normalized_height', 'mean_normalized_height','std_normalized_height', 'coeff_var_normalized_height'
+
+
 ## 0.3.1 - 2019-09-25
 ## Added
 - Percentiles 1-100
