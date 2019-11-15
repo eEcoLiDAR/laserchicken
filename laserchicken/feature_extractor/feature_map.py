@@ -8,8 +8,7 @@ from .entropy_feature_extractor import EntropyFeatureExtractor
 from .kurtosis_feature_extractor import KurtosisFeatureExtractor
 from .mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
 from .median_feature_extractor import MedianFeatureExtractor
-from .percentile_norm_z_feature_extractor import PercentileNormZFeatureExtractor
-from .percentile_z_feature_extractor import PercentileZFeatureExtractor
+from .percentile_feature_extractor import PercentileFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 from .range_feature_extractor import RangeFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
@@ -39,7 +38,6 @@ def _get_default_extractors():
             EigenValueVectorizeFeatureExtractor(),
             EntropyFeatureExtractor(),
             EntropyFeatureExtractor(data_key=keys.normalized_height),
-            PercentileZFeatureExtractor(),
             PulsePenetrationFeatureExtractor(),
             SigmaZFeatureExtractor(),
             MedianFeatureExtractor(),
@@ -56,12 +54,11 @@ def _get_default_extractors():
             RangeFeatureExtractor(),
             RangeFeatureExtractor(data_key=keys.normalized_height),
             RangeFeatureExtractor(data_key=keys.intensity),
-            PercentileNormZFeatureExtractor(),
             DensityAbsoluteMeanFeatureExtractor(),
             DensityAbsoluteMeanFeatureExtractor(data_key=keys.normalized_height),
             BandRatioFeatureExtractor(None, 1, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(1, 2, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(2, 3, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(3, None, data_key=keys.normalized_height)] \
-           + [PercentileZFeatureExtractor(p) for p in range(1, 101)] \
-           + [PercentileNormZFeatureExtractor(p) for p in range(1, 101)]
+           + [PercentileFeatureExtractor(percentile=p) for p in range(1, 101)] \
+           + [PercentileFeatureExtractor(percentile=p, data_key=keys.normalized_height) for p in range(1, 101)]
