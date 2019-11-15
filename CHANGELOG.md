@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Features renamed:
-    'max_norm_z', 'min_norm_z', 'range_norm_z', 'mean_norm_z', 'std_norm_z', 'coeff_var_norm_z', 'density_absolute_mean_norm_z', 'entropy_norm_z'
-    'min_normalized_height', 'max_normalized_height', 'range_normalized_height', 'mean_normalized_height','std_normalized_height', 'coeff_var_normalized_height', 'density_absolute_mean_normalized_height','entropy_normalized_height'
+    'max_norm_z', 'min_norm_z', 'range_norm_z', 'mean_norm_z', 'std_norm_z', 'coeff_var_norm_z', 'density_absolute_mean_norm_z', 'entropy_norm_z','kurto_norm_z'
+    'min_normalized_height', 'max_normalized_height', 'range_normalized_height', 'mean_normalized_height','std_normalized_height', 'coeff_var_normalized_height', 'density_absolute_mean_normalized_height','entropy_normalized_height','kurto_normalized_height'
 
 
 ## 0.3.1 - 2019-09-25

@@ -5,8 +5,7 @@ from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
-from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
-from .kurtosis_z_feature_extractor import KurtosisZFeatureExtractor
+from .kurtosis_feature_extractor import KurtosisFeatureExtractor
 from .mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
 from .median_norm_z_feature_extractor import MedianNormZFeatureExtractor
 from .median_z_feature_extractor import MedianZFeatureExtractor
@@ -52,13 +51,13 @@ def _get_default_extractors():
             MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height),
             MeanStdCoeffFeatureExtractor(data_key=keys.intensity),
             SkewZFeatureExtractor(),
-            KurtosisZFeatureExtractor(),
+            KurtosisFeatureExtractor(),
+            KurtosisFeatureExtractor(data_key=keys.normalized_height),
             SkewNormZFeatureExtractor(),
             VarianceNormZFeatureExtractor(),
             RangeFeatureExtractor(),
             RangeFeatureExtractor(data_key=keys.normalized_height),
             RangeFeatureExtractor(data_key=keys.intensity),
-            KurtosisNormZFeatureExtractor(),
             MedianNormZFeatureExtractor(),
             PercentileNormZFeatureExtractor(),
             DensityAbsoluteMeanFeatureExtractor(),
