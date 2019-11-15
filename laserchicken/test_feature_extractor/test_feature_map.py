@@ -12,7 +12,7 @@ class FeatureMapTests(unittest.TestCase):
                              'normal_vector_2', 'normal_vector_3', 'slope', 'entropy_z', 'pulse_penetration_ratio',
                              'sigma_z', 'median_z', 'max_z', 'min_z',
                              'range_z', 'var_z', 'mean_z', 'std_z', 'coeff_var_z', 'skew_z', 'kurto_z', 'skew_normalized_height',
-                             'mean_normalized_height','std_normalized_height', 'coeff_var_normalized_height', 'var_norm_z', 'min_normalized_height',
+                             'mean_normalized_height','std_normalized_height', 'coeff_var_normalized_height', 'var_normalized_height', 'min_normalized_height',
                              'max_normalized_height', 'range_normalized_height', 'kurto_normalized_height', 'entropy_normalized_height',
                              'median_normalized_height', 'max_intensity',
                              'density_absolute_mean_z', 'density_absolute_mean_normalized_height', 'perc_15_z',

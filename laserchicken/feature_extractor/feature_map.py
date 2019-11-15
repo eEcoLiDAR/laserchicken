@@ -14,8 +14,7 @@ from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtracto
 from .range_feature_extractor import RangeFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
 from .skew_feature_extractor import SkewFeatureExtractor
-from .var_norm_z_feature_extractor import VarianceNormZFeatureExtractor
-from .var_z_feature_extractor import VarianceZFeatureExtractor
+from .var_feature_extractor import VarianceFeatureExtractor
 
 
 def create_default_feature_map():
@@ -45,7 +44,8 @@ def _get_default_extractors():
             SigmaZFeatureExtractor(),
             MedianFeatureExtractor(),
             MedianFeatureExtractor(data_key=keys.normalized_height),
-            VarianceZFeatureExtractor(),
+            VarianceFeatureExtractor(),
+            VarianceFeatureExtractor(data_key=keys.normalized_height),
             MeanStdCoeffFeatureExtractor(),
             MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height),
             MeanStdCoeffFeatureExtractor(data_key=keys.intensity),
@@ -53,7 +53,6 @@ def _get_default_extractors():
             SkewFeatureExtractor(data_key=keys.normalized_height),
             KurtosisFeatureExtractor(),
             KurtosisFeatureExtractor(data_key=keys.normalized_height),
-            VarianceNormZFeatureExtractor(),
             RangeFeatureExtractor(),
             RangeFeatureExtractor(data_key=keys.normalized_height),
             RangeFeatureExtractor(data_key=keys.intensity),
