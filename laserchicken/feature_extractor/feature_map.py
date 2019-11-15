@@ -7,8 +7,7 @@ from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
 from .entropy_feature_extractor import EntropyFeatureExtractor
 from .kurtosis_feature_extractor import KurtosisFeatureExtractor
 from .mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
-from .median_norm_z_feature_extractor import MedianNormZFeatureExtractor
-from .median_z_feature_extractor import MedianZFeatureExtractor
+from .median_feature_extractor import MedianFeatureExtractor
 from .percentile_norm_z_feature_extractor import PercentileNormZFeatureExtractor
 from .percentile_z_feature_extractor import PercentileZFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
@@ -45,7 +44,8 @@ def _get_default_extractors():
             PercentileZFeatureExtractor(),
             PulsePenetrationFeatureExtractor(),
             SigmaZFeatureExtractor(),
-            MedianZFeatureExtractor(),
+            MedianFeatureExtractor(),
+            MedianFeatureExtractor(data_key=keys.normalized_height),
             VarianceZFeatureExtractor(),
             MeanStdCoeffFeatureExtractor(),
             MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height),
@@ -58,7 +58,6 @@ def _get_default_extractors():
             RangeFeatureExtractor(),
             RangeFeatureExtractor(data_key=keys.normalized_height),
             RangeFeatureExtractor(data_key=keys.intensity),
-            MedianNormZFeatureExtractor(),
             PercentileNormZFeatureExtractor(),
             DensityAbsoluteMeanFeatureExtractor(),
             DensityAbsoluteMeanFeatureExtractor(data_key=keys.normalized_height),
