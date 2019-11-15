@@ -3,8 +3,7 @@ import unittest
 import numpy as np
 
 from laserchicken import keys
-from laserchicken.feature_extractor.density_absolute_mean_z_feature_extractor import \
-    DensityAbsoluteMeanFeatureExtractor
+from laserchicken.feature_extractor.density_absolute_mean_feature_extractor import DensityAbsoluteMeanFeatureExtractor
 from laserchicken.keys import point
 from laserchicken.test_tools import create_point_cloud
 
