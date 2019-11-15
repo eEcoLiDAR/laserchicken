@@ -13,8 +13,7 @@ from .percentile_z_feature_extractor import PercentileZFeatureExtractor
 from .pulse_penetration_feature_extractor import PulsePenetrationFeatureExtractor
 from .range_feature_extractor import RangeFeatureExtractor
 from .sigma_z_feature_extractor import SigmaZFeatureExtractor
-from .skew_norm_z_feature_extractor import SkewNormZFeatureExtractor
-from .skew_z_feature_extractor import SkewZFeatureExtractor
+from .skew_feature_extractor import SkewFeatureExtractor
 from .var_norm_z_feature_extractor import VarianceNormZFeatureExtractor
 from .var_z_feature_extractor import VarianceZFeatureExtractor
 
@@ -50,10 +49,10 @@ def _get_default_extractors():
             MeanStdCoeffFeatureExtractor(),
             MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height),
             MeanStdCoeffFeatureExtractor(data_key=keys.intensity),
-            SkewZFeatureExtractor(),
+            SkewFeatureExtractor(),
+            SkewFeatureExtractor(data_key=keys.normalized_height),
             KurtosisFeatureExtractor(),
             KurtosisFeatureExtractor(data_key=keys.normalized_height),
-            SkewNormZFeatureExtractor(),
             VarianceNormZFeatureExtractor(),
             RangeFeatureExtractor(),
             RangeFeatureExtractor(data_key=keys.normalized_height),
