@@ -19,7 +19,8 @@ def _is_ground(i, point_cloud):
 
 class DensityAbsoluteMeanZFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
-    DATA_KEY = 'z'
+    def __init__(self, data_key='z'):
+        self.data_key = data_key
 
     @classmethod
     def requires(cls):
@@ -33,8 +34,7 @@ class DensityAbsoluteMeanZFeatureExtractor(FeatureExtractor):
         """
         return []
 
-    @classmethod
-    def provides(cls):
+    def provides(self):
         """
         Get a list of names of the feature values.
 
@@ -44,7 +44,7 @@ class DensityAbsoluteMeanZFeatureExtractor(FeatureExtractor):
 
         :return: List of feature names
         """
-        return ['density_absolute_mean_z']
+        return ['density_absolute_mean_' + self.data_key]
 
     def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
@@ -76,12 +76,12 @@ class DensityAbsoluteMeanZFeatureExtractor(FeatureExtractor):
 
     def _get_density_absolute_mean(self, non_ground_indices, source_point_cloud):
         n_non_ground = len(non_ground_indices)
-        z_non_ground = source_point_cloud[point][self.DATA_KEY]["data"][non_ground_indices]
+        data_non_ground = source_point_cloud[point][self.data_key]["data"][non_ground_indices]
         if n_non_ground == 0:
             density_absolute_mean = 0.
         else:
             density_absolute_mean = float(
-                len(z_non_ground[z_non_ground > np.mean(z_non_ground)])) / n_non_ground * 100.
+                len(data_non_ground[data_non_ground > np.mean(data_non_ground)])) / n_non_ground * 100.
         return density_absolute_mean
 
     def get_params(self):
