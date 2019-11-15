@@ -1,12 +1,10 @@
 from laserchicken import keys
 from laserchicken.feature_extractor.band_ratio_feature_extractor import BandRatioFeatureExtractor
-from .density_absolute_mean_norm_z_feature_extractor import DensityAbsoluteMeanNormZFeatureExtractor
-from .density_absolute_mean_z_feature_extractor import DensityAbsoluteMeanZFeatureExtractor
+from .density_absolute_mean_feature_extractor import DensityAbsoluteMeanFeatureExtractor
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
 from .eigenvals_feature_extractor import EigenValueVectorizeFeatureExtractor
-from .entropy_norm_z_feature_extractor import EntropyNormZFeatureExtractor
-from .entropy_z_feature_extractor import EntropyZFeatureExtractor
+from .entropy_feature_extractor import EntropyFeatureExtractor
 from .kurtosis_norm_z_feature_extractor import KurtosisNormZFeatureExtractor
 from .kurtosis_z_feature_extractor import KurtosisZFeatureExtractor
 from .mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
@@ -43,7 +41,8 @@ def _get_default_extractors():
     return [PointDensityFeatureExtractor(),
             EchoRatioFeatureExtractor(),
             EigenValueVectorizeFeatureExtractor(),
-            EntropyZFeatureExtractor(),
+            EntropyFeatureExtractor(),
+            EntropyFeatureExtractor(data_key=keys.normalized_height),
             PercentileZFeatureExtractor(),
             PulsePenetrationFeatureExtractor(),
             SigmaZFeatureExtractor(),
@@ -60,11 +59,10 @@ def _get_default_extractors():
             RangeFeatureExtractor(data_key=keys.normalized_height),
             RangeFeatureExtractor(data_key=keys.intensity),
             KurtosisNormZFeatureExtractor(),
-            EntropyNormZFeatureExtractor(),
             MedianNormZFeatureExtractor(),
             PercentileNormZFeatureExtractor(),
-            DensityAbsoluteMeanZFeatureExtractor(),
-            DensityAbsoluteMeanNormZFeatureExtractor(),
+            DensityAbsoluteMeanFeatureExtractor(),
+            DensityAbsoluteMeanFeatureExtractor(data_key=keys.normalized_height),
             BandRatioFeatureExtractor(None, 1, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(1, 2, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(2, 3, data_key=keys.normalized_height),

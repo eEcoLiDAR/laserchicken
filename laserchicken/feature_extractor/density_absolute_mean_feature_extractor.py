@@ -17,7 +17,7 @@ def _is_ground(i, point_cloud):
     return point_cloud[point]['raw_classification']["data"][i] in GROUND_TAGS
 
 
-class DensityAbsoluteMeanZFeatureExtractor(FeatureExtractor):
+class DensityAbsoluteMeanFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
     def __init__(self, data_key='z'):
         self.data_key = data_key
