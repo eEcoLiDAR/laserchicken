@@ -127,16 +127,21 @@ def test_inputNotChanged(feature):
     assert json.dumps(original_neighborhoods) == json.dumps(neighborhoods)
 
 
-def _create_point_cloud(x=None, y=None, z=None, norm_z=None, n=10):
+def _create_point_cloud(x=None, y=None, z=None, norm_z=None, intensity=None, n=10):
     tag = GROUND_TAGS[0]
-    pc = {point: {'x': {'data': np.array([x if x is not None else i for i in range(n)]), 'type': 'float'},
-                  'y': {'data': np.array([y if y is not None else i for i in range(n)]), 'type': 'float'},
-                  'z': {'data': np.array([z if z is not None else i for i in range(n)]), 'type': 'float'},
-                  normalized_height: {'data': np.array([norm_z if norm_z is not None else i for i in range(n)]),
-                                      'type': 'float'},
+    pc = {point: {'x': _create_attribute(n, fill_value=x),
+                  'y': _create_attribute(n,fill_value=y),
+                  'z': _create_attribute(n,fill_value=z),
+                  keys.normalized_height: _create_attribute(n,fill_value=norm_z),
+                  keys.intensity: _create_attribute(n,fill_value=intensity),
                   'raw_classification': {'data': np.array([i if i % 2 == 0 else tag for i in range(n)]),
                                          'type': 'float'}}}
     return pc
+
+
+def _create_attribute(n_points, fill_value=None):
+    attribute_data = np.array([fill_value if fill_value is not None else i for i in range(n_points)])
+    return {'data': attribute_data, 'type': 'float'}
 
 
 def _assert_attributes_not_changed(original_point_cloud, new_point_cloud):
