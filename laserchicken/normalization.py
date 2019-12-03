@@ -1,6 +1,6 @@
 from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken import keys
-from laserchicken.feature_extractor.range_z_feature_extractor import RangeZFeatureExtractor as range_extractor
+from laserchicken.feature_extractor.range_feature_extractor import RangeFeatureExtractor as range_extractor
 from laserchicken.keys import normalized_height
 import numpy as np
 

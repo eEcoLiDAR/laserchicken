@@ -4,12 +4,11 @@ from laserchicken.feature_extractor.base_feature_extractor import FeatureExtract
 from laserchicken.keys import point
 
 
-class PercentileZFeatureExtractor(FeatureExtractor):
+class PercentileFeatureExtractor(FeatureExtractor):
     """Height percentiles feature extractor class."""
-    DATA_KEY = 'z'
-
-    def __init__(self, percentile=50):
+    def __init__(self, percentile=50, data_key='z'):
         self.percentile = percentile
+        self.data_key = data_key
 
     @classmethod
     def requires(cls):
@@ -36,7 +35,7 @@ class PercentileZFeatureExtractor(FeatureExtractor):
         return [self.generate_feature_name(self.percentile)]
 
     def generate_feature_name(self, percentile):
-        return 'perc_{}_{}'.format(percentile, self.DATA_KEY)
+        return 'perc_{}_{}'.format(percentile, self.data_key)
 
     def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
         """
@@ -49,8 +48,8 @@ class PercentileZFeatureExtractor(FeatureExtractor):
         :target_index: index of the target point in the target point cloud
         :return: feature value
         """
-        z = point_cloud[point][self.DATA_KEY]['data'][neighborhood]
-        return stats.scoreatpercentile(z, self.percentile)
+        source_data = point_cloud[point][self.data_key]['data'][neighborhood]
+        return stats.scoreatpercentile(source_data, self.percentile)
 
     def get_params(self):
         """
