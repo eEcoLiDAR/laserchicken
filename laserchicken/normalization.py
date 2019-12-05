@@ -14,14 +14,14 @@ def normalize(point_cloud, cell_size=None):
     point_cloud[keys.point][normalized_height] = {"type": 'float64', "data": np.array(z)}
     if cell_size is None:
         n_points = point_cloud[keys.point][normalized_height]['data'].size
-        _, min_z, _ = range_extractor().extract(point_cloud, range(n_points), None, None, None)
+        min_z = _calculate_min_z(range(n_points), point_cloud)
         point_cloud[keys.point][normalized_height]['data'] = z - min_z
     else:
-        targets = create_spanning_grid(point_cloud, cell_size)
+        targets = _create_spanning_grid(point_cloud, cell_size)
 
         neighborhoods = compute_neighborhoods(point_cloud, targets, Cell(cell_size), sample_size=None)
         for neighborhood in neighborhoods:
-            _, min_z, _ = range_extractor().extract(point_cloud, neighborhood, None, None, None)
+            min_z = _calculate_min_z(neighborhood, point_cloud)
             point_cloud[keys.point][normalized_height]['data'][neighborhood] = z[neighborhood] - min_z
     import sys
     module = sys.modules[__name__]
@@ -29,7 +29,12 @@ def normalize(point_cloud, cell_size=None):
     return point_cloud
 
 
-def create_spanning_grid(point_cloud, cell_size):
+def _calculate_min_z(neighborhood, point_cloud):
+    _, min_z, _ = range_extractor().extract(point_cloud, [neighborhood], None, None, None)
+    return min_z[0]
+
+
+def _create_spanning_grid(point_cloud, cell_size):
     x = point_cloud[keys.point]['x']['data']
     y = point_cloud[keys.point]['y']['data']
     min_x = np.min(x)

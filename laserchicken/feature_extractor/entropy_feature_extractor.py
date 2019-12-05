@@ -23,7 +23,10 @@ class EntropyFeatureExtractor(FeatureExtractor):
     def get_params(self):
         return [self.layer_thickness, self.min_val, self.max_val]
 
-    def extract(self, source_pc, neighborhood, target_pc, target_index, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume):
+        return [self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]
+
+    def _extract_one(self, source_pc, neighborhood):
         if len(neighborhood) == 0:
             return 0
         source_data = source_pc[keys.point][self.data_key]["data"][neighborhood]

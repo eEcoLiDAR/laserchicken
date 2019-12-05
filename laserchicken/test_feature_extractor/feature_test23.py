@@ -36,8 +36,6 @@ class Test3FeatureExtractor(FeatureExtractor):
 
 
 class TestVectorizedFeatureExtractor(FeatureExtractor):
-    is_vectorized = True
-
     @classmethod
     def requires(cls):
         return []

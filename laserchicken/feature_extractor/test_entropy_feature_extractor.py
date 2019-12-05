@@ -25,11 +25,17 @@ class TestExtractEntropy(unittest.TestCase):
             entropy_z = utils.get_attribute_value(target_point_cloud, i, "entropy_z")
             self.assertTrue(entropy_z >= 0)
 
-    def test_entropy_positive_value(self):
+    def test_entropy_parameters_in_log(self):
         """Test if parameters were written to log."""
-        expected_parameters = ['laserchicken.feature_extractor.entropy_feature_extractor', 0.5, None, None]
+        expected_parameters = [0.1, None, None]
         target_point_cloud = self._find_neighbors_for_random_targets_and_compute_entropy()
         self.assertEqual(expected_parameters, target_point_cloud[keys.provenance][0]["parameters"])
+
+    def test_entropy_module_name_in_log(self):
+        """Test if parameters were written to log."""
+        target_point_cloud = self._find_neighbors_for_random_targets_and_compute_entropy()
+        desired_module_name = 'laserchicken.feature_extractor.entropy_feature_extractor'
+        self.assertEqual(desired_module_name, target_point_cloud[keys.provenance][0]["module"])
 
     def _find_neighbors_for_random_targets_and_compute_entropy(self):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
@@ -56,9 +62,9 @@ class TestExtractNormalizedEntropy(unittest.TestCase):
         z = np.array([2, 2, 2])
         normalized_z = np.array([3, 4, 5])
         point_cloud = create_point_cloud(x, y, z, normalized_z=normalized_z)
-        neighborhood = [[0, 1, 2]]
+        neighborhoods = [[0, 1, 2]]
 
-        entropy = self.extractor.extract(point_cloud, neighborhood, None, None, None)
+        entropy = self.extractor.extract(point_cloud, neighborhoods, None, None, None)[0]
 
         self.assertNotAlmostEqual(entropy, 0)
 

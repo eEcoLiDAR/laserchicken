@@ -16,9 +16,12 @@ class MedianFeatureExtractor(FeatureExtractor):
     def provides(self):
         return ['median_' + self.data_key]
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
+        return [self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]
+
+    def _extract_one(self, point_cloud, neighborhood):
         if neighborhood:
-            source_data = sourcepc[point][self.data_key]['data'][neighborhood]
+            source_data = point_cloud[point][self.data_key]['data'][neighborhood]
             median = np.median(source_data)
         else:
             median = np.NaN

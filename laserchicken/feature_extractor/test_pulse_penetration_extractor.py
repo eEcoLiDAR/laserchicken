@@ -16,7 +16,7 @@ class TestPulsePenetrationFeatureExtractorArtificialData(unittest.TestCase):
     def test_pulse(self):
         """Pulse extractor on artificial data should yield expected feature values."""
         extractor = PulsePenetrationFeatureExtractor()
-        pp_ratio = extractor.extract(self.point_cloud, self.neighborhood, None, None, None)
+        pp_ratio = extractor.extract(self.point_cloud, [self.neighborhood], None, None, None)[0]
         self.assertEqual(pp_ratio, self.expected_pp_ratio)
 
     def _set_plane_data(self):
@@ -94,8 +94,7 @@ class TestPulsePenetratioFeatureExtractorRealData(unittest.TestCase):
 
         # extractor
         extractor = PulsePenetrationFeatureExtractor()
-        for neighborhood in neighborhoods:
-            extractor.extract(self.point_cloud, neighborhood, None, None, None)
+        extractor.extract(self.point_cloud, neighborhoods, None, None, None)
 
     def _get_random_targets(self):
         """Get a random target pc."""

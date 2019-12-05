@@ -32,12 +32,6 @@ _260807_NEIGHBORHOODS_IN_10 = list(compute_neighborhoods(_PC_10, _PC_260807, _CY
 features_by_name = create_default_feature_map()
 feature_names = [name for name in features_by_name]
 
-def test_dummy():
-    vectorized = [name for name in features_by_name if hasattr(features_by_name[name], 'is_vectorized')]
-    non_vectorized = [name for name in features_by_name if not hasattr(features_by_name[name], 'is_vectorized')]
-    print('vectorized',len(vectorized),vectorized)
-    print('non_vectorized',len(non_vectorized),non_vectorized)
-
 
 def test_no_duplicate_feature_registrations():
     pairs = _create_name_extractor_pairs()
@@ -136,10 +130,10 @@ def test_inputNotChanged(feature):
 def _create_point_cloud(x=None, y=None, z=None, norm_z=None, intensity=None, n=10):
     tag = GROUND_TAGS[0]
     pc = {point: {'x': _create_attribute(n, fill_value=x),
-                  'y': _create_attribute(n,fill_value=y),
-                  'z': _create_attribute(n,fill_value=z),
-                  keys.normalized_height: _create_attribute(n,fill_value=norm_z),
-                  keys.intensity: _create_attribute(n,fill_value=intensity),
+                  'y': _create_attribute(n, fill_value=y),
+                  'z': _create_attribute(n, fill_value=z),
+                  keys.normalized_height: _create_attribute(n, fill_value=norm_z),
+                  keys.intensity: _create_attribute(n, fill_value=intensity),
                   'raw_classification': {'data': np.array([i if i % 2 == 0 else tag for i in range(n)]),
                                          'type': 'float'}}}
     return pc
