@@ -1,5 +1,6 @@
 from laserchicken import keys
 from laserchicken.feature_extractor.band_ratio_feature_extractor import BandRatioFeatureExtractor
+from laserchicken.feature_extractor.feature_extractor_adaptor import FeatureExtractorAdaptor
 from .density_absolute_mean_feature_extractor import DensityAbsoluteMeanFeatureExtractor
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
@@ -33,32 +34,32 @@ def _create_name_extractor_pairs(extractors=None):
 
 
 def _get_default_extractors():
-    return [PointDensityFeatureExtractor(),
+    return [FeatureExtractorAdaptor(PointDensityFeatureExtractor()),
             EchoRatioFeatureExtractor(),
             EigenValueVectorizeFeatureExtractor(),
-            EntropyFeatureExtractor(),
-            EntropyFeatureExtractor(data_key=keys.normalized_height),
-            PulsePenetrationFeatureExtractor(),
-            SigmaZFeatureExtractor(),
-            MedianFeatureExtractor(),
-            MedianFeatureExtractor(data_key=keys.normalized_height),
-            VarianceFeatureExtractor(),
-            VarianceFeatureExtractor(data_key=keys.normalized_height),
-            MeanStdCoeffFeatureExtractor(),
-            MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height),
-            MeanStdCoeffFeatureExtractor(data_key=keys.intensity),
-            SkewFeatureExtractor(),
-            SkewFeatureExtractor(data_key=keys.normalized_height),
-            KurtosisFeatureExtractor(),
-            KurtosisFeatureExtractor(data_key=keys.normalized_height),
-            RangeFeatureExtractor(),
-            RangeFeatureExtractor(data_key=keys.normalized_height),
-            RangeFeatureExtractor(data_key=keys.intensity),
-            DensityAbsoluteMeanFeatureExtractor(),
-            DensityAbsoluteMeanFeatureExtractor(data_key=keys.normalized_height),
+            FeatureExtractorAdaptor(EntropyFeatureExtractor()),
+            FeatureExtractorAdaptor(EntropyFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(PulsePenetrationFeatureExtractor()),
+            FeatureExtractorAdaptor(SigmaZFeatureExtractor()),
+            FeatureExtractorAdaptor(MedianFeatureExtractor()),
+            FeatureExtractorAdaptor(MedianFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(VarianceFeatureExtractor()),
+            FeatureExtractorAdaptor(VarianceFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(MeanStdCoeffFeatureExtractor()),
+            FeatureExtractorAdaptor(MeanStdCoeffFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(MeanStdCoeffFeatureExtractor(data_key=keys.intensity)),
+            FeatureExtractorAdaptor(SkewFeatureExtractor()),
+            FeatureExtractorAdaptor(SkewFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(KurtosisFeatureExtractor()),
+            FeatureExtractorAdaptor(KurtosisFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(RangeFeatureExtractor()),
+            FeatureExtractorAdaptor(RangeFeatureExtractor(data_key=keys.normalized_height)),
+            FeatureExtractorAdaptor(RangeFeatureExtractor(data_key=keys.intensity)),
+            FeatureExtractorAdaptor(DensityAbsoluteMeanFeatureExtractor()),
+            FeatureExtractorAdaptor(DensityAbsoluteMeanFeatureExtractor(data_key=keys.normalized_height)),
             BandRatioFeatureExtractor(None, 1, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(1, 2, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(2, 3, data_key=keys.normalized_height),
             BandRatioFeatureExtractor(3, None, data_key=keys.normalized_height)] \
-           + [PercentileFeatureExtractor(percentile=p) for p in range(1, 101)] \
-           + [PercentileFeatureExtractor(percentile=p, data_key=keys.normalized_height) for p in range(1, 101)]
+           + [FeatureExtractorAdaptor(PercentileFeatureExtractor(percentile=p)) for p in range(1, 101)] \
+           + [FeatureExtractorAdaptor(PercentileFeatureExtractor(percentile=p, data_key=keys.normalized_height)) for p in range(1, 101)]

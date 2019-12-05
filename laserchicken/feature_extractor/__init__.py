@@ -102,18 +102,14 @@ def _verify_feature_names(feature_names):
 def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, extractor, volume, overwrite, kwargs):
     n_targets = len(target_point_cloud[keys.point]['x']['data'])
 
-    for k in kwargs:
-        setattr(extractor, k, kwargs[k])
+    for key_word in kwargs:
+        setattr(extractor, key_word, kwargs[key_word])
     provided_features = extractor.provides()
     n_features = len(provided_features)
     feature_values = [np.empty(n_targets, dtype=np.float64) for _ in range(n_features)]
 
-    if hasattr(extractor, 'is_vectorized'):
-        _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets,
-                                         neighborhoods, target_point_cloud, volume)
-    else:
-        _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets,
-                                          neighborhoods, target_point_cloud, volume)
+    _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets,
+                                     neighborhoods, target_point_cloud, volume)
 
     for i in range(n_features):
         feature = provided_features[i]
@@ -121,18 +117,6 @@ def _add_or_update_feature(env_point_cloud, neighborhoods, target_point_cloud, e
         if overwrite or (feature not in target_point_cloud[keys.point]):
             target_point_cloud[keys.point][feature] = {
                 "type": 'float64', "data": feature_values[i]}
-
-
-def _add_or_update_feature_one_by_one(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,
-                                      target_point_cloud, volume):
-    for target_index in range(n_targets):
-        point_values = extractor.extract(env_point_cloud, neighborhoods[target_index], target_point_cloud,
-                                         target_index, volume)
-        if n_features > 1:
-            for i in range(n_features):
-                feature_values[i][target_index] = point_values[i]
-        else:
-            feature_values[0][target_index] = point_values
 
 
 def _add_or_update_feature_in_chunks(env_point_cloud, extractor, feature_values, n_features, n_targets, neighborhoods,

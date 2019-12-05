@@ -6,7 +6,9 @@ from pytest import raises
 
 from laserchicken import feature_extractor, keys, test_tools
 from laserchicken.feature_extractor import feature_map
+from laserchicken.feature_extractor.feature_extractor_adaptor import FeatureExtractorAdaptor
 from laserchicken.test_feature_extractor import Test1FeatureExtractor
+from laserchicken.utils import get_attribute_value
 from laserchicken.volume_specification import Sphere
 from .feature_test23 import Test2FeatureExtractor, Test3FeatureExtractor, TestVectorizedFeatureExtractor
 from .feature_test_broken import TestBrokenFeatureExtractor
@@ -57,14 +59,33 @@ class TestExtractFeatures(unittest.TestCase):
     @staticmethod
     def test_vectorized_chunks():
         """Should not throw error for non requested but provided features."""
-        feature_map._get_default_extractors = _get_test_extractors
         n = 2000000  # enough to be too big for a single chunk
-        x = np.zeros(n)
-        y = np.zeros(n)
-        z = np.zeros(n)
-        target = test_tools.create_point_cloud(x, y, z)
         feature_names = ['vectorized1']
+        _create_targets_and_extract_features(feature_names, n)
+
+    @staticmethod
+    def test_chunks_all_correct_value():
+        """Should not throw error for non requested but provided features."""
+        n = 2000000  # enough to be too big for a single chunk
+        feature_names = ['vectorized1', 'vectorized2', 'test1_a']
+        target = _create_targets_and_extract_features(feature_names, n)
+
+        _assert_feature_name_all_valued(1, 'vectorized1', n, target)
+        _assert_feature_name_all_valued(1, 'vectorized2', n, target)
+        _assert_feature_name_all_valued(0.5, 'test1_a', n, target)
+
+    @staticmethod
+    def test_with_neighborhood_generator():
+        """Should not throw error for non requested but provided features."""
+        n = 200
+        feature_names = ['vectorized1', 'test1_a']
+        x = np.ones(n)
+        y = np.ones(n)
+        z = np.ones(n)
+        target = test_tools.create_point_cloud(x, y, z)
         _compute_features(target, feature_names)
+        neighborhoods = ([] for _ in range(len(target["vertex"]["x"]["data"])))
+        feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5), True)
 
     def setUp(self) -> None:
         self.original_function = feature_map._get_default_extractors
@@ -76,6 +97,20 @@ class TestExtractFeatures(unittest.TestCase):
         feature_extractor.FEATURES = feature_map.create_default_feature_map()
 
 
+def _create_targets_and_extract_features(feature_names, n):
+    x = np.ones(n)
+    y = np.ones(n)
+    z = np.ones(n)
+    target = test_tools.create_point_cloud(x, y, z)
+    _compute_features(target, feature_names)
+    return target
+
+
+def _assert_feature_name_all_valued(expected, feature_name, n, target):
+    v = get_attribute_value(target, range(n), feature_name)
+    np.testing.assert_allclose(v, expected)
+
+
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for _ in range(len(target["vertex"]["x"]["data"]))]
     feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5), overwrite)
@@ -83,5 +118,6 @@ def _compute_features(target, feature_names, overwrite=False):
 
 
 def _get_test_extractors():
-    return [Test1FeatureExtractor(), Test2FeatureExtractor(), Test3FeatureExtractor(), TestVectorizedFeatureExtractor(),
-            TestBrokenFeatureExtractor()]
+    return [FeatureExtractorAdaptor(Test1FeatureExtractor()), FeatureExtractorAdaptor(Test2FeatureExtractor()),
+            FeatureExtractorAdaptor(Test3FeatureExtractor()), TestVectorizedFeatureExtractor(),
+            FeatureExtractorAdaptor(TestBrokenFeatureExtractor())]

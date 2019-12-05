@@ -3,13 +3,13 @@ import os
 
 import pytest
 
-from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken import read_ply
+from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken.feature_extractor import *
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
-from laserchicken.keys import point, normalized_height
+from laserchicken.keys import point
 from laserchicken.utils import copy_point_cloud
-from laserchicken.volume_specification import InfiniteCylinder, Cell
+from laserchicken.volume_specification import InfiniteCylinder
 from . import compute_features
 from .feature_map import create_default_feature_map, _create_name_extractor_pairs
 
@@ -31,6 +31,12 @@ _260807_NEIGHBORHOODS_IN_10 = list(compute_neighborhoods(_PC_10, _PC_260807, _CY
 
 features_by_name = create_default_feature_map()
 feature_names = [name for name in features_by_name]
+
+def test_dummy():
+    vectorized = [name for name in features_by_name if hasattr(features_by_name[name], 'is_vectorized')]
+    non_vectorized = [name for name in features_by_name if not hasattr(features_by_name[name], 'is_vectorized')]
+    print('vectorized',len(vectorized),vectorized)
+    print('non_vectorized',len(non_vectorized),non_vectorized)
 
 
 def test_no_duplicate_feature_registrations():

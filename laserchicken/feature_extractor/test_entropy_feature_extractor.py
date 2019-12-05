@@ -16,33 +16,37 @@ class TestExtractEntropy(unittest.TestCase):
     _test_data_source = 'testdata'
     point_cloud = None
 
-    def test_entropy_in_cylinders(self):
+    def test_entropy_positive_value(self):
         """Test computing of eigenvalues in cylinder."""
+        target_point_cloud = self._find_neighbors_for_random_targets_and_compute_entropy()
+        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
+
+        for i in range(n_targets):
+            entropy_z = utils.get_attribute_value(target_point_cloud, i, "entropy_z")
+            self.assertTrue(entropy_z >= 0)
+
+    def test_entropy_positive_value(self):
+        """Test if parameters were written to log."""
+        expected_parameters = ['laserchicken.feature_extractor.entropy_feature_extractor', 0.5, None, None]
+        target_point_cloud = self._find_neighbors_for_random_targets_and_compute_entropy()
+        self.assertEqual(expected_parameters, target_point_cloud[keys.provenance][0]["parameters"])
+
+    def _find_neighbors_for_random_targets_and_compute_entropy(self):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
         rand_indices = [random.randint(0, num_all_pc_points) for _ in range(20)]
         target_point_cloud = utils.copy_point_cloud(self.point_cloud, rand_indices)
-        n_targets = len(target_point_cloud[keys.point]["x"]["data"])
         radius = 25
         neighborhoods = list(compute_cylinder_neighborhood(self.point_cloud, target_point_cloud, radius))
-
         feature_extractor.compute_features(self.point_cloud, neighborhoods, target_point_cloud, ["entropy_z"],
                                            InfiniteCylinder(5), layer_thickness=0.1)
-
-        for i in range(n_targets):
-            H = utils.get_attribute_value(target_point_cloud, i, "entropy_z")
-            self.assertTrue(H >= 0)
-        self.assertEqual("laserchicken.feature_extractor.entropy_feature_extractor",
-                         target_point_cloud[keys.provenance][0]["module"])
-        self.assertEqual(
-            [0.1], target_point_cloud[keys.provenance][0]["parameters"])
+        return target_point_cloud
 
     def test_default_provides_correct(self):
         feature_names = EntropyFeatureExtractor().provides()
         self.assertIn('entropy_z', feature_names)
 
     def setUp(self):
-        self.point_cloud = read_las.read(os.path.join(
-            self._test_data_source, self._test_file_name))
+        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
         random.seed(102938482634)
 
 
