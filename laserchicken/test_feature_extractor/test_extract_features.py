@@ -6,7 +6,6 @@ from pytest import raises
 
 from laserchicken import feature_extractor, keys, test_tools
 from laserchicken.feature_extractor import feature_map
-from laserchicken.feature_extractor.feature_extractor_adaptor import FeatureExtractorAdaptor
 from laserchicken.test_feature_extractor import Test1FeatureExtractor
 from laserchicken.utils import get_attribute_value
 from laserchicken.volume_specification import Sphere
@@ -118,6 +117,6 @@ def _compute_features(target, feature_names, overwrite=False):
 
 
 def _get_test_extractors():
-    return [FeatureExtractorAdaptor(Test1FeatureExtractor()), FeatureExtractorAdaptor(Test2FeatureExtractor()),
-            FeatureExtractorAdaptor(Test3FeatureExtractor()), TestVectorizedFeatureExtractor(),
-            FeatureExtractorAdaptor(TestBrokenFeatureExtractor())]
+    return [Test1FeatureExtractor(), Test2FeatureExtractor(),
+            Test3FeatureExtractor(), TestVectorizedFeatureExtractor(),
+            TestBrokenFeatureExtractor()]

@@ -1,6 +1,5 @@
 from laserchicken import keys
 from laserchicken.feature_extractor.band_ratio_feature_extractor import BandRatioFeatureExtractor
-from laserchicken.feature_extractor.feature_extractor_adaptor import FeatureExtractorAdaptor
 from .density_absolute_mean_feature_extractor import DensityAbsoluteMeanFeatureExtractor
 from .density_feature_extractor import PointDensityFeatureExtractor
 from .echo_ratio_feature_extractor import EchoRatioFeatureExtractor
