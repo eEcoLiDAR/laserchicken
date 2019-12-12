@@ -2,7 +2,11 @@ import os
 import random
 import unittest
 
+import numpy as np
+
 from laserchicken import compute_neighbors, feature_extractor, keys, read_las, utils
+from laserchicken.feature_extractor.entropy_feature_extractor import EntropyFeatureExtractor
+from laserchicken.test_tools import create_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 
 
@@ -32,15 +36,36 @@ class TestExtractEntropy(unittest.TestCase):
         for i in range(n_targets):
             H = utils.get_attribute_value(target_point_cloud, i, "entropy_z")
             self.assertTrue(H >= 0)
-        self.assertEqual("laserchicken.feature_extractor.entropy_z_feature_extractor",
+        self.assertEqual("laserchicken.feature_extractor.entropy_feature_extractor",
                          target_point_cloud[keys.provenance][0]["module"])
         self.assertEqual(
             [0.1], target_point_cloud[keys.provenance][0]["parameters"])
+
+    def test_default_provides_correct(self):
+        feature_names = EntropyFeatureExtractor().provides()
+        self.assertIn('entropy_z', feature_names)
 
     def setUp(self):
         self.point_cloud = read_las.read(os.path.join(
             self._test_data_source, self._test_file_name))
         random.seed(102938482634)
 
-    def tearDown(self):
-        pass
+
+class TestExtractNormalizedEntropy(unittest.TestCase):
+    def test_use_norm_z(self):
+        x = y = np.array([0, 0, 0])
+        z = np.array([2, 2, 2])
+        normalized_z = np.array([3, 4, 5])
+        point_cloud = create_point_cloud(x, y, z, normalized_z=normalized_z)
+        neighborhood = [[0, 1, 2]]
+
+        entropy = self.extractor.extract(point_cloud, neighborhood, None, None, None)
+
+        self.assertNotAlmostEqual(entropy, 0)
+
+    def test_default_provides_correct(self):
+        feature_names = self.extractor.provides()
+        self.assertIn('entropy_normalized_height', feature_names)
+
+    def setUp(self):
+        self.extractor = EntropyFeatureExtractor(data_key=keys.normalized_height)

@@ -4,6 +4,9 @@ point = 'vertex'
 # Name of the normalized height point attribute
 normalized_height = 'normalized_height'
 
+# Name of the intensity point attribute
+intensity = 'intensity'
+
 #
 point_cloud = 'pointcloud'
 
