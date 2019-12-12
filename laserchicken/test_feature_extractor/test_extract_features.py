@@ -6,6 +6,8 @@ from pytest import raises
 
 from laserchicken import feature_extractor, keys, test_tools
 from laserchicken.feature_extractor import feature_map
+from laserchicken.feature_extractor.mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
+from laserchicken.feature_extractor.median_feature_extractor import MedianFeatureExtractor
 from laserchicken.test_feature_extractor import Test1FeatureExtractor
 from laserchicken.utils import get_attribute_value
 from laserchicken.volume_specification import Sphere
@@ -18,7 +20,7 @@ class TestExtractFeatures(unittest.TestCase):
     def test_extract_single_feature_ends_up_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
         _compute_features(target, ['test3_a'])
-        assert all(target[keys.point]['test3_a']['data'] == target[keys.point]['z']['data'])
+        assert all(target[keys.point]['test3_a']['data'] == -target[keys.point]['x']['data'])
 
     @staticmethod
     def test_extract_only_requested_feature_ends_up_in_pc():
@@ -75,16 +77,16 @@ class TestExtractFeatures(unittest.TestCase):
 
     @staticmethod
     def test_with_neighborhood_generator():
-        """Should not throw error for non requested but provided features."""
+        """Should run for all extractors without error meaning that neighborhood generator is only iterated once.
+        Using actual feature extractors here because test feature extractors don't use neighborhoods. """
         n = 200
-        feature_names = ['vectorized1', 'test1_a']
+        feature_names = ['vectorized1', 'test1_a', 'median_z', 'mean_z']
         x = np.ones(n)
         y = np.ones(n)
         z = np.ones(n)
         target = test_tools.create_point_cloud(x, y, z)
-        _compute_features(target, feature_names)
         neighborhoods = ([] for _ in range(len(target["vertex"]["x"]["data"])))
-        feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5), True)
+        feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
 
     def setUp(self) -> None:
         self.original_function = feature_map._get_default_extractors
@@ -112,11 +114,11 @@ def _assert_feature_name_all_valued(expected, feature_name, n, target):
 
 def _compute_features(target, feature_names, overwrite=False):
     neighborhoods = [[] for _ in range(len(target["vertex"]["x"]["data"]))]
-    feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5), overwrite)
+    feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
     return target
 
 
 def _get_test_extractors():
     return [Test1FeatureExtractor(), Test2FeatureExtractor(),
             Test3FeatureExtractor(), TestVectorizedFeatureExtractor(),
-            TestBrokenFeatureExtractor()]
+            TestBrokenFeatureExtractor(), MedianFeatureExtractor(), MeanStdCoeffFeatureExtractor()]

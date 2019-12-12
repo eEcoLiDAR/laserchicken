@@ -38,7 +38,7 @@ class Test3FeatureExtractor(FeatureExtractor):
     def _extract_one(self, target_point_cloud, target_index):
         t2a, t2c = utils.get_features(target_point_cloud, self.requires(), target_index)
         x, y, z = utils.get_point(target_point_cloud, target_index)
-        return t2c - t2a - z  # z
+        return t2c - t2a - z  # -x
 
 
 class TestVectorizedFeatureExtractor(FeatureExtractor):
