@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from laserchicken._version import __version__
 
@@ -18,7 +18,7 @@ setup(
     license='Apache 2.0',
     keywords=['Python', 'Point cloud'],
     url='https://github.com/eEcoLiDAR/eEcoLiDAR',
-    packages=['laserchicken'],
+    packages=find_packages(),
     install_requires=required,
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
