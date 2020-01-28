@@ -17,10 +17,10 @@ from .feature_test_broken import TestBrokenFeatureExtractor
 
 class TestExtractFeatures(unittest.TestCase):
     @staticmethod
-    def test_extract_single_feature_ends_up_in_pc():
+    def test_extract_single_feature_has_correct_values_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
-        _compute_features(target, ['test3_a'])
-        assert all(target[keys.point]['test3_a']['data'] == -target[keys.point]['x']['data'])
+        _compute_features(target, ['test1_a'])
+        assert all(target[keys.point]['test1_a']['data'] == 0.5 * target[keys.point]['z']['data'])
 
     @staticmethod
     def test_extract_only_requested_feature_ends_up_in_pc():
@@ -29,27 +29,19 @@ class TestExtractFeatures(unittest.TestCase):
         assert 'test1_b' not in target[keys.point]
 
     @staticmethod
-    def test_extract_multiple_features():
+    def test_extract_multiple_features_ends_up_in_pc():
         target = test_tools.ComplexTestData().get_point_cloud()
         feature_names = ['test3_a', 'test2_b']
         target = _compute_features(target, feature_names)
         assert ('test3_a' in target[keys.point] and 'test2_b' in target[keys.point])
 
     @staticmethod
-    def test_extract_does_not_overwrite():
-        target = test_tools.ComplexTestData().get_point_cloud()
-        target[keys.point]['test2_b'] = {"type": np.float64, "data": [0.9, 0.99, 0.999, 0.9999]}
-        feature_names = ['test3_a', 'test2_b']
-        target = _compute_features(target, feature_names)
-        assert target[keys.point]['test2_b']['data'][2] == 0.999
-
-    @staticmethod
     def test_extract_can_overwrite():
         target = test_tools.ComplexTestData().get_point_cloud()
-        target[keys.point]['test2_b'] = {"type": np.float64, "data": [0.9, 0.99, 0.999, 0.9999]}
-        feature_names = ['test3_a', 'test2_b']
-        target = _compute_features(target, feature_names, overwrite=True)
-        assert target[keys.point]['test2_b']['data'][2] == 11.5
+        target[keys.point]['test1_a'] = {"type": np.float64, "data": [0.9, 0.99, 0.999, 0.9999]}
+        feature_names = ['test3_a', 'test1_a']
+        target = _compute_features(target, feature_names)
+        assert all(target[keys.point]['test1_a']['data'] == 0.5 * target[keys.point]['z']['data'])
 
     @staticmethod
     def test_extract_unknown_feature():
@@ -112,7 +104,7 @@ def _assert_feature_name_all_valued(expected, feature_name, n, target):
     np.testing.assert_allclose(v, expected)
 
 
-def _compute_features(target, feature_names, overwrite=False):
+def _compute_features(target, feature_names):
     neighborhoods = [[] for _ in range(len(target["vertex"]["x"]["data"]))]
     feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
     return target

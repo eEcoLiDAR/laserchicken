@@ -36,9 +36,9 @@ class Test3FeatureExtractor(FeatureExtractor):
         return np.array([self._extract_one(target_point_cloud, target_index) for target_index in target_indices]).T
 
     def _extract_one(self, target_point_cloud, target_index):
-        t2a, t2c = utils.get_features(target_point_cloud, self.requires(), target_index)
+        t1a, t2c = utils.get_features(target_point_cloud, self.requires(), target_index)
         x, y, z = utils.get_point(target_point_cloud, target_index)
-        return t2c - t2a - z  # -x
+        return t2c - t1a - z  # this should be: 2 z
 
 
 class TestVectorizedFeatureExtractor(FeatureExtractor):

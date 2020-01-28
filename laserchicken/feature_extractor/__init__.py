@@ -54,7 +54,8 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
 
     for feature_name in extended_features:
         target_point_cloud[point][feature_name] = {"type": 'float64',
-                                                   "data": np.zeros_like(target_point_cloud[point]['x']['data'])}
+                                                   "data": np.zeros_like(target_point_cloud[point]['x']['data'],
+                                                                         dtype=np.float64)}
 
     _add_features(extended_features, env_point_cloud, neighborhoods, target_point_cloud, volume, verbose, kwargs)
 

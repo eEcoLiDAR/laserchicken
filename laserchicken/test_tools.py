@@ -58,10 +58,10 @@ class ComplexTestData(object):
     def get_point_cloud(self):
         """Get the point cloud data."""
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'float', 'data': np.array([1, 2, 3, 4, 5])},
-                           'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6])},
-                           'z': {'type': 'float', 'data': np.array([3, 4, 5, 6, 7])},
-                           'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1])}
+        pc = {keys.point: {'x': {'type': 'float', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
+                           'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6], dtype=np.float)},
+                           'z': {'type': 'float', 'data': np.array([3, 4, 5, 6, 7], dtype=np.float)},
+                           'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1], dtype=np.int)}
                            },
               keys.point_cloud: {'offset': {'type': 'double', 'data': 12.1}},
               keys.provenance: self.comments
