@@ -90,11 +90,11 @@ property double offset
     @staticmethod
     def get_data():
         """Get the data in ply format."""
-        data = """1 2 3 1
-2 3 4 1
-3 4 5 2
-4 5 6 2
-5 6 7 1
+        data = """1.0 2.0 3.0 1
+2.0 3.0 4.0 1
+3.0 4.0 5.0 2
+4.0 5.0 6.0 2
+5.0 6.0 7.0 1
 12.1
 """
         return data
