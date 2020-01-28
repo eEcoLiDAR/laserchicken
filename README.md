@@ -1,3 +1,4 @@
+Please cite the software if you are using it in your scientific publication.
 <p align="left">
   <img src="https://raw.githubusercontent.com/eEcoLiDAR/laserchicken/master/laserchicken_logo.png" width="500"/>
 </p>
@@ -18,6 +19,21 @@ Prerequisites:
 pip install laserchicken
 ```
 
+#### Necessary steps for making a new release
+* Check citation.cff using general DOI for all version (option: create file via 'cffinit')
+* Create .zenodo.json file from CITATION.cff (using cffconvert)  
+```cffconvert --validate```  
+```cffconvert --ignore-suspect-keys --outputformat zenodo --outfile .zenodo.json```
+* Set new version number in laserchicken/_version.py
+* Check that documentation uses the correct version
+* Edit Changelog (based on commits in https://github.com/eecolidar/laserchicken/compare/v0.3.2...master)
+* Test if package can be installed with pip (`pip install .`)
+* Create Github release
+* Upload to pypi:  
+```python setup.py sdist bdist_wheel```  
+```python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*```  
+(or ```python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*``` to test first)
+* Check doi on zenodo
 
 
 ## Feature testing
