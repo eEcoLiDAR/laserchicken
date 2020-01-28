@@ -124,7 +124,7 @@ def _add_features_from_single_extractor(extractor, env_point_cloud, current_neig
         for i in range(n_features):
             feature_values[i] = point_values[i]
     else:
-        feature_values[0][target_indices] = point_values
+        feature_values[0] = point_values
     for i in range(n_features):
         feature = provided_features[i]
         target_point_cloud[point][feature]['data'][target_indices] = feature_values[i]
