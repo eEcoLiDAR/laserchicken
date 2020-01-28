@@ -151,6 +151,6 @@ def _assert_attributes_not_changed(original_point_cloud, new_point_cloud):
 
 
 def _assert_consistent_attribute_length(target_point_cloud):
-    n_elements = len(target_point_cloud[keys.point]['x'])
+    n_elements = len(target_point_cloud[keys.point]['x']['data'])
     for key in target_point_cloud[keys.point]:
-        assert n_elements == len(target_point_cloud[keys.point][key])
+        assert n_elements == len(target_point_cloud[keys.point][key]['data'])
