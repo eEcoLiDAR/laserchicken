@@ -51,9 +51,8 @@ class SigmaZFeatureExtractor(FeatureExtractor):
         """
         x, y, z = get_point(source_point_cloud, neighborhood)
         try:
-            plane_estimator = fit_plane(x, y, z)
-            normalized = z - plane_estimator(x, y)
-            return np.std(normalized)
+            plane_estimator, residuals = fit_plane(x, y, z)
+            return np.sqrt(np.divide(residuals, x.size))
         except LinAlgError:
             return 0
 

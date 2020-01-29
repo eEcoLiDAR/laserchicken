@@ -179,7 +179,7 @@ def fit_plane_svd(xpts, ypts, zpts):
 
 def fit_plane(x, y, a):
     """
-    Fit a plane and return a function that returns a for every given x and y.
+    Fit a plane and return a function that returns a for every given x and y and the sum of the residuals.
 
     Solves Ax = b where A is the matrix of (x,y) combinations, x are the plane parameters, and b the values.
     Example:
@@ -192,7 +192,9 @@ def fit_plane(x, y, a):
     :param y: y coordinates
     :param a: value (for instance height)
     :return: function that returns a for every given x and y
+    :return: sum of the residuals
     """
     matrix = np.column_stack((np.ones(x.size), x, y))
-    parameters, _, _, _ = np.linalg.lstsq(matrix, a)
-    return lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters)
+    parameters, residuals, _, _ = np.linalg.lstsq(matrix, a)
+    return (lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters),
+            residuals.item() if residuals.size > 0 else np.nan)
