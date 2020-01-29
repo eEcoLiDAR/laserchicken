@@ -195,6 +195,6 @@ def fit_plane(x, y, a):
     :return: sum of the residuals
     """
     matrix = np.column_stack((np.ones(x.size), x, y))
-    parameters, residuals, _, _ = np.linalg.lstsq(matrix, a)
+    parameters, residuals, _, _ = np.linalg.lstsq(matrix, a, rcond=None)
     return (lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters),
             residuals.item() if residuals.size > 0 else np.nan)
