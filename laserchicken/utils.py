@@ -23,20 +23,27 @@ def get_xyz_per_neighborhood(sourcepc, neighborhoods):
     :param neighborhoods:
     :return: 3d tensor as a masked array
     """
-    max_length = max(map(lambda x: len(x), neighborhoods))
+    lengths = np.array([len(x) for x in neighborhoods], dtype=int)
+    max_length = lengths.max()
 
-    xyz_grp = np.zeros((len(neighborhoods), 3, max_length))
-    mask = np.zeros((len(neighborhoods), 3, max_length))
-    for i, neighborhood in enumerate(neighborhoods):
-        n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
-            continue
-        x, y, z = get_point(sourcepc, neighborhood)
-        xyz_grp[i, 0, :n_neighbors] = x
-        xyz_grp[i, 1, :n_neighbors] = y
-        xyz_grp[i, 2, :n_neighbors] = z
-        mask[i, :, :n_neighbors] = 1
-    return np.ma.MaskedArray(xyz_grp, mask == 0)
+    xyz = np.column_stack((sourcepc[keys.point]["x"]["data"],
+                           sourcepc[keys.point]["y"]["data"],
+                           sourcepc[keys.point]["z"]["data"]))
+
+    indices = np.zeros((len(neighborhoods), max_length), dtype=int)
+    indices[:] = np.arange(max_length, dtype=int)
+    indices_mask = indices < lengths[:, None]
+    indices[indices_mask] = np.concatenate(neighborhoods)
+    xyz_grp = xyz.take(indices, axis=0).transpose((0,2,1))
+
+    # construct mask for 3d tensor (true for invalid data)
+    xyz_mask = np.zeros((3, len(neighborhoods), max_length), dtype=bool)
+    xyz_mask[:] = ~indices_mask
+    xyz_mask = np.transpose(xyz_mask, (1,0,2))
+
+    # set invalid coordinates to zero
+    xyz_grp[xyz_mask] = 0.
+    return np.ma.MaskedArray(xyz_grp, xyz_mask)
 
 
 def get_attributes_per_neighborhood(point_cloud, neighborhoods, attribute_names):
