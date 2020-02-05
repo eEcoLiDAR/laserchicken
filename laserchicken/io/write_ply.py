@@ -1,6 +1,3 @@
-import os
-from collections import OrderedDict
-
 import numpy as np
 
 from laserchicken import keys
@@ -13,9 +10,6 @@ def write(point_cloud, path):
     :param path:
     :return:
     """
-    if os.path.exists(path):
-        # Raise most specific subclass of FileExistsError (3.6) and IOError (2.7).
-        raise Exception('Cannot write because path {} already exists.'.format(path))
     with open(path, 'w') as ply:
         _write_header(point_cloud, ply)
         _write_data(point_cloud, ply)

@@ -1,6 +1,4 @@
 """Module for reading LAS files."""
-import os
-
 import laspy
 
 from laserchicken import keys
@@ -22,9 +20,6 @@ def read(path):
     :param path: is the path to the las file
     :return: point cloud data structure
     """
-    if not os.path.exists(path):
-        raise OSError('{} not found.'.format(path))
-
     file = laspy.file.File(path)
     attributes = {
         'x',

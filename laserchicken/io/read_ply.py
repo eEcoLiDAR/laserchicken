@@ -1,4 +1,3 @@
-import os
 import ast
 import numpy as np
 from dateutil import parser
@@ -10,9 +9,6 @@ def read(path):
     :param path: path to the ply file
     :return: dictionary containing the point cloud data
     """
-    if not os.path.exists(path):
-        raise IOError('File not found: {}'.format(path))
-
     with open(path, 'r') as ply:
         try:
             first_line = ply.readline()
