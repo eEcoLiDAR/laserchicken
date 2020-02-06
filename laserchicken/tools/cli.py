@@ -10,7 +10,7 @@ from . import ToolException
 from .._version import __version__
 from ..select import select_above, select_below
 from ..spatial_selections import points_in_polygon_shp_file, points_in_polygon_wkt, points_in_polygon_wkt_file
-from .io import _check_save_path, _load, _save
+from .io import _load, _save
 
 
 @click.group(chain=True, invoke_without_command=True)
@@ -32,7 +32,6 @@ def main(input_file, output_file):
 def process_pipeline(processors, input_file, output_file):
     init(autoreset=True)
     try:
-        _check_save_path(output_file)
         point_cloud = _load(input_file)
         for processor in processors:
             point_cloud = processor(point_cloud)
