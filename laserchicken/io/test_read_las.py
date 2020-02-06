@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from laserchicken import keys
-from laserchicken.read_las import read
+from laserchicken.io.load import load
 
 
 class TestReadWriteLas(unittest.TestCase):
@@ -18,18 +18,18 @@ class TestReadWriteLas(unittest.TestCase):
 
     def test_load_containsPoints(self):
         """Should run without exception and return points."""
-        point_cloud = read(self.test_file_path)
+        point_cloud = load(self.test_file_path)
         self.assertIn(keys.point, point_cloud)
 
     def test_load_PointsContainX(self):
         """Should run without exception and return points."""
-        point_cloud = read(self.test_file_path)
+        point_cloud = load(self.test_file_path)
         print(point_cloud)
         self.assertIn('data', point_cloud[keys.point]['x'])
 
     def test_load_CorrectFirstX(self):
         """Should run without exception and compare equal."""
-        point_cloud = read(self.test_file_path)
+        point_cloud = load(self.test_file_path)
         data = {
             'x': 131999.984125,
             'y': 549718.375,
@@ -46,7 +46,7 @@ class TestReadWriteLas(unittest.TestCase):
     def test_load_nonexistentFile(self):
         """Should raise exception."""
         with pytest.raises(OSError):
-            read('nonexistent.las')
+            load('nonexistent.las')
 
     def setUp(self):
         os.mkdir(self._test_dir)

@@ -5,7 +5,7 @@ import unittest
 import pytest
 
 from laserchicken.test_tools import SimpleTestData, ComplexTestData
-from laserchicken.write_ply import write
+from laserchicken.io.export import export
 
 def read_header(ply):
     header = ''
@@ -38,22 +38,22 @@ class TestWritePly(unittest.TestCase):
     def test_write_nonExistingFile(self):
         """ Should create a file. """
         pc = SimpleTestData.get_point_cloud()
-        write(pc, self.test_file_path)
+        export(pc, self.test_file_path)
         assert (os.path.exists(self.test_file_path))
 
     def test_write_sameFileTwice(self):
         """ Should throw an exception. """
         pc = SimpleTestData.get_point_cloud()
-        write(pc, self.test_file_path)
+        export(pc, self.test_file_path)
         # Catch most specific subclass of FileExistsError (3.6) and IOError (2.7).
         with pytest.raises(Exception):
-            write(pc, self.test_file_path)
+            export(pc, self.test_file_path)
 
     def test_write_loadTheSameSimpleHeader(self):
         """  Writing a simple point cloud and loading it afterwards should result in the same point cloud."""
         pc_in = SimpleTestData.get_point_cloud()
         header_in = SimpleTestData.get_header()
-        write(pc_in, self.test_file_path)
+        export(pc_in, self.test_file_path)
         with open(self.test_file_path, 'r') as ply:
             header_out = read_header(ply)
         self.assertMultiLineEqual(header_in, header_out)
@@ -63,7 +63,7 @@ class TestWritePly(unittest.TestCase):
         test_data = ComplexTestData()
         pc_in = test_data.get_point_cloud()
         header_in = test_data.get_header()
-        write(pc_in, self.test_file_path)
+        export(pc_in, self.test_file_path)
         with open(self.test_file_path, 'r') as ply:
             header_out = read_header(ply)
         self.assertMultiLineEqual(header_in, header_out)
@@ -71,7 +71,7 @@ class TestWritePly(unittest.TestCase):
     def test_write_loadTheSameSimpleData(self):
         """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
         pc_in = SimpleTestData.get_point_cloud()
-        write(pc_in, self.test_file_path)
+        export(pc_in, self.test_file_path)
         data_in = SimpleTestData.get_data()
         with open(self.test_file_path, 'r') as ply:
             data_out = read_data(ply)
@@ -81,7 +81,7 @@ class TestWritePly(unittest.TestCase):
         """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
         test_data = ComplexTestData()
         pc_in = test_data.get_point_cloud()
-        write(pc_in, self.test_file_path)
+        export(pc_in, self.test_file_path)
         data_in = test_data.get_data()
         with open(self.test_file_path, 'r') as ply:
             data_out = read_data(ply)
