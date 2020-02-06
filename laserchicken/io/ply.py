@@ -10,4 +10,3 @@ class PLYHandler(IOHandler):
 
     def write(self, point_cloud, *args, **kwargs):
         write(point_cloud, self.path, *args, **kwargs)
-        return
