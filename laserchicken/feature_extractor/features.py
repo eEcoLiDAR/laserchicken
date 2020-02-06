@@ -14,8 +14,8 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
     Compute features for each target and store result as point attributes in target point cloud.
 
     Example:
-    >>> point_cloud = read_ply.read('data1.ply')
-    >>> target_point_cloud = read_ply.read('data2.ply')
+    >>> point_cloud = load('data1.ply')
+    >>> target_point_cloud = load('data2.ply')
     >>> volume = volume_specification.InfiniteCylinder(4)
     >>> neighbors = compute_neighborhoods(point_cloud, target_point_cloud, volume)
     >>> neighborhoods = []
