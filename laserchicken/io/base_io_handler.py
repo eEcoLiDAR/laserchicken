@@ -3,7 +3,19 @@ import os
 
 
 class IOHandler(object):
-    """ Abstract IO handler class """
+    """
+    Abstract IO handler class
+
+    Readers/writers should handle point-cloud data with the following structure:
+    {'log': ['Processed by module load', 'Processed by module filter using parameters(x,y,z)'],
+     'pointcloud':
+        {'offset': {'type': 'double', 'data': 12.1}},
+     'vertex':
+        {'x': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+         'y': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+         'z': {'type': 'double', 'data': np.array([0.1, 0.2, 0.3])},
+         'return': {'type': 'int', 'data': np.array([1, 1, 2])}}}
+    """
     path = None
 
     def __init__(self, path, mode, overwrite=False):

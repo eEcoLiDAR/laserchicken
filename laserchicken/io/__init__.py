@@ -9,15 +9,24 @@ io_handlers = {
 
 
 def get_io_handler(path, mode, format=None, overwrite=False):
+    """
+    Return instance of format-specific IOHandler, already initialized to read or write mode.
+
+    :param path: path where the IO operation needs to take place
+    :param mode: 'r' for reading, 'w' for writing
+    :param format: point-cloud file format, try to guess it from extension if not specified
+    :param overwrite: if working in write mode, allow to overwrite if file exists.
+    :return: instance of the IOHandler
+    """
     if format is None:
         format = path.split('.')[-1]
     format = format.lower()
-    check_format(format)
+    _check_format(format)
     io_handler = io_handlers[format]
     return io_handler(path, mode, overwrite=overwrite)
 
 
-def check_format(format):
+def _check_format(format):
     if format in io_handlers:
         pass
     else:
