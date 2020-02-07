@@ -1,3 +1,5 @@
+import os
+
 from .las_handler import LASHandler as las
 from .ply_handler import PLYHandler as ply
 
@@ -19,7 +21,8 @@ def get_io_handler(path, mode, format=None, overwrite=False):
     :return: instance of the IOHandler
     """
     if format is None:
-        format = path.split('.')[-1]
+        suffix = os.path.splitext(path)[1]
+        format = suffix.split('.')[-1].lower()
     format = format.lower()
     _check_format(format)
     io_handler = io_handlers[format]
@@ -27,8 +30,6 @@ def get_io_handler(path, mode, format=None, overwrite=False):
 
 
 def _check_format(format):
-    if format in io_handlers:
-        pass
-    else:
+    if format not in io_handlers:
         raise NotImplementedError(
             "File format %s unknown. Implemented formats are: %s" % (format, ', '.join(io_handlers.keys())))

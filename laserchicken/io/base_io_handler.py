@@ -32,8 +32,8 @@ class IOHandler(object):
                 raise FileNotFoundError('{} not found.'.format(path))
         elif mode == 'w':
             path_directory = os.path.dirname(path)
-            if not os.path.exists(path_directory):
-                raise FileNotFoundError('Output file path does not exist! --> {}'.format(path))
+            if path_directory and not os.path.exists(path_directory):
+                raise FileNotFoundError('Output file path does not exist! --> {}'.format(path_directory))
             if not overwrite:
                 if os.path.exists(path):
                     # Raise most specific subclass of FileExistsError (3.6) and IOError (2.7).
