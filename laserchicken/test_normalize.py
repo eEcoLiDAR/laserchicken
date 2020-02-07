@@ -4,7 +4,7 @@ import numpy as np
 
 from laserchicken import keys
 from laserchicken.keys import point, normalized_height
-from laserchicken.normalization import normalize
+from laserchicken.normalize import normalize
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.utils import get_attribute_value
 
