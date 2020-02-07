@@ -1,5 +1,3 @@
-import os
-
 from .las import LASHandler as las
 from .ply import PLYHandler as ply
 
@@ -12,7 +10,7 @@ io_handlers = {
 
 def get_io_handler(path, mode, format=None, overwrite=False):
     if format is None:
-        format = os.path.splitext(path)[-1]
+        format = path.split('.')[-1]
     format = format.lower()
     check_format(format)
     io_handler = io_handlers[format]
