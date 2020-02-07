@@ -1,5 +1,5 @@
-from .las import LASHandler as las
-from .ply import PLYHandler as ply
+from .las_handler import LASHandler as las
+from .ply_handler import PLYHandler as ply
 
 io_handlers = {
     'ply': ply,
