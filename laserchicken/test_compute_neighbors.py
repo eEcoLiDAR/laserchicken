@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_equal
 
-from laserchicken import keys, read_las, utils
+from laserchicken import keys, load, utils
 from laserchicken.compute_neighbors import compute_neighborhoods, compute_cylinder_neighborhood, \
     compute_sphere_neighborhood
 from laserchicken.test_tools import create_point_cloud, create_points_in_xy_grid
@@ -134,7 +134,7 @@ class TestComputeNeighbors(unittest.TestCase):
         assert_target_number_matches_neighborhood_number(environment_point_cloud)
 
     def setUp(self):
-        self.point_cloud = read_las.read(os.path.join(
+        self.point_cloud = load(os.path.join(
             self._test_data_source, self._test_file_name))
         random.seed(102938482634)
         kd_tree.initialize_cache()

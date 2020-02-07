@@ -5,7 +5,7 @@ import random
 import pytest
 import numpy as np
 
-from laserchicken import keys, read_las, utils
+from laserchicken import keys, load, utils
 from laserchicken.compute_neighbors import compute_neighborhoods
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
@@ -199,7 +199,7 @@ class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
 
     def setUp(self):
         # read the data
-        self.point_cloud = read_las.read(os.path.join(
+        self.point_cloud = load(os.path.join(
             self._test_data_source, self._test_file_name))
         # get the target point clouds
         random.seed(102938482634)

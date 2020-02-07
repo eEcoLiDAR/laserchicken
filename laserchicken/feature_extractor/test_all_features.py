@@ -1,16 +1,16 @@
 import json
 import os
 
+import numpy as np
 import pytest
 
-from laserchicken import compute_neighbors
-from laserchicken import read_ply
-from laserchicken.feature_extractor import *
+from laserchicken import compute_neighbors, keys, load
+#from laserchicken.feature_extractor import *
 from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
 from laserchicken.keys import point, normalized_height
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder, Cell
-from . import compute_features
+from .features import compute_features
 from .feature_map import create_default_feature_map, _create_name_extractor_pairs
 
 np.random.seed(1234)
@@ -20,7 +20,7 @@ _TEST_NEIGHBORHOODS_FILE_NAME = 'AHN3_1000_random_neighbors.json'
 _TEST_DATA_SOURCE = 'testdata'
 
 _CYLINDER = InfiniteCylinder(4)
-_PC_260807 = read_ply.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
+_PC_260807 = load(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
 _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
     np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
 _PC_10 = copy_point_cloud(_PC_260807, array_mask=(
