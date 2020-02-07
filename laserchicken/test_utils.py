@@ -95,7 +95,7 @@ class TestUtils(unittest.TestCase):
     def test_AddMetaDataToPointCloud(self):
         """ Test adding info to the point cloud for test module """
         pc = test_tools.generate_tiny_test_point_cloud()
-        from laserchicken import select as somemodule
+        from laserchicken import filter as somemodule
         utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
         self.assertEqual(len(pc[keys.provenance]),1)
 
