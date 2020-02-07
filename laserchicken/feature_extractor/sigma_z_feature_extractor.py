@@ -7,11 +7,12 @@ import numpy as np
 from numpy.linalg import LinAlgError
 
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
-from laserchicken.utils import get_point, fit_plane
 
+from laserchicken.utils import get_xyz_per_neighborhood
 
 class SigmaZFeatureExtractor(FeatureExtractor):
     """Height percentiles feature extractor class."""
+    is_vectorized = True
 
     @classmethod
     def requires(cls):
@@ -38,7 +39,7 @@ class SigmaZFeatureExtractor(FeatureExtractor):
         """
         return ['sigma_z']
 
-    def extract(self, source_point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
+    def extract(self, source_point_cloud, neighborhoods, target_point_cloud, target_index, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
@@ -49,13 +50,48 @@ class SigmaZFeatureExtractor(FeatureExtractor):
         :param volume_description: volume object describing the containing volume of the neighborhood
         :return:
         """
-        x, y, z = get_point(source_point_cloud, neighborhood)
+        if not (isinstance(neighborhoods[0], list) or isinstance(neighborhoods[0], range)):
+            neighborhoods = [neighborhoods]
+
+        xyz_grp = get_xyz_per_neighborhood(source_point_cloud, neighborhoods)
+        len_ngbrs = [len(ngbr) for ngbr in neighborhoods]
+
         try:
-            plane_estimator = fit_plane(x, y, z)
-            normalized = z - plane_estimator(x, y)
-            return np.std(normalized)
+            residuals = self._get_sum_of_residuals_from_fitted_planes(xyz_grp)
+            return np.sqrt(np.divide(residuals, len_ngbrs))
         except LinAlgError:
             return 0
+
+    @staticmethod
+    def _get_sum_of_residuals_from_fitted_planes(xyz):
+        """
+        Fit planes to each of the neighborhoods and returns the corresponding sum of residuals
+        :param xyz: 3D masked array with (x,y,z) of points in neighboroods.
+        :return: array with residuals
+        """
+        # setup coefficient matrices and ordinate values
+        matrix = np.ones_like(xyz)
+        matrix[:, 1:, :] = xyz[:, 0:2, :]
+        matrix[xyz.mask] = 0.
+        matrix = np.transpose(matrix, (0, 2, 1))
+        a = np.zeros((xyz.shape[0], xyz.shape[2]))
+        a[:, :] = xyz[:, 2, :]
+
+        # SVD decomposition of matrices to construct pseudo-inverse
+        u, s, v = np.linalg.svd(matrix, full_matrices=False)
+
+        # find matrices with zero-singular values, and solve linear problems
+        zero_sing_val_mask = np.any(np.isclose(s, 0.), axis=1)
+        inv_s = np.zeros_like(s)
+        inv_s[~zero_sing_val_mask, :] = 1 / s[~zero_sing_val_mask, :]
+        parameters = np.einsum('ijk,ij->ik', v,
+                               inv_s * np.einsum('ijk,ij->ik', u, a))
+
+        # determine residuals for non-singular matrices, set others to zero
+        a_val = np.einsum('ijk,ik->ij', matrix, parameters)
+        residuals = np.sum(np.power(a - a_val, 2), axis=1)
+        residuals[zero_sing_val_mask] = 0.
+        return residuals
 
     def get_params(self):
         """

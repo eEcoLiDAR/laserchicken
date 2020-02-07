@@ -108,8 +108,9 @@ class TestPlaneFit(unittest.TestCase):
         #     z = 5 + i % np.sqrt(n_points)
         #     points[i] = np.array(((i % np.sqrt(n_points)), (np.floor(i / np.sqrt(n_points))), z))
         #t0 = time()
-        f = fit_plane(self.points[:, 0], self.points[:, 1], self.points[:, 2])
+        f, res = fit_plane(self.points[:, 0], self.points[:, 1], self.points[:, 2])
         #print('LSQR : %f' %(time()-t0))
+        np.testing.assert_almost_equal(res, 0.)
         estimates = f(self.points[:, 0], self.points[:, 1])
         np.testing.assert_allclose(estimates, self.points[:, 2])
 
