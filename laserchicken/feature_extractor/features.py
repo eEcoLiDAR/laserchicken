@@ -29,7 +29,7 @@ def compute_features(env_point_cloud, neighborhoods, target_idx_base, target_poi
     Example:
     >>> point_cloud = load('data1.ply')
     >>> target_point_cloud = load('data2.ply')
-    >>> volume = volume_specification.InfiniteCylinder(4)
+    >>> volume = build_volume('infinite cylinder', radius=4)
     >>> neighbors = compute_neighborhoods(point_cloud, target_point_cloud, volume)
     >>> neighborhoods = []
     >>> for x in neighbors:
