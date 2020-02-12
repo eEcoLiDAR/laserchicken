@@ -27,8 +27,8 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         # extractor = EchoRatioFeatureExtractor()
         extractor = EchoRatioFeatureExtractor()
         per = extractor.extract(
-            self.point_cloud, self.index_cyl, self.target_point_cloud, self.indexpc, self.cyl)
-        np.testing.assert_allclose(per, self.theo_val)
+            self.point_cloud, self.neighborhoods, self.target_point_cloud, self.indexpc, self.cylinder)
+        np.testing.assert_allclose(per, self.theoretical_value)
 
     def test_invalid(self):
         """ Must raise TypeError as we do not provide correct indexes."""
@@ -36,19 +36,16 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         extractor = EchoRatioFeatureExtractor()
         # target point cloud must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl,
-                              None, self.indexpc, self.cyl)
+            extractor.extract(self.point_cloud, self.neighborhoods, None, self.indexpc, self.cylinder)
 
         # target index must not be None
         with pytest.raises(ValueError):
-            extractor.extract(self.point_cloud, self.index_cyl,
-                              self.target_point_cloud, None, self.cyl)
+            extractor.extract(self.point_cloud, self.neighborhoods, self.target_point_cloud, None, self.cylinder)
 
         # volume must be a cylinder
         with pytest.raises(ValueError):
             sphere = Sphere(self.radius)
-            extractor.extract(self.point_cloud, self.index_cyl,
-                              self.target_point_cloud, self.indexpc, sphere)
+            extractor.extract(self.point_cloud, self.neighborhoods, self.target_point_cloud, self.indexpc, sphere)
 
     @staticmethod
     def _get_pc(xyz):
@@ -109,17 +106,11 @@ class TestEchoRatioFeatureExtractorArtificialData(unittest.TestCase):
         self.indexpc = 0
 
         # create the volume/neighborhood
-        self.cyl = InfiniteCylinder(self.radius + 1E-3)
-        neighbors = compute_neighborhoods(
-            self.point_cloud, self.target_point_cloud, self.cyl)
-
-        self.index_cyl = []
-        for x in neighbors:
-            self.index_cyl += x
+        self.cylinder = InfiniteCylinder(self.radius + 1E-3)
+        self.neighborhoods = list(compute_neighborhoods(self.point_cloud, self.target_point_cloud, self.cylinder))
 
         # theoretical value of the echo ratio
-        self.theo_val = (self.npt_sphere + 1) / \
-                        (self.npt_sphere + self.npt_cyl + 1)
+        self.theoretical_value = (self.npt_sphere + 1) / (self.npt_sphere + self.npt_cyl + 1)
 
 
 class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
@@ -146,8 +137,7 @@ class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         self.environment_pc = create_point_cloud(environment[:, 0], environment[:, 1], environment[:, 2])
 
         self.cylinder = InfiniteCylinder(self.radius)
-        self.neighbors = list(compute_neighborhoods(
-            self.environment_pc, self.target_pc, self.cylinder))[0]
+        self.neighbors = list(compute_neighborhoods(self.environment_pc, self.target_pc, self.cylinder))
 
     @staticmethod
     def _create_environment_part(target, echo_ratio, radius):
@@ -164,64 +154,6 @@ class TestEchoRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         outside_sphere = np.zeros((n_outside, 3)) + target + np.array([0., 0., 2 * radius])
         inside_sphere = np.zeros((int(n_inside), 3)) + target
         return np.vstack((inside_sphere, outside_sphere))
-
-
-class TestEchoRatioFeatureExtractorRealData(unittest.TestCase):
-    """Test echo ratio extractor on real data and make sure it doesn't crash."""
-
-    _test_file_name = 'AHN3.las'
-    _test_data_source = 'testdata'
-    point_cloud = None
-    target_pc_sequential = None
-    target_pc_vector = None
-    cyl = None
-    target_pc_index = None
-
-    def test_valid(self):
-        """Compute the echo ratio for a sphere/cylinder at different target points."""
-        result_seq = self._run_extractor(EchoRatioFeatureExtractorSequential(), self.target_pc_sequential)
-        result_vec = self._run_vectorized_extractor(EchoRatioFeatureExtractor(), self.target_pc_vector)
-        np.testing.assert_allclose(result_vec[:, 0], result_seq, atol=1e-7)
-
-    def _run_extractor(self, extractor, target_pc):
-        result = []
-        for target_index, neighbors in enumerate(self.cylinder_index):
-            current = extractor.extract(self.point_cloud, neighbors, target_pc, target_index, self.cyl)
-            result += [current]
-        return np.array(result)
-
-    def _run_vectorized_extractor(self, extractor, target_pc):
-        result = []
-        for target_index, neighbors in enumerate(self.cylinder_index):
-            current = extractor.extract(self.point_cloud, [neighbors], target_pc, target_index, self.cyl)
-            result += [current]
-        return np.array(result)
-
-    def setUp(self):
-        # read the data
-        self.point_cloud = read_las.read(os.path.join(
-            self._test_data_source, self._test_file_name))
-        # get the target point clouds
-        random.seed(102938482634)
-        self.target_pc_sequential = self._get_random_targets()
-        self.target_pc_vector = utils.copy_point_cloud(self.target_pc_sequential)
-        self.target_pc_index = 0
-        # volume descriptions
-        radius = 0.5
-        self.cyl = InfiniteCylinder(radius)
-        self.neighbors = compute_neighborhoods(
-            self.point_cloud, self.target_pc_sequential, self.cyl)
-        self.cylinder_index = []
-        for x in self.neighbors:
-            self.cylinder_index += x
-
-    def _get_random_targets(self):
-        """Get a random target pc."""
-        num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])
-        rand_indices = [random.randint(0, num_all_pc_points)
-                        for p in range(20)]
-        x, y, z = utils.get_point(self.point_cloud, rand_indices)
-        return create_point_cloud(x, y, z)
 
 
 class EchoRatioFeatureExtractorSequential(FeatureExtractor):

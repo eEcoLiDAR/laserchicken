@@ -12,7 +12,6 @@ from laserchicken.utils import get_xyz_per_neighborhood, get_point
 
 class EchoRatioFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
-    is_vectorized = True
 
     @classmethod
     def requires(cls):

@@ -45,17 +45,20 @@ class PulsePenetrationFeatureExtractor(FeatureExtractor):
         """
         return ['pulse_penetration_ratio']
 
-    def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param point_cloud: environment (search space) point cloud
-        :param neighborhood: array of indices of points within the point_cloud argument
+        :param neighborhoods: list of arrays of indices of points within the point_cloud argument
         :param target_point_cloud: point cloud that contains target point
-        :param target_index: index of the target point in the target point cloud
+        :param target_indices: list of indices of the target point in the target point cloud
         :param volume_description: volume object that describes the shape and size of the search volume
-        :return: feature value
+        :return: feature values
         """
+        return [self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]
+
+    def _extract_one(self, point_cloud, neighborhood):
         if 'raw_classification' not in point_cloud[point]:
             raise ValueError(
                 'Missing raw_classification attribute which is necessary for calculating pulse_penetratio and '

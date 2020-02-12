@@ -5,7 +5,6 @@ from laserchicken.utils import get_xyz_per_neighborhood
 
 
 class EigenValueVectorizeFeatureExtractor(FeatureExtractor):
-    is_vectorized = True
 
     @classmethod
     def requires(cls):

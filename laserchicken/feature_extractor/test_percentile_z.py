@@ -18,7 +18,7 @@ class TestPercentileZFeatureExtractorArtificialData(unittest.TestCase):
         expected = np.linspace(0.1, 1.0, 10)
         extractors = [PercentileFeatureExtractor(p) for p in range(10, 110, 10)]
 
-        percentiles = [e.extract(point_cloud, range(len(xyz)), None, None, None) for e in extractors]
+        percentiles = [e.extract(point_cloud, [range(len(xyz))], None, None, None)[0] for e in extractors]
 
         np.testing.assert_allclose(percentiles, expected)
 
@@ -54,7 +54,7 @@ class TestPercentileNormZFeatureExtractorArtificialData(unittest.TestCase):
         expected = np.linspace(0.1, 1.0, 10)
         extractors = [PercentileFeatureExtractor(p, data_key=keys.normalized_height) for p in range(10, 110, 10)]
 
-        percentiles = np.hstack([e.extract(point_cloud, range(len(xyz)), None, None, None) for e in extractors])
+        percentiles = np.hstack([e.extract(point_cloud, [range(len(xyz))], None, None, None)[0] for e in extractors])
 
         np.testing.assert_allclose(percentiles, expected)
 
