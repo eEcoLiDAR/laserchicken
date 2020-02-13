@@ -6,8 +6,8 @@ import pytest
 from pytest import raises
 
 from laserchicken import keys, test_tools
-from laserchicken.feature_extractor import feature_map, features
-from laserchicken.feature_extractor.features import compute_features
+from laserchicken.feature_extractor import feature_map, feature_extraction
+from laserchicken.feature_extractor.feature_extraction import compute_features
 from laserchicken.test_feature_extractor import Test1FeatureExtractor
 from laserchicken.volume_specification import Sphere
 from .feature_test23 import Test2FeatureExtractor, Test3FeatureExtractor, TestVectorizedFeatureExtractor
@@ -71,11 +71,11 @@ class TestExtractFeatures(unittest.TestCase):
     def setUp(self) -> None:
         self.original_function = feature_map._get_default_extractors
         feature_map._get_default_extractors = _get_test_extractors
-        features.FEATURES = feature_map.create_default_feature_map()
+        feature_extraction.FEATURES = feature_map.create_default_feature_map()
 
     def tearDown(self) -> None:
         feature_map._get_default_extractors = self.original_function
-        features.FEATURES = feature_map.create_default_feature_map()
+        feature_extraction.FEATURES = feature_map.create_default_feature_map()
 
 
 def _compute_features(target, feature_names, overwrite=False):

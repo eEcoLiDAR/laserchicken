@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from laserchicken import keys
-from laserchicken.feature_extractor.features import compute_features
+from laserchicken.feature_extractor.feature_extraction import compute_features
 from laserchicken.test_tools import create_point_cloud, create_points_in_xy_grid
 from laserchicken.volume_specification import InfiniteCylinder
 

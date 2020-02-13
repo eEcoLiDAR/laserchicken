@@ -10,7 +10,7 @@ from laserchicken.feature_extractor.pulse_penetration_feature_extractor import G
 from laserchicken.keys import point, normalized_height
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder, Cell
-from .features import compute_features
+from .feature_extraction import compute_features
 from .feature_map import create_default_feature_map, _create_name_extractor_pairs
 
 np.random.seed(1234)

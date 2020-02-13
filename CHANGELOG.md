@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed:
 - Some of the existing modules have been renamed/restructured (breaking changes!):
     - `normalization` --> `normalize`
-    - `features` created (functions moved from `feature_extractor/__init__.py`)
+    - `feature_extraction` created (functions moved from `feature_extractor/__init__.py`)
     - `select` and `spatial_selection` merged into `filter`, with the function `select_polygon` allowing to deal with all the spatial selection functionalities
     - format-specific `read_*` and `write_*` modules replaced by `load` and `export`
 
