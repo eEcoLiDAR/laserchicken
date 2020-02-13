@@ -44,9 +44,9 @@ class TestRangeNormZFeatureExtractor(unittest.TestCase):
         extractor = RangeFeatureExtractor(data_key=keys.normalized_height)
         _max, _min, _range = extractor.extract(point_cloud, neighborhood, None, None, None)
 
-        self.assertAlmostEquals(_max, 5)
-        self.assertAlmostEquals(_min, 3)
-        self.assertAlmostEquals(_range, 2)
+        self.assertAlmostEqual(_max, 5)
+        self.assertAlmostEqual(_min, 3)
+        self.assertAlmostEqual(_range, 2)
 
     def test_normalized_z_provides_correct(self):
         feature_names = RangeFeatureExtractor(data_key=keys.normalized_height).provides()

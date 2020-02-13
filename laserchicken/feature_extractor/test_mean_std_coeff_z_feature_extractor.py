@@ -46,9 +46,9 @@ class TestMeanStdCoeffNormZFeatureExtractor(unittest.TestCase):
 
         mean, std, coeff = self.extractor.extract(point_cloud, neighborhood, None, None, None)
 
-        self.assertAlmostEquals(mean, 4)
-        self.assertAlmostEquals(std, np.sqrt(2 / 3))
-        self.assertAlmostEquals(coeff, np.sqrt(2 / 3) / 4)
+        self.assertAlmostEqual(mean, 4)
+        self.assertAlmostEqual(std, np.sqrt(2 / 3))
+        self.assertAlmostEqual(coeff, np.sqrt(2 / 3) / 4)
 
     def test_default_provides_correct(self):
         feature_names = self.extractor.provides()

@@ -40,7 +40,7 @@ class TestVarianceNormZFeatureExtractor(unittest.TestCase):
 
         variance = self.extractor.extract(point_cloud, neighborhood, None, None, None)
 
-        self.assertAlmostEquals(variance, 2 / 3)
+        self.assertAlmostEqual(variance, 2 / 3)
 
     def test_default_provides_correct(self):
         feature_names = self.extractor.provides()
