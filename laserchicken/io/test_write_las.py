@@ -11,8 +11,9 @@ from laserchicken.test_tools import SimpleTestData, ComplexTestData
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.io.export import export
 from laserchicken.io.load import load
+from laserchicken.io.las_handler import is_pylas_available
 
-
+@pytest.mark.skipif(not is_pylas_available, reason="requires pylas for writing")
 class TestWriteLas(unittest.TestCase):
     _test_dir = 'TestLoad_dir'
     _test_file_name = 'test.las'

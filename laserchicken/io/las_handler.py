@@ -1,10 +1,10 @@
 """ IO Handler for LAS (and compressed LAZ) file format """
 import numpy as np
 
-_is_pylas_available = False
+is_pylas_available = False
 try:
-    _is_pylas_available = True
     import pylas
+    is_pylas_available = True
 except ImportError:
     import laspy
 
@@ -21,7 +21,7 @@ class LASHandler(IOHandler):
 
         :return: point cloud data structure
         """
-        if _is_pylas_available:
+        if is_pylas_available:
             file = pylas.read(self.path)
         else:
             file = laspy.file.File(self.path)
@@ -51,7 +51,7 @@ class LASHandler(IOHandler):
         :param point_format_id:
         :return:
         """
-        if not _is_pylas_available:
+        if not is_pylas_available:
             raise NotImplementedError('Writing LAS/LAZ files only available through pylas: '
                                       'https://pylas.readthedocs.io')
 
