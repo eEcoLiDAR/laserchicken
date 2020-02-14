@@ -2,18 +2,18 @@ import os
 
 from setuptools import setup, find_packages
 
-from laserchicken._version import __version__
 
 def read(file_name):
     return open(os.path.join(os.path.dirname(__file__), file_name)).read()
 
 
-with open('requirements.txt') as f:
-    required = f.read().splitlines()
+required = read('requirements.txt').splitlines()
+version = read('laserchicken/_version.txt').strip()
+
 
 setup(
     name='laserchicken',
-    version=__version__,
+    version=version,
     description='Point cloud toolkit',
     license='Apache 2.0',
     keywords=['Python', 'Point cloud'],
@@ -31,4 +31,5 @@ setup(
             'laserchicken = laserchicken.tools.cli:main',
         ],
     },
+    package_data={'': ['_version.txt']},
 )

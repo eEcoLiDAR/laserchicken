@@ -38,15 +38,26 @@ class SigmaZFeatureExtractor(FeatureExtractor):
         """
         return ['sigma_z']
 
-    def extract(self, source_point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
+        """
+        Extract the feature value(s) of the point cloud at location of the target.
+
+        :param point_cloud: environment (search space) point cloud
+        :param neighborhoods: list of arrays of indices of points within the point_cloud argument
+        :param target_point_cloud: point cloud that contains target point
+        :param target_indices: list of indices of the target point in the target point cloud
+        :param volume_description: volume object that describes the shape and size of the search volume
+        :return: feature values
+        """
+        return [self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]
+
+    @staticmethod
+    def _extract_one(source_point_cloud, neighborhood):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param source_point_cloud: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
-        :param target_point_cloud: point cloud that contains target point
-        :param target_index: index of the target point in the target point cloud
-        :param volume_description: volume object describing the containing volume of the neighborhood
         :return:
         """
         x, y, z = get_point(source_point_cloud, neighborhood)

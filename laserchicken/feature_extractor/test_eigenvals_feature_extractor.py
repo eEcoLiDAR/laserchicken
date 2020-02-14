@@ -7,7 +7,7 @@ import numpy as np
 
 from laserchicken import compute_neighbors, keys, load, utils
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
-from laserchicken.feature_extractor.features import compute_features
+from laserchicken.feature_extractor.feature_extraction import compute_features
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
@@ -20,18 +20,13 @@ class TestExtractEigenValues(unittest.TestCase):
         random.seed(102938482634)
         point_cloud = load(os.path.join('testdata', 'AHN3.las'))
         num_all_pc_points = len(point_cloud[keys.point]["x"]["data"])
-        rand_indices = [random.randint(0, num_all_pc_points)
-                        for _ in range(20)]
+        rand_indices = [random.randint(0, num_all_pc_points) for _ in range(20)]
         target_point_cloud = utils.copy_point_cloud(point_cloud, rand_indices)
         radius = 2.5
-        neighbors = compute_neighbors.compute_cylinder_neighborhood(
-            point_cloud, target_point_cloud, radius)
+        neighbors = compute_neighbors.compute_cylinder_neighborhood(point_cloud, target_point_cloud, radius)
 
-        target_idx_base = 0
-        for x in neighbors:
-            compute_features(point_cloud, x, target_idx_base, target_point_cloud, ["eigenv_1", "eigenv_2", "eigenv_3"],
-                             InfiniteCylinder(5))
-            target_idx_base += len(x)
+        compute_features(point_cloud, neighbors, target_point_cloud,
+                         ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
         self.assertEqual("laserchicken.feature_extractor.eigenvals_feature_extractor",
                          target_point_cloud[keys.provenance][0]["module"])
@@ -42,10 +37,9 @@ class TestExtractEigenValues(unittest.TestCase):
         a = np.array([5])
         pc = create_point_cloud(a, a, a)
 
-        compute_features(pc, [[0]], 0, pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
+        compute_features(pc, [[0]], pc, ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
-        eigen_val_123 = np.array(
-            [pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])
+        eigen_val_123 = np.array([pc[keys.point]['eigenv_{}'.format(i)]['data'] for i in [1, 2, 3]])
         assert not np.any(np.isnan(eigen_val_123))
         assert not np.any(np.isinf(eigen_val_123))
 
@@ -77,9 +71,6 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         print('Timing Serial : {}'.format((time.time() - t0)))
         eigvals = np.array(eigvals)
 
-        # print('self.neigh',self.neigh[-20])
-        # print('eigvals_vect',eigvals_vect[-20])
-        # print('eigvals',eigvals[-20])
         np.testing.assert_allclose(eigvals_vect, eigvals)
 
     def setUp(self):
@@ -97,7 +88,7 @@ class TestExtractEigenvaluesComparison(unittest.TestCase):
         _PC_260807 = load(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
         _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
             np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
-        _1000_NEIGHBORHOODS_IN_260807 = next(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
+        _1000_NEIGHBORHOODS_IN_260807 = list(compute_neighbors.compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER))
 
         self.point_cloud = _PC_260807
         self.neigh = _1000_NEIGHBORHOODS_IN_260807

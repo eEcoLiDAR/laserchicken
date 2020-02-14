@@ -16,25 +16,25 @@ def create_volume_map():
 VOLUMES = create_volume_map()
 
 
-def build_volume(vol_name, *args, **kwargs):
+def build_volume(volume_type, *args, **kwargs):
     """
     Return volume object from the volume name and the corresponding parameters
 
     Example:
     >>>> vol = build_volume('sphere', radius=5)
 
-    :param vol_name: name corresponding to the
+    :param volume_type: name corresponding to the
     :param args: optional non-keyword args to build the volume
     :param kwargs: optional keyword args to build the volume
     :return:
     """
-    key = vol_name.lower()
-    _verify_volume_name(key)
-    vol = VOLUMES[vol_name.lower()]
-    return vol(*args, **kwargs)
+    _volume_type = volume_type.lower()
+    _verify_volume_type(_volume_type)
+    volume_builder = VOLUMES[_volume_type]
+    return volume_builder(*args, **kwargs)
 
 
-def _verify_volume_name(vol_name):
-    if vol_name not in VOLUMES.keys():
+def _verify_volume_type(volume_type):
+    if volume_type not in VOLUMES.keys():
         raise ValueError('Unknown volume specified: {}. Available volumes are: {}'
-                         .format(vol_name, ', '.join(VOLUMES.keys())))
+                         .format(volume_type, ', '.join(VOLUMES.keys())))

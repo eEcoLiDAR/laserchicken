@@ -58,10 +58,10 @@ class ComplexTestData(object):
     def get_point_cloud(self):
         """Get the point cloud data."""
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'float', 'data': np.array([1, 2, 3, 4, 5])},
-                           'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6])},
-                           'z': {'type': 'float', 'data': np.array([3, 4, 5, 6, 7])},
-                           'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1])}
+        pc = {keys.point: {'x': {'type': 'float', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
+                           'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6], dtype=np.float)},
+                           'z': {'type': 'float', 'data': np.array([3, 4, 5, 6, 7], dtype=np.float)},
+                           'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1], dtype=np.int)}
                            },
               keys.point_cloud: {'offset': {'type': 'double', 'data': 12.1}},
               keys.provenance: self.comments
@@ -90,11 +90,11 @@ property double offset
     @staticmethod
     def get_data():
         """Get the data in ply format."""
-        data = """1 2 3 1
-2 3 4 1
-3 4 5 2
-4 5 6 2
-5 6 7 1
+        data = """1.0 2.0 3.0 1
+2.0 3.0 4.0 1
+3.0 4.0 5.0 2
+4.0 5.0 6.0 2
+5.0 6.0 7.0 1
 12.1
 """
         return data

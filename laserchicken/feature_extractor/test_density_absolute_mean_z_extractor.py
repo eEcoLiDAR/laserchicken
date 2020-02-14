@@ -19,7 +19,7 @@ class TestDensityAbsoluteMeanZFeatureExtractorArtificialData(unittest.TestCase):
                                                     'type': 'double'}
         neighborhood = list(range(len(x)))
 
-        density_absolute_mean = self.extractor.extract(point_cloud, neighborhood, None, None, None)
+        density_absolute_mean = self.extractor.extract(point_cloud, [neighborhood], None, None, None)[0]
 
         self.assertAlmostEqual(density_absolute_mean, 25)
 
@@ -32,7 +32,7 @@ class TestDensityAbsoluteMeanZFeatureExtractorArtificialData(unittest.TestCase):
 
 
 class TestDensityAbsoluteMeanNormZFeatureExtractorArtificialData(unittest.TestCase):
-    def test_simle_case_correct(self):
+    def test_simple_case_correct(self):
         """Check that one out of 4 points above mean of only vegetation points yields a value of 25"""
         ground = 2  # Ground tag
         veg = 4  # Medium vegetation tag
@@ -42,7 +42,7 @@ class TestDensityAbsoluteMeanNormZFeatureExtractorArtificialData(unittest.TestCa
                                                     'type': 'double'}
         neighborhood = list(range(len(x)))
 
-        density_absolute_mean = self.extractor.extract(point_cloud, neighborhood, None, None, None)
+        density_absolute_mean = self.extractor.extract(point_cloud, [neighborhood], None, None, None)[0]
 
         self.assertAlmostEqual(density_absolute_mean, 25)
 

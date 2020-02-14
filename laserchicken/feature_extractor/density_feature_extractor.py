@@ -31,32 +31,31 @@ class PointDensityFeatureExtractor(FeatureExtractor):
         """
         return ['point_density']
 
-    def extract(self, source_pc, neighborhood, target_pc, target_index, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
+        """
+        Extract the feature value(s) of the point cloud at location of the target.
+
+        :param point_cloud: environment (search space) point cloud
+        :param neighborhoods: list of arrays of indices of points within the point_cloud argument
+        :param target_point_cloud: point cloud that contains target point
+        :param target_indices: list of indices of the target point in the target point cloud
+        :param volume_description: volume object that describes the shape and size of the search volume
+        :return: feature values
+        """
+        return [self._extract_one(point_cloud, neighborhood, volume_description) for neighborhood in neighborhoods]
+
+    def _extract_one(self, source_pc, neighborhood, volume_description):
         """
         Extract the feature value(s) of the point cloud at location of the target.
 
         :param source_pc: environment (search space) point cloud
         :param neighborhood: array of indices of points within the point_cloud argument
-        :param target_pc: point cloud that contains target point
-        :param target_index: index of the target point in the target pointcloud
         :param volume_description: volume object that describes the shape and size of the search volume
         :return: feature value
         """
-
-        if source_pc is not None and isinstance(neighborhood, list):
-            n_points = float(len(source_pc[point]['x']['data'][neighborhood]))
-
-        elif target_pc is not None:
-            n_points = float(len(target_pc[point]['x']['data']))
-        else:
-            raise ValueError("You can either specify a sourcepc and a neighborhood or a targetpc\n\
-                              example\nextractror.extract(sourcepc,index,None,None,volume)\n\
-                              extractror.extract(None,None,targetpc,None,volume)")
-
+        n_points = len(source_pc[point]['x']['data'][neighborhood])
         area_or_volume = volume_description.calculate_area_or_volume()
-        return n_points / area_or_volume
-
-
+        return float(n_points) / area_or_volume
 
     def get_params(self):
         """

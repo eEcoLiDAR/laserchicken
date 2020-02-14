@@ -21,8 +21,8 @@ def get_io_handler(path, mode, format=None, overwrite=False):
     :return: instance of the IOHandler
     """
     if format is None:
-        suffix = os.path.splitext(path)[1]
-        format = suffix.split('.')[-1].lower()
+        _root, ext = os.path.splitext(path)
+        format = ext.replace('.', '')
     format = format.lower()
     _check_format(format)
     io_handler = io_handlers[format]
