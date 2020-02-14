@@ -24,39 +24,15 @@ class DensityAbsoluteMeanFeatureExtractor(FeatureExtractor):
 
     @classmethod
     def requires(cls):
-        """
-        Get a list of names of the point attributes that are needed for this feature extraction.
-
-        For simple features, this could be just x, y, and z. Other features can build on again
-        other features to have been computed first.
-
-        :return: List of feature names
-        """
         return []
 
     def provides(self):
-        """
-        Get a list of names of the feature values.
-
-        This will return as many names as the number feature values that will be returned.
-        For instance, if a feature extractor returns the first 3 eigen values, this method
-        should return 3 names, for instance 'eigen_value_1', 'eigen_value_2' and 'eigen_value_3'.
-
-        :return: List of feature names
-        """
         return ['density_absolute_mean_' + self.data_key]
 
-    def extract(self, point_cloud, neighborhood, target_point_cloud, target_index, volume_description):
-        """
-        Extract the feature value(s) of the point cloud at location of the target.
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
+        return [self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]
 
-        :param point_cloud: environment (search space) point cloud
-        :param neighborhood: array of indices of points within the point_cloud argument
-        :param target_point_cloud: point cloud that contains target point
-        :param target_index: index of the target point in the target point cloud
-        :param volume_description: volume object that describes the shape and size of the search volume
-        :return: feature value
-        """
+    def _extract_one(self, point_cloud, neighborhood):
         if 'raw_classification' not in point_cloud[point]:
             raise ValueError(
                 'Missing raw_classification attribute which is necessary for calculating density_absolute_mean.')
@@ -85,9 +61,4 @@ class DensityAbsoluteMeanFeatureExtractor(FeatureExtractor):
         return density_absolute_mean
 
     def get_params(self):
-        """
-        Return a tuple of parameters involved in the current feature extractor object.
-
-        Needed for provenance.
-        """
         return ()

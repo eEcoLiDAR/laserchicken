@@ -6,8 +6,7 @@ See https://github.com/eEcoLiDAR/eEcoLiDAR/issues/21
 import numpy as np
 
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
-from laserchicken.keys import point
-from laserchicken.utils import get_xyz_per_neighborhood, get_point, get_attributes_per_neighborhood
+from laserchicken.utils import get_attributes_per_neighborhood
 
 
 def _to_unmasked_array(masked_array):
@@ -19,7 +18,6 @@ def _to_unmasked_array(masked_array):
 
 class BandRatioFeatureExtractor(FeatureExtractor):
     """Feature extractor for the point density."""
-    is_vectorized = True
 
     def __init__(self, lower_limit, upper_limit, data_key='z'):
         self.lower_limit = lower_limit
