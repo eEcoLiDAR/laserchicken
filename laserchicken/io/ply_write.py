@@ -1,23 +1,32 @@
 import numpy as np
 
+from struct import pack
+
 from laserchicken import keys
+from laserchicken.io.utils import convert_to_single_character_type
 
 
-def write(point_cloud, path):
+def write(point_cloud, path, is_binary=False):
     """
     Write the point cloud to a ply-file. Path cannot exist yet.
     :param point_cloud:
     :param path:
+    :param is_binary:
     :return:
     """
     with open(path, 'w') as ply:
-        _write_header(point_cloud, ply)
-        _write_data(point_cloud, ply)
+        _write_header(point_cloud, ply, is_binary)
+    with open(path, ''.join(['a', 'b' if is_binary else ''])) as ply:
+        _write_data(point_cloud, ply, is_binary)
 
 
-def _write_header(point_cloud, ply):
+def _write_header(point_cloud, ply, is_binary=False):
     ply.write("ply" + '\n')
-    ply.write("format ascii 1.0" + '\n')
+    if is_binary:
+        file_type = "binary_little_endian"
+    else:
+        file_type = "ascii"
+    ply.write("format %s 1.0\n" % file_type)
     _write_comment(point_cloud, ply)
     for elem_name in _get_ordered_elements(point_cloud.keys()):
         get_num_elements = (lambda d: len(d["x"].get("data", []))) if elem_name == keys.point else None
@@ -25,28 +34,40 @@ def _write_header(point_cloud, ply):
     ply.write("end_header" + '\n')
 
 
-def _write_data(pc, ply):
-    delimiter = ' '
+def _write_data(pc, ply, is_binary=False):
     for elem_name in _get_ordered_elements(pc.keys()):
         props = _get_ordered_properties(elem_name, pc[elem_name].keys())
         num_elements = len(pc[elem_name]["x"].get("data", [])) if elem_name == keys.point else 1
         for i in range(num_elements):
+            line_elements = []
+            line_types = []
             for prop in props:
-                data_values = pc[elem_name][prop]["data"]
+                data_values, data_type = _get_data_and_type(pc[elem_name][prop])
                 if isinstance(data_values, np.ndarray):
-                    if prop == props[-1]:
-                        ply.write(_format_ply(data_values[i]))
-                    else:
-                        ply.write(_format_ply(data_values[i]) + delimiter)
+                    line_elements.append(_format_ply(data_values[i], is_binary))
                 else:
                     if i != 0:
                         raise Exception("Scalar quantity does not have element at index %d" % i)
-                    ply.write(_format_ply(data_values))
-            ply.write('\n')
+                    line_elements.append(_format_ply(data_values, is_binary))
+                line_types.append(convert_to_single_character_type(data_type, use_ply_implicit=True))
+            if is_binary:
+                # add leading byte order character (< for little endian)
+                format = ''.join(["<"] + line_types)
+                line = pack(format, *line_elements)
+            else:
+                line = " ".join(line_elements) + "\n"
+            ply.write(line)
 
 
-def _format_ply(obj):
-    return str(obj)
+def _get_data_and_type(attribute):
+    return attribute["data"], attribute["type"]
+
+
+def _format_ply(obj, is_binary):
+    if is_binary:
+        return obj
+    else:
+        return str(obj)
 
 
 def _get_ordered_elements(elem_names):
