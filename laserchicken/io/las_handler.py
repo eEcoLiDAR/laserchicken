@@ -1,6 +1,4 @@
 """ IO Handler for LAS (and compressed LAZ) file format """
-import numpy as np
-
 is_pylas_available = False
 try:
     import pylas
@@ -10,6 +8,7 @@ except ImportError:
 
 from laserchicken import keys
 from laserchicken.io.base_io_handler import IOHandler
+from laserchicken.io.utils import convert_to_short_type
 
 
 class LASHandler(IOHandler):
@@ -63,17 +62,16 @@ class LASHandler(IOHandler):
         # NOTE: adding extra dims and assignment should be done in two steps,
         # some fields (e.g. raw_classification) are otherwise overwritten
         for name, attribute in points.items():
-            data, dtype = _get_data_and_type(attribute)
+            data, type = _get_data_and_type(attribute)
+            type_short = convert_to_short_type(type)
             if name not in 'xyz':
                 # x,y,z are not there but file methods can be used to convert coords to int4
                 if name not in file.points.dtype.names:
-                    dtype_str = "".join([c for c in dtype.str
-                                         if c not in ['<', '>', '|']])
-                    file.add_extra_dim(name=name, type=dtype_str)
-            file_dtype = getattr(file, name).dtype
-            if not file_dtype.name == dtype.name:
-                raise TypeError('Open file format data type does not match point cloud: '
-                                'for {}, {} vs {}'.format(name, file_dtype.name, dtype.name))
+                    file.add_extra_dim(name=name, type=type_short)
+            file_type_short = convert_to_short_type(getattr(file, name).dtype.name)
+            if not file_type_short == type_short:
+                raise TypeError('Data type in file does not match the one in point cloud: '
+                                'for {}, {} vs {}'.format(name, file_type_short, type_short))
 
         for name, attribute in points.items():
             data, _ = _get_data_and_type(attribute)
@@ -90,7 +88,7 @@ def _get_attribute(data, data_type):
 
 
 def _get_data_and_type(attribute):
-    return attribute['data'], np.dtype(attribute['type'])
+    return attribute['data'], attribute['type']
 
 
 if __name__ == '__main__':
