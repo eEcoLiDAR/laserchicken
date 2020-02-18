@@ -45,11 +45,11 @@ def _read_header(ply, is_binary=False):
                 {'type': element_type, 'number_of_elements': number_of_elements, 'properties': current_properties})
 
         if line.startswith('property'):
-            property_type, property_name = line[9:].strip('\n').split(' ')
+            property_type, property_name = line[9:].rstrip().split(' ')
             current_properties.append({'type': property_type, 'name': property_name})
 
         if line.startswith('comment'):
-            comment_line = line.strip('\n').split(' ', 1)[1]
+            comment_line = line.rstrip().split(' ', 1)[1]
             comments.append(comment_line)
 
         line = _read_header_line(ply, is_binary)
@@ -68,7 +68,7 @@ def _read_header_line(ply, is_binary=False):
 
 def _read_log(comments):
     try:
-        log = ast.literal_eval(''.join(comments)) if comments else []
+        log = ast.literal_eval(' '.join(comments)) if comments else []
     except SyntaxError:  # Log can't be read. Maybe a ply file with 'regular' comments and no log.
         log = []
     for i, entry in enumerate(log):

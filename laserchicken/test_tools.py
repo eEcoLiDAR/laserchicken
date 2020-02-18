@@ -53,7 +53,7 @@ property double z
 """
         else:
             with open("testdata/simple_test_data_little_endian.bin", "rb") as f:
-                data = f.read().rstrip(b'\n')
+                data = f.read().rstrip()
         return data
 
 
@@ -112,7 +112,7 @@ property double offset
 """
         else:
             with open("testdata/complex_test_data_little_endian.bin", "rb") as f:
-                data = f.read().rstrip(b'\n')
+                data = f.read().rstrip()
         return data
 
     @staticmethod

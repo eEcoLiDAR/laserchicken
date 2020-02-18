@@ -40,7 +40,7 @@ def read_data_binary(ply):
                 in_header = False
         else:
             if not in_header:
-                data = data + line.rstrip(b'\n')
+                data = data + line.rstrip()
     return data
 
 
