@@ -102,3 +102,9 @@ class TestReadPly(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self._test_dir)
+
+
+class TestReadPlyBinary(TestReadPly):
+    _test_file_name = 'example_little_endian.ply'
+    _test_file_without_comments_name = 'example_without_comments_little_endian.ply'
+    _test_file_with_invalid_comments_name = 'example_with_invalid_comments_little_endian.ply'

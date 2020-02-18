@@ -27,25 +27,33 @@ class SimpleTestData(object):
         return pc
 
     @staticmethod
-    def get_header():
+    def get_header(is_binary=False):
         """Get the ply header."""
+        if is_binary:
+            format = "binary_little_endian"
+        else:
+            format = "ascii"
         # This simple_test_header cloud and the simple_test_point should be in sync. Some tests depend on it.
         header = """ply
-format ascii 1.0
+format {} 1.0
 element vertex 3
 property double x
 property double y
 property double z
-"""
+""".format(format)
         return header
 
     @staticmethod
-    def get_data():
+    def get_data(is_binary=False):
         """Get the data in ply format."""
-        data = """1.0 20.0 300.0
+        if not is_binary:
+            data = """1.0 20.0 300.0
 2.0 30.0 400.0
 3.0 40.0 500.0
 """
+        else:
+            with open("testdata/simple_test_data_little_endian.bin", "rb") as f:
+                data = f.read().rstrip(b'\n')
         return data
 
 
@@ -92,15 +100,19 @@ property double offset
         return header
 
     @staticmethod
-    def get_data():
+    def get_data(is_binary=False):
         """Get the data in ply format."""
-        data = """1.0 2.0 3.0 1
+        if not is_binary:
+            data = """1.0 2.0 3.0 1
 2.0 3.0 4.0 1
 3.0 4.0 5.0 2
 4.0 5.0 6.0 2
 5.0 6.0 7.0 1
 12.1
 """
+        else:
+            with open("testdata/complex_test_data_little_endian.bin", "rb") as f:
+                data = f.read().rstrip(b'\n')
         return data
 
     @staticmethod

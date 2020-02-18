@@ -69,7 +69,7 @@ def _read_header_line(ply, is_binary=False):
 def _read_log(comments):
     try:
         log = ast.literal_eval(''.join(comments)) if comments else []
-    except(SyntaxError):  # Log can't be read. Maybe a ply file with 'regular' comments and no log.
+    except SyntaxError:  # Log can't be read. Maybe a ply file with 'regular' comments and no log.
         log = []
     for i, entry in enumerate(log):
         if 'time' in entry:
@@ -101,7 +101,7 @@ def _cast(value, value_type):
 def _read_elements_ascii(ply_body, properties, property_names, block_type, number_of_elements):
     for i in range(number_of_elements):
         line = ply_body.readline()
-        values = line.split(' ')
+        values = line.split()
         if len(values) != len(property_names):
             raise ValueError('Error reading line {} of {} list.'.format(i, block_type))
         for p, property_name in enumerate(property_names):

@@ -7,26 +7,41 @@ import pytest
 from laserchicken.test_tools import SimpleTestData, ComplexTestData
 from laserchicken.io.export import export
 
-def read_header(ply):
+
+def read_header(ply, is_binary=False):
     header = ''
     line = ply.readline()
+    if is_binary: line = line.decode("utf-8")
     while line.strip() != 'end_header':
         header = header + line
         line = ply.readline()
+        if is_binary: line = line.decode("utf-8")
     return header
 
 
-def read_data(ply):
+def read_data_ascii(ply):
     data = ''
     in_header = True
     for line in ply:
-        if (line == 'end_header\n'):
+        if line == 'end_header\n':
             in_header = False
         else:
             if not in_header:
                 data = data + line
     return data
 
+
+def read_data_binary(ply):
+    data = b''
+    in_header = True
+    for line in ply:
+        if in_header:
+            if line.decode('utf-8') == 'end_header\n':
+                in_header = False
+        else:
+            if not in_header:
+                data = data + line.rstrip(b'\n')
+    return data
 
 
 class TestWritePly(unittest.TestCase):
@@ -74,7 +89,7 @@ class TestWritePly(unittest.TestCase):
         export(pc_in, self.test_file_path)
         data_in = SimpleTestData.get_data()
         with open(self.test_file_path, 'r') as ply:
-            data_out = read_data(ply)
+            data_out = read_data_ascii(ply)
         self.assertEqual(data_in, data_out)
 
     def test_write_loadTheSameComplexData(self):
@@ -84,7 +99,45 @@ class TestWritePly(unittest.TestCase):
         export(pc_in, self.test_file_path)
         data_in = test_data.get_data()
         with open(self.test_file_path, 'r') as ply:
-            data_out = read_data(ply)
+            data_out = read_data_ascii(ply)
+        self.assertEqual(data_in, data_out)
+
+    def test_write_loadTheSameSimpleHeaderBinary(self):
+        """  Writing a simple point cloud and loading it afterwards should result in the same point cloud."""
+        pc_in = SimpleTestData.get_point_cloud()
+        header_in = SimpleTestData.get_header(is_binary=True)
+        export(pc_in, self.test_file_path, is_binary=True)
+        with open(self.test_file_path, 'rb') as ply:
+            header_out = read_header(ply, is_binary=True)
+        self.assertMultiLineEqual(header_in, header_out)
+
+    def test_write_loadTheSameSimpleDataBinary(self):
+        """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
+        pc_in = SimpleTestData.get_point_cloud()
+        export(pc_in, self.test_file_path, is_binary=True)
+        data_in = SimpleTestData.get_data(is_binary=True)
+        with open(self.test_file_path, 'rb') as ply:
+            data_out = read_data_binary(ply)
+        self.assertEqual(data_in, data_out)
+
+    def test_write_loadTheSameComplexHeaderBinary(self):
+        """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
+        test_data = ComplexTestData()
+        pc_in = test_data.get_point_cloud()
+        header_in = test_data.get_header(is_binary=True)
+        export(pc_in, self.test_file_path, is_binary=True)
+        with open(self.test_file_path, 'rb') as ply:
+            header_out = read_header(ply, is_binary=True)
+        self.assertEqual(header_in, header_out)
+
+    def test_write_loadTheSameComplexDataBinary(self):
+        """ Writing point cloud data and loading it afterwards should result in the same point cloud data. """
+        test_data = ComplexTestData()
+        pc_in = test_data.get_point_cloud()
+        data_in = test_data.get_data(is_binary=True)
+        export(pc_in, self.test_file_path, is_binary=True)
+        with open(self.test_file_path, 'rb') as ply:
+            data_out = read_data_binary(ply)
         self.assertEqual(data_in, data_out)
 
     def setUp(self):
