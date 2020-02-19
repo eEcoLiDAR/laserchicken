@@ -13,12 +13,7 @@ def read(path):
     :return: dictionary containing the point cloud data
     """
     # check whether file is in ascii/binary format
-    with open(path, 'r') as ply:
-        try:
-            _ = ply.readline()
-            is_binary = False
-        except UnicodeDecodeError:
-            is_binary = True
+    is_binary = _is_ply_binary(path)
 
     # read file content
     with open(path, ''.join(['r', 'b' if is_binary else ''])) as ply:
@@ -29,6 +24,21 @@ def read(path):
 
         index, format = _read_header(ply, is_binary)
         return {block['type']: _read_block(block, ply, format) for block in index}
+
+
+def _is_ply_binary(path, is_binary=False):
+    is_valid = True
+    with open(path, ''.join(['r', 'b' if is_binary else ''])) as ply:
+        try:
+            _ = _read_header_line(ply, is_binary)
+        except UnicodeDecodeError:
+            if is_binary:
+                is_valid = False
+            else:
+                return _is_ply_binary(path, is_binary=True)
+    if not is_valid:
+        raise ValueError('Not a valid ply file: {}'.format(path))
+    return is_binary
 
 
 def _read_header(ply, is_binary=False):
