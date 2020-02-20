@@ -64,6 +64,22 @@ class TestWritePly(unittest.TestCase):
         with pytest.raises(Exception):
             export(pc, self.test_file_path)
 
+    def test_write_sameFileTwiceOverwrite(self):
+        """ Should not raise an exception """
+        pc = SimpleTestData.get_point_cloud()
+        export(pc, self.test_file_path)
+        export(pc, self.test_file_path, overwrite=True)
+        self.assertTrue(os.path.isfile(self.test_file_path))
+
+    def test_write_invalidAttributes(self):
+        """ Should raise exception. """
+        test_data = ComplexTestData()
+        pc = test_data.get_point_cloud()
+        with pytest.raises(ValueError):
+            export(pc, self.test_file_path, attributes=None)
+        with pytest.raises(ValueError):
+            export(pc, self.test_file_path, attributes=['ytisnetni'])
+
     def test_write_loadTheSameSimpleHeader(self):
         """  Writing a simple point cloud and loading it afterwards should result in the same point cloud."""
         pc_in = SimpleTestData.get_point_cloud()

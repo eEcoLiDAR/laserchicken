@@ -18,7 +18,7 @@ try:
 except ImportError:
     pass
 
-_DEFAULT_LAS_ATTRIBUTES = {
+DEFAULT_LAS_ATTRIBUTES = {
     'x',
     'y',
     'z',
@@ -37,7 +37,7 @@ class LASHandler(IOHandler):
                                       'https://pylas.readthedocs.io')
         super(LASHandler, self).__init__(path, mode, *args, **kwargs)
 
-    def read(self, attributes=_DEFAULT_LAS_ATTRIBUTES):
+    def read(self, attributes=DEFAULT_LAS_ATTRIBUTES):
         """
         Load the points from a LAS file into memory.
 

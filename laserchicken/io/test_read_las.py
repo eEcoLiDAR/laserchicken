@@ -3,14 +3,18 @@ import os
 import shutil
 import unittest
 
+import laspy
 import numpy as np
 import pytest
 
+from distutils.version import LooseVersion
+
 from laserchicken import keys
+from laserchicken.io.las_handler import is_pylas_available, is_lazperf_available, DEFAULT_LAS_ATTRIBUTES
 from laserchicken.io.load import load
 
 
-class TestReadWriteLas(unittest.TestCase):
+class TestReadLas(unittest.TestCase):
     _test_dir = 'TestLoad_dir'
     _test_file_name = 'AHN3.las'
     _test_data_source = 'testdata'
@@ -48,9 +52,56 @@ class TestReadWriteLas(unittest.TestCase):
         with pytest.raises(OSError):
             load('nonexistent.las')
 
+    def test_load_defaultAttributes(self):
+        point_cloud = load(self.test_file_path)
+        expected_attributes = [attr for attr in DEFAULT_LAS_ATTRIBUTES]
+        _check_expected_attributes(point_cloud, expected_attributes)
+
+    def test_load_allAttributes(self):
+        expected_attributes = ['x', 'y', 'z', 'intensity', 'bit_fields',
+                               'raw_classification', 'scan_angle_rank',
+                               'user_data', 'point_source_id', 'gps_time',
+                               'red', 'green', 'blue']
+        for attrs in ('all', ['all']):
+            point_cloud = load(self.test_file_path, attributes=attrs)
+            _check_expected_attributes(point_cloud, expected_attributes)
+
+    def test_load_specificAttribute(self):
+        """Should return only x,y,z"""
+        point_cloud = load(self.test_file_path, attributes=['intensity'])
+        expected_attributes = ['x', 'y', 'z', 'intensity']
+        _check_expected_attributes(point_cloud, expected_attributes)
+
+    def test_load_noAttributes(self):
+        """Should return only x,y,z"""
+        point_cloud = load(self.test_file_path, attributes=[])
+        expected_attributes = ['x', 'y', 'z']
+        _check_expected_attributes(point_cloud, expected_attributes)
+
+    def test_load_invalidAttributes(self):
+        """Should raise exception."""
+        with pytest.raises(ValueError):
+            load(self.test_file_path, attributes=None)
+        with pytest.raises(ValueError):
+            load(self.test_file_path, attributes=['ytisnetni'])
+
     def setUp(self):
         os.mkdir(self._test_dir)
         shutil.copyfile(os.path.join(self._test_data_source, self._test_file_name), self.test_file_path)
 
     def tearDown(self):
         shutil.rmtree(self._test_dir)
+
+
+@pytest.mark.skipif(not (is_lazperf_available and (is_pylas_available or LooseVersion(laspy.__version__) >= '1.7')),
+                    reason="requires lazperf and either pylas or laspy>=1.7 for reading LAZ files")
+class TestReadLaz(TestReadLas):
+    _test_dir = 'TestLoad_dir'
+    _test_file_name = 'AHN3.laz'
+    _test_data_source = 'testdata'
+    test_file_path = os.path.join(_test_dir, _test_file_name)
+
+
+def _check_expected_attributes(point_cloud, attributes):
+    assert [attr for attr in attributes if attr in point_cloud[keys.point].keys()] == attributes
+    assert [attr for attr in point_cloud[keys.point].keys() if attr not in attributes] == []
