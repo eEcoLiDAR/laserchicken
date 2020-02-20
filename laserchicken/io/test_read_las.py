@@ -58,13 +58,13 @@ class TestReadLas(unittest.TestCase):
         _check_expected_attributes(point_cloud, expected_attributes)
 
     def test_load_allAttributes(self):
-        expected_attributes = ['x', 'y', 'z', 'intensity', 'bit_fields',
-                               'raw_classification', 'scan_angle_rank',
-                               'user_data', 'point_source_id', 'gps_time',
+        expected_attributes = ['x', 'y', 'z', 'intensity', 'raw_classification',
+                               'scan_angle_rank', 'user_data', 'gps_time',
                                'red', 'green', 'blue']
         for attrs in ('all', ['all']):
             point_cloud = load(self.test_file_path, attributes=attrs)
-            _check_expected_attributes(point_cloud, expected_attributes)
+            for attribute in expected_attributes:
+                self.assertIn(attribute, point_cloud[keys.point])
 
     def test_load_specificAttribute(self):
         """Should return only x,y,z"""
@@ -103,5 +103,6 @@ class TestReadLaz(TestReadLas):
 
 
 def _check_expected_attributes(point_cloud, attributes):
-    assert [attr for attr in attributes if attr in point_cloud[keys.point].keys()] == attributes
+    for attr in attributes:
+        assert attr in point_cloud[keys.point].keys()
     assert [attr for attr in point_cloud[keys.point].keys() if attr not in attributes] == []
