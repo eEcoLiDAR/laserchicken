@@ -3,24 +3,25 @@ import numpy as np
 from struct import pack
 
 from laserchicken import keys
-from laserchicken.io.utils import convert_to_single_character_type
+from laserchicken.io.utils import convert_to_single_character_type, select_valid_attributes
 
 
-def write(point_cloud, path, is_binary=False):
+def write(point_cloud, path, attributes='all', is_binary=False):
     """
-    Write the point cloud to a ply-file. Path cannot exist yet.
+    Write the point cloud to a ply-file.
     :param point_cloud:
+    :param attributes: write only the specified attributes ('all' to write all of them)
     :param path:
     :param is_binary:
     :return:
     """
     with open(path, 'w') as ply:
-        _write_header(point_cloud, ply, is_binary)
+        _write_header(point_cloud, attributes, ply, is_binary)
     with open(path, ''.join(['a', 'b' if is_binary else ''])) as ply:
-        _write_data(point_cloud, ply, is_binary)
+        _write_data(point_cloud, attributes, ply, is_binary)
 
 
-def _write_header(point_cloud, ply, is_binary=False):
+def _write_header(point_cloud, attributes, ply, is_binary=False):
     ply.write("ply" + '\n')
     if is_binary:
         file_type = "binary_little_endian"
@@ -30,13 +31,15 @@ def _write_header(point_cloud, ply, is_binary=False):
     _write_comment(point_cloud, ply)
     for elem_name in _get_ordered_elements(point_cloud.keys()):
         get_num_elements = (lambda d: len(d["x"].get("data", []))) if elem_name == keys.point else None
-        _write_header_elements(point_cloud, ply, elem_name, get_num_elements=get_num_elements)
+        _write_header_elements(point_cloud, attributes, ply, elem_name, get_num_elements=get_num_elements)
     ply.write("end_header" + '\n')
 
 
-def _write_data(pc, ply, is_binary=False):
+def _write_data(pc, attributes, ply, is_binary=False):
     for elem_name in _get_ordered_elements(pc.keys()):
         props = _get_ordered_properties(elem_name, pc[elem_name].keys())
+        if elem_name == keys.point:
+            props = select_valid_attributes(props, attributes)
         num_elements = len(pc[elem_name]["x"].get("data", [])) if elem_name == keys.point else 1
         for i in range(num_elements):
             line_elements = []
@@ -111,11 +114,13 @@ def _sort_by_key(entry):
     return key_value_pairs
 
 
-def _write_header_elements(pc, ply, element_name, get_num_elements=None):
+def _write_header_elements(pc, attributes, ply, element_name, get_num_elements=None):
     if element_name in pc:
         num_elements = get_num_elements(pc[element_name]) if get_num_elements else 1
         ply.write("element %s %d\n" % (element_name, num_elements))
         key_list = _get_ordered_properties(element_name, pc[element_name].keys())
+        if element_name == keys.point:
+            key_list = select_valid_attributes(key_list, attributes)
         for key in key_list:
             property_type = pc[element_name][key]["type"]
             property_tuple = ("property", property_type, key)

@@ -12,7 +12,6 @@ _PLY_IMPLICIT_TO_SHORT_TYPES = {
     "double": "f8",
 }
 
-
 _SHORT_TO_SINGLE_CHAR_TYPES = {
     "u1": "B",
     "i1": "b",
@@ -25,6 +24,22 @@ _SHORT_TO_SINGLE_CHAR_TYPES = {
     "f4": "f",
     "f8": "d",
 }
+
+
+def select_valid_attributes(attributes_all, attributes_to_select):
+    if attributes_to_select is None:
+        raise ValueError('Invalid list of attributes provided.')
+    else:
+        if ((isinstance(attributes_to_select, str) and attributes_to_select == 'all')
+                or 'all' in attributes_to_select):
+            return attributes_all
+        else:
+            invalid_attributes = [el for el in attributes_to_select if el not in attributes_all]
+            if not invalid_attributes:
+                return ['x', 'y', 'z'] \
+                       + [el for el in attributes_to_select if el in attributes_all and el not in 'xyz']
+            else:
+                raise ValueError('Invalid attributes provided: {}'.format(', '.join(invalid_attributes)))
 
 
 def convert_to_short_type(type, use_ply_implicit=False):
