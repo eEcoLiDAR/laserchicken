@@ -15,6 +15,8 @@ def write(point_cloud, path, attributes='all', is_binary=False):
     :param is_binary:
     :return:
     """
+    if keys.point in point_cloud:
+        attributes = select_valid_attributes([attr for attr in point_cloud[keys.point].keys()], attributes)
     with open(path, 'w') as ply:
         _write_header(point_cloud, attributes, ply, is_binary)
     with open(path, ''.join(['a', 'b' if is_binary else ''])) as ply:
@@ -37,9 +39,11 @@ def _write_header(point_cloud, attributes, ply, is_binary=False):
 
 def _write_data(pc, attributes, ply, is_binary=False):
     for elem_name in _get_ordered_elements(pc.keys()):
-        props = _get_ordered_properties(elem_name, pc[elem_name].keys())
         if elem_name == keys.point:
-            props = select_valid_attributes(props, attributes)
+            props = attributes
+        else:
+            props = pc[elem_name].keys()
+        props = _get_ordered_properties(elem_name, props)
         num_elements = len(pc[elem_name]["x"].get("data", [])) if elem_name == keys.point else 1
         for i in range(num_elements):
             line_elements = []
@@ -118,7 +122,11 @@ def _write_header_elements(pc, attributes, ply, element_name, get_num_elements=N
     if element_name in pc:
         num_elements = get_num_elements(pc[element_name]) if get_num_elements else 1
         ply.write("element %s %d\n" % (element_name, num_elements))
-        key_list = _get_ordered_properties(element_name, pc[element_name].keys())
+        if element_name == keys.point:
+            key_list = attributes
+        else:
+            key_list = pc[element_name].keys()
+        key_list = _get_ordered_properties(element_name, key_list)
         if element_name == keys.point:
             key_list = select_valid_attributes(key_list, attributes)
         for key in key_list:
