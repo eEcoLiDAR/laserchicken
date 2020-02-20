@@ -1,15 +1,22 @@
 """ IO Handler for LAS (and compressed LAZ) file format """
+from distutils.version import LooseVersion
+
 from laserchicken import keys
 from laserchicken.io.base_io_handler import IOHandler
 from laserchicken.io.utils import convert_to_short_type, select_valid_attributes
 
-is_pylas_available = False
+is_pylas_available, is_lazperf_available = False, False
 try:
     import pylas
     is_pylas_available = True
 except ImportError:
     import laspy
 
+try:
+    import lazperf
+    is_lazperf_available = True
+except ImportError:
+    pass
 
 _DEFAULT_LAS_ATTRIBUTES = {
     'x',
@@ -22,7 +29,13 @@ _DEFAULT_LAS_ATTRIBUTES = {
 
 
 class LASHandler(IOHandler):
-    """ Class for IO of point-cloud data in LAS(LAZ) file format """
+    """ Class for IO of point-cloud data in LAS file format """
+
+    def __init__(self, path, mode, *args, **kwargs):
+        if mode == 'w' and (not is_pylas_available):
+            raise NotImplementedError('Writing LAS files only available through pylas: '
+                                      'https://pylas.readthedocs.io')
+        super(LASHandler, self).__init__(path, mode, *args, **kwargs)
 
     def read(self, attributes=_DEFAULT_LAS_ATTRIBUTES):
         """
@@ -33,11 +46,13 @@ class LASHandler(IOHandler):
         """
         if is_pylas_available:
             file = pylas.read(self.path)
+            attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
+                                    for el in file.points.dtype.names]
         else:
             file = laspy.file.File(self.path)
+            attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
+                                    for el in file.points.dtype['point'].names]
 
-        attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
-                                for el in file.points.dtype.names]
         attributes = select_valid_attributes(attributes_available, attributes)
 
         points = {}
@@ -58,16 +73,11 @@ class LASHandler(IOHandler):
         :param point_format_id:
         :return:
         """
-        if not is_pylas_available:
-            raise NotImplementedError('Writing LAS/LAZ files only available through pylas: '
-                                      'https://pylas.readthedocs.io')
-
         file = pylas.create(point_format_id=point_format_id,
                             file_version=file_version)
 
         points = point_cloud[keys.point]
-        attributes = select_valid_attributes([attr for attr in points.keys()],
-                                             attributes)
+        attributes = select_valid_attributes([attr for attr in points.keys()], attributes)
 
         # NOTE: adding extra dims and assignment should be done in two steps,
         # some fields (e.g. raw_classification) are otherwise overwritten
@@ -93,18 +103,25 @@ class LASHandler(IOHandler):
         file.write(self.path)
 
 
+class LAZHandler(LASHandler):
+    """ Class for IO of point-cloud data in compressed LAZ file format """
+    required_laspy_version = '1.7'
+
+    def __init__(self, *args, **kwargs):
+        if not is_lazperf_available:
+            raise NotImplementedError('lazperf is required to read/write compressed LAZ files!')
+        if not is_pylas_available:
+            available_laspy_version = laspy.__version__
+            if LooseVersion(available_laspy_version) < self.required_laspy_version:
+                raise NotImplementedError('laspy version >= {} is required to deal with compressed LAZ files! '
+                                          'available version: {}'.format(self.required_laspy_version,
+                                                                         available_laspy_version))
+        super(LAZHandler, self).__init__(*args, **kwargs)
+
+
 def _get_attribute(data, data_type):
     return {'type': data_type, 'data': data}
 
 
 def _get_data_and_type(attribute):
     return attribute['data'], attribute['type']
-
-
-if __name__ == '__main__':
-    from laserchicken import load, export
-    from laserchicken.normalize import normalize
-
-    pc = load('testdata/AHN3.las')
-    normalize(pc)
-    export(pc, 'testdata/tmp.las', overwrite=True)
