@@ -63,7 +63,7 @@ class LASHandler(IOHandler):
 
         return {keys.point: points}
 
-    def write(self, point_cloud, attributes='all', file_version='1.4', point_format_id=1):
+    def write(self, point_cloud, attributes='all', file_version='1.2', point_format_id=3):
         """
         Write point cloud to a LAS(LAZ) file.
 
@@ -100,7 +100,11 @@ class LASHandler(IOHandler):
             else:
                 setattr(file, attribute, data)
 
-        file.write(self.path)
+        try:
+            file.write(self.path)
+        except ValueError as err:
+            raise ValueError('Error in writing LAS file (file_version {}, point_format_id {}). '
+                             'pylas error below:\n{}'.format(file_version, point_format_id, err))
 
 
 class LAZHandler(LASHandler):
