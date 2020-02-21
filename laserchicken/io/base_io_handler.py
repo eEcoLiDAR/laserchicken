@@ -34,10 +34,12 @@ class IOHandler(object):
             path_directory = os.path.dirname(path)
             if path_directory and not os.path.exists(path_directory):
                 raise FileNotFoundError('Output file path does not exist! --> {}'.format(path_directory))
-            if not overwrite:
-                if os.path.exists(path):
+            if os.path.exists(path):
+                if not overwrite:
                     # Raise most specific subclass of FileExistsError (3.6) and IOError (2.7).
                     raise FileExistsError('Output file already exists! --> {}'.format(path))
+                else:
+                    os.remove(path)
 
     def read(self):
         """
