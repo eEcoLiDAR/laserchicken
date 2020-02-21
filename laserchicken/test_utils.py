@@ -104,7 +104,11 @@ class TestUtils(unittest.TestCase):
         pc_1 = utils.create_point_cloud([],[],[])
         pc_2 = test_tools.generate_tiny_test_point_cloud()
         utils.add_to_point_cloud(pc_1, pc_2)
-        self.assertEqual(pc_1[keys.point], pc_2[keys.point])
+        for attr in pc_2[keys.point].keys():
+            self.assertIn(attr, pc_1[keys.point])
+            self.assertEqual(pc_1[keys.point][attr]['type'],
+                             pc_2[keys.point][attr]['type'])
+            self.assertTrue(all(pc_1[keys.point][attr]['data'] == pc_2[keys.point][attr]['data']))
 
     def test_AddToPointCloudInvalid(self):
         pc_1 = test_tools.SimpleTestData.get_point_cloud()

@@ -1,4 +1,5 @@
 import sys
+import copy
 import datetime
 
 import numpy as np
@@ -125,7 +126,7 @@ def copy_point_cloud(source_point_cloud, array_mask=None):
             else:
                 new_value = np.copy(value)
         else:
-            new_value = value
+            new_value = copy.copy(value)
         result[key] = new_value
     return result
 
@@ -166,7 +167,7 @@ def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
         # if first point cloud is empty, fill it with attributes of second point cloud
         if len(point_cloud_1[keys.point]['x']['data']) == 0:
             for key, value in point_cloud_2.items():
-                point_cloud_1[key] = value
+                point_cloud_1[key] = copy_point_cloud(value)
             return point_cloud_1
     else:
         # down the tree structure, the point clouds need to have the same attributes
@@ -179,7 +180,7 @@ def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
     for key, value in point_cloud_2.items():
         # if root attributes are missing (e.g. log), add them
         if key not in point_cloud_1:
-            point_cloud_1[key] = value
+            point_cloud_1[key] = copy_point_cloud(value)
             continue
 
         # check type of data to merge
