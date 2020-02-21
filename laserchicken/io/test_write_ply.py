@@ -158,6 +158,7 @@ class TestWritePly(unittest.TestCase):
 
     def setUp(self):
         os.mkdir(self._test_dir)
+        self.maxDiff = None
 
     def tearDown(self):
         shutil.rmtree(self._test_dir)
