@@ -132,15 +132,15 @@ class TestUtils(unittest.TestCase):
 
     def test_AddToPointCloud(self):
         test_data = test_tools.ComplexTestData()
-        pc_1 = test_data.get_point_cloud()
-        pc_2 = utils.copy_point_cloud(pc_1)
-        utils.add_to_point_cloud(pc_1, pc_2)
-        for key in pc_2.keys():
-            self.assertIn(key, pc_1)
-        for attr in pc_2[keys.point].keys():
-            self.assertEqual(len(pc_1[keys.point][attr]['data']),
-                             2*len(pc_2[keys.point][attr]['data']))
-        self.assertEqual(pc_1[keys.provenance][-1]['module'],
+        pc_source = test_data.get_point_cloud()
+        pc_dest = utils.copy_point_cloud(pc_source)
+        utils.add_to_point_cloud(pc_dest, pc_source)
+        for key in pc_source.keys():
+            self.assertIn(key, pc_dest)
+        for attr in pc_source[keys.point].keys():
+            self.assertEqual(len(pc_dest[keys.point][attr]['data']),
+                             2*len(pc_source[keys.point][attr]['data']))
+        self.assertEqual(pc_dest[keys.provenance][-1]['module'],
                          'laserchicken.utils')
 
 class TestPlaneFit(unittest.TestCase):
