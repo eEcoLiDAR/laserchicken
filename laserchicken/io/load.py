@@ -1,4 +1,7 @@
+import sys
 from laserchicken.io import get_io_handler
+from laserchicken.utils import add_metadata
+
 
 def load(path, format=None, *args, **kwargs):
     """
@@ -11,4 +14,6 @@ def load(path, format=None, *args, **kwargs):
     :return: point cloud data
     """
     reader = get_io_handler(path, mode='r', format=format)
-    return reader.read(*args, **kwargs)
+    point_cloud = reader.read(*args, **kwargs)
+    add_metadata(point_cloud, sys.modules[__name__], {'path': path, 'args': args, **kwargs})
+    return point_cloud

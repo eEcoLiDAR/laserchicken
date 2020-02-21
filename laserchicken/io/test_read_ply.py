@@ -83,7 +83,8 @@ class TestReadPly(unittest.TestCase):
         log = load(self.test_file_path)['log']
 
         modules = [entry['module'] for entry in log]
-        self.assertListEqual(['load', 'filter'], modules)
+        # an additional 'load' is added in the log when reading
+        self.assertListEqual(['load', 'filter', 'laserchicken.io.load'], modules)
 
     def test_correctTimesLogged(self):
         log = load(self.test_file_path)['log']

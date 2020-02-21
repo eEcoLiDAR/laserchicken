@@ -29,7 +29,7 @@ class TestExtractEigenValues(unittest.TestCase):
                          ["eigenv_1", "eigenv_2", "eigenv_3"], InfiniteCylinder(5))
 
         self.assertEqual("laserchicken.feature_extractor.eigenvals_feature_extractor",
-                         target_point_cloud[keys.provenance][0]["module"])
+                         target_point_cloud[keys.provenance][1]["module"])
 
     @staticmethod
     def test_eigenvalues_of_too_few_points_results_in_0():
