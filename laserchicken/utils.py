@@ -166,8 +166,8 @@ def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
 
         # if first point cloud is empty, fill it with attributes of second point cloud
         if len(point_cloud_1[keys.point]['x']['data']) == 0:
-            for key, value in point_cloud_2.items():
-                point_cloud_1[key] = copy_point_cloud(value)
+            for key, value in copy_point_cloud(point_cloud_2).items():
+                point_cloud_1[key] = value
             return point_cloud_1
     else:
         # down the tree structure, the point clouds need to have the same attributes
@@ -180,7 +180,7 @@ def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
     for key, value in point_cloud_2.items():
         # if root attributes are missing (e.g. log), add them
         if key not in point_cloud_1:
-            point_cloud_1[key] = copy_point_cloud(value)
+            point_cloud_1[key] = copy.copy(value)
             continue
 
         # check type of data to merge
