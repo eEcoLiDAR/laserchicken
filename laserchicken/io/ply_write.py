@@ -127,8 +127,6 @@ def _write_header_elements(pc, attributes, ply, element_name, get_num_elements=N
         else:
             key_list = pc[element_name].keys()
         key_list = _get_ordered_properties(element_name, key_list)
-        if element_name == keys.point:
-            key_list = select_valid_attributes(key_list, attributes)
         for key in key_list:
             property_type = pc[element_name][key]["type"]
             property_tuple = ("property", property_type, key)
