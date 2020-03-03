@@ -98,18 +98,23 @@ def _write_comment(pc, ply):
 
     head = 'comment [\n'
     tail = 'comment ]\n'
-    formatted_entries = ',\n'.join(['comment ' + _stringify(entry) for entry in log]) + '\n'
+    formatted_entries = ',\n'.join(['comment ' + str(_stringify(entry)) for entry in log]) + '\n'
     ply.write(head + formatted_entries + tail)
 
 
 def _stringify(entry):
     copy = {}
     for key, value in _sort_by_key(entry):
-        if key == 'time':
-            copy[key] = str(value)
+        if isinstance(value, dict):
+            copy[key] = _stringify(value)
+        elif isinstance(value, list):
+            copy[key] = [_stringify(entry) for entry in value]
         else:
-            copy[key] = value
-    return str(copy)
+            if key == 'time':
+                copy[key] = str(value)
+            else:
+                copy[key] = value
+    return copy
 
 
 def _sort_by_key(entry):

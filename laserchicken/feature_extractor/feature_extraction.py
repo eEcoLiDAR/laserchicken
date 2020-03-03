@@ -1,4 +1,5 @@
 """Feature extractor module."""
+import copy
 import itertools
 import sys
 import time
@@ -6,7 +7,7 @@ import time
 import numpy as np
 
 from laserchicken import utils
-from laserchicken.keys import point
+from laserchicken.keys import point, provenance
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.feature_extractor.feature_map import create_default_feature_map, _create_name_extractor_pairs
 
@@ -56,6 +57,10 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
         target_point_cloud[point][feature_name] = {"type": 'float64',
                                                    "data": np.zeros_like(target_point_cloud[point]['x']['data'],
                                                                          dtype=np.float64)}
+
+    if provenance in env_point_cloud:
+        utils.add_metadata(target_point_cloud, sys.modules[__name__],
+                           {'env_point_cloud': {provenance: copy.copy(env_point_cloud[provenance])}})
 
     _add_features(extended_features, env_point_cloud, neighborhoods, target_point_cloud, volume, verbose, kwargs)
 
