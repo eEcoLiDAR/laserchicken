@@ -28,7 +28,7 @@ class TestReadPly(unittest.TestCase):
 
     def test_wrongFormat_error(self):
         with raises(ValueError):
-            load(self.las_file_path, format='PLY')
+            load(self.las_file_path, format='.PLY')
 
     def test_existentPly_noError(self):
         load(self.test_file_path)

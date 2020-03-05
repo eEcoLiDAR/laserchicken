@@ -4,9 +4,9 @@ from .las_handler import LASHandler as las
 from .ply_handler import PLYHandler as ply
 
 io_handlers = {
-    'ply': ply,
-    'las': las,
-    'laz': las,
+    '.ply': ply,
+    '.las': las,
+    '.laz': las,
 }
 
 
@@ -21,8 +21,7 @@ def get_io_handler(path, mode, format=None, overwrite=False):
     :return: instance of the IOHandler
     """
     if format is None:
-        _root, ext = os.path.splitext(path)
-        format = ext.replace('.', '')
+        _root, format = os.path.splitext(path)
     format = format.lower()
     _check_format(format)
     io_handler = io_handlers[format]
