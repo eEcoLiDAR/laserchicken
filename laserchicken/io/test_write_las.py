@@ -3,21 +3,16 @@ import shutil
 import unittest
 
 import numpy as np
+import pylas
 import pytest
 
 from laserchicken import keys
 from laserchicken.test_tools import SimpleTestData, ComplexTestData
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.io.export import export
-from laserchicken.io.las_handler import is_pylas_available, is_lazperf_available
 from laserchicken.io.load import load
 
-if is_pylas_available:
-    import pylas
 
-
-@pytest.mark.skipif(not is_pylas_available,
-                    reason="requires pylas for writing LAS files")
 class TestWriteLas(unittest.TestCase):
     _test_dir = 'TestLoad_dir'
     _test_file_name = 'test.las'
@@ -107,8 +102,6 @@ class TestWriteLas(unittest.TestCase):
         shutil.rmtree(self._test_dir)
 
 
-@pytest.mark.skipif(not (is_pylas_available and is_lazperf_available),
-                    reason="requires pylas and lazperf for writing compressed LAZ files")
 class TestWriteLaz(TestWriteLas):
     _test_dir = 'TestLoad_dir'
     _test_file_name = 'test.laz'

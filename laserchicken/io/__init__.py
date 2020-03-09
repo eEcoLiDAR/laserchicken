@@ -1,13 +1,12 @@
 import os
 
 from .las_handler import LASHandler as las
-from .las_handler import LAZHandler as laz
 from .ply_handler import PLYHandler as ply
 
 io_handlers = {
     'ply': ply,
     'las': las,
-    'laz': laz,
+    'laz': las,
 }
 
 

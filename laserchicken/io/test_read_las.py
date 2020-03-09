@@ -3,14 +3,11 @@ import os
 import shutil
 import unittest
 
-import laspy
 import numpy as np
 import pytest
 
-from distutils.version import LooseVersion
-
 from laserchicken import keys
-from laserchicken.io.las_handler import is_pylas_available, is_lazperf_available, DEFAULT_LAS_ATTRIBUTES
+from laserchicken.io.las_handler import DEFAULT_LAS_ATTRIBUTES
 from laserchicken.io.load import load
 
 
@@ -93,8 +90,6 @@ class TestReadLas(unittest.TestCase):
         shutil.rmtree(self._test_dir)
 
 
-@pytest.mark.skipif(not (is_lazperf_available and (is_pylas_available or LooseVersion(laspy.__version__) >= '1.7')),
-                    reason="requires lazperf and either pylas or laspy>=1.7 for reading LAZ files")
 class TestReadLaz(TestReadLas):
     _test_dir = 'TestLoad_dir'
     _test_file_name = 'AHN3.laz'

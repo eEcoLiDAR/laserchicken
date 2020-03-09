@@ -1,22 +1,10 @@
 """ IO Handler for LAS (and compressed LAZ) file format """
-from distutils.version import LooseVersion
+import pylas
 
 from laserchicken import keys
 from laserchicken.io.base_io_handler import IOHandler
 from laserchicken.io.utils import convert_to_short_type, select_valid_attributes
 
-is_pylas_available, is_lazperf_available = False, False
-try:
-    import pylas
-    is_pylas_available = True
-except ImportError:
-    import laspy
-
-try:
-    import lazperf
-    is_lazperf_available = True
-except ImportError:
-    pass
 
 DEFAULT_LAS_ATTRIBUTES = {
     'x',
@@ -31,12 +19,6 @@ DEFAULT_LAS_ATTRIBUTES = {
 class LASHandler(IOHandler):
     """ Class for IO of point-cloud data in LAS file format """
 
-    def __init__(self, path, mode, *args, **kwargs):
-        if mode == 'w' and (not is_pylas_available):
-            raise NotImplementedError('Writing LAS files only available through pylas: '
-                                      'https://pylas.readthedocs.io')
-        super(LASHandler, self).__init__(path, mode, *args, **kwargs)
-
     def read(self, attributes=DEFAULT_LAS_ATTRIBUTES):
         """
         Load the points from a LAS file into memory.
@@ -44,14 +26,9 @@ class LASHandler(IOHandler):
         :param attributes: list of attributes to read ('all' for all attributes in file)
         :return: point cloud data structure
         """
-        if is_pylas_available:
-            file = pylas.read(self.path)
-            attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
-                                    for el in file.points.dtype.names]
-        else:
-            file = laspy.file.File(self.path)
-            attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
-                                    for el in file.points.dtype['point'].names]
+        file = pylas.read(self.path)
+        attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
+                                for el in file.points.dtype.names]
 
         attributes = select_valid_attributes(attributes_available, attributes)
 
@@ -105,22 +82,6 @@ class LASHandler(IOHandler):
         except ValueError as err:
             raise ValueError('Error in writing LAS file (file_version {}, point_format_id {}). '
                              'pylas error below:\n{}'.format(file_version, point_format_id, err))
-
-
-class LAZHandler(LASHandler):
-    """ Class for IO of point-cloud data in compressed LAZ file format """
-    required_laspy_version = '1.7'
-
-    def __init__(self, *args, **kwargs):
-        if not is_lazperf_available:
-            raise NotImplementedError('lazperf is required to read/write compressed LAZ files!')
-        if not is_pylas_available:
-            available_laspy_version = laspy.__version__
-            if LooseVersion(available_laspy_version) < self.required_laspy_version:
-                raise NotImplementedError('laspy version >= {} is required to deal with compressed LAZ files! '
-                                          'available version: {}'.format(self.required_laspy_version,
-                                                                         available_laspy_version))
-        super(LAZHandler, self).__init__(*args, **kwargs)
 
 
 def _get_attribute(data, data_type):
