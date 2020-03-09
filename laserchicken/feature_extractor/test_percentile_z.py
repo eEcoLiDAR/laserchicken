@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from laserchicken import read_las, keys
+from laserchicken import load, keys
 from laserchicken.feature_extractor.percentile_feature_extractor import PercentileFeatureExtractor
 from laserchicken.test_tools import create_point_cloud
 
@@ -35,7 +35,7 @@ class TestPercentileFeatureExtractorRealData(unittest.TestCase):
         _test_file_name = 'AHN3.las'
         _test_data_source = 'testdata'
 
-        point_cloud = read_las.read(os.path.join(_test_data_source, _test_file_name))
+        point_cloud = load(os.path.join(_test_data_source, _test_file_name))
         index = [
             89664, 23893, 30638, 128795, 62052, 174453, 29129, 17127, 128215, 29667, 116156, 119157, 98591, 7018, 61494,
             65194, 117931, 62971, 10474, 90322

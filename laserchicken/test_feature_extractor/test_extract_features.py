@@ -4,8 +4,8 @@ import unittest
 import numpy as np
 from pytest import raises
 
-from laserchicken import feature_extractor, keys, test_tools
-from laserchicken.feature_extractor import feature_map
+from laserchicken import keys, test_tools
+from laserchicken.feature_extractor import feature_map, feature_extraction
 from laserchicken.feature_extractor.mean_std_coeff_feature_extractor import MeanStdCoeffFeatureExtractor
 from laserchicken.feature_extractor.median_feature_extractor import MedianFeatureExtractor
 from laserchicken.test_feature_extractor import Test1FeatureExtractor
@@ -78,16 +78,16 @@ class TestExtractFeatures(unittest.TestCase):
         z = np.ones(n)
         target = test_tools.create_point_cloud(x, y, z)
         neighborhoods = ([] for _ in range(len(target["vertex"]["x"]["data"])))
-        feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
+        feature_extraction.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
 
     def setUp(self) -> None:
         self.original_function = feature_map._get_default_extractors
         feature_map._get_default_extractors = _get_test_extractors
-        feature_extractor.FEATURES = feature_map.create_default_feature_map()
+        feature_extraction.FEATURES = feature_map.create_default_feature_map()
 
     def tearDown(self) -> None:
         feature_map._get_default_extractors = self.original_function
-        feature_extractor.FEATURES = feature_map.create_default_feature_map()
+        feature_extraction.FEATURES = feature_map.create_default_feature_map()
 
 
 def _create_targets_and_extract_features(feature_names, n):
@@ -106,7 +106,7 @@ def _assert_feature_name_all_valued(expected, feature_name, n, target):
 
 def _compute_features(target, feature_names):
     neighborhoods = [[] for _ in range(len(target["vertex"]["x"]["data"]))]
-    feature_extractor.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
+    feature_extraction.compute_features({}, neighborhoods, target, feature_names, Sphere(5))
     return target
 
 

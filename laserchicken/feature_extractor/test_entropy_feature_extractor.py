@@ -4,9 +4,10 @@ import unittest
 
 import numpy as np
 
-from laserchicken import feature_extractor, keys, read_las, utils
+from laserchicken import compute_features, keys, load, utils
 from laserchicken.compute_neighbors import compute_cylinder_neighborhood
 from laserchicken.feature_extractor.entropy_feature_extractor import EntropyFeatureExtractor
+from laserchicken.feature_extractor.feature_extraction import compute_features
 from laserchicken.test_tools import create_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
 
@@ -43,8 +44,8 @@ class TestExtractEntropy(unittest.TestCase):
         target_point_cloud = utils.copy_point_cloud(self.point_cloud, rand_indices)
         radius = 25
         neighborhoods = list(compute_cylinder_neighborhood(self.point_cloud, target_point_cloud, radius))
-        feature_extractor.compute_features(self.point_cloud, neighborhoods, target_point_cloud, ["entropy_z"],
-                                           InfiniteCylinder(5), layer_thickness=0.1)
+        compute_features(self.point_cloud, neighborhoods, target_point_cloud, ["entropy_z"],
+                         InfiniteCylinder(5), layer_thickness=0.1)
         return target_point_cloud
 
     def test_default_provides_correct(self):
@@ -52,7 +53,7 @@ class TestExtractEntropy(unittest.TestCase):
         self.assertIn('entropy_z', feature_names)
 
     def setUp(self):
-        self.point_cloud = read_las.read(os.path.join(self._test_data_source, self._test_file_name))
+        self.point_cloud = load(os.path.join(self._test_data_source, self._test_file_name))
         random.seed(102938482634)
 
 

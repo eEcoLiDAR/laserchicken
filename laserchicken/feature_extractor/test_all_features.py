@@ -1,16 +1,15 @@
 import json
 import os
 
+import numpy as np
 import pytest
 
-from laserchicken import read_ply
-from laserchicken.compute_neighbors import compute_neighborhoods
-from laserchicken.feature_extractor import *
-from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
+from laserchicken import compute_features, compute_neighborhoods, keys, load
 from laserchicken.keys import point
+#from laserchicken.feature_extractor import *
+from laserchicken.feature_extractor.pulse_penetration_feature_extractor import GROUND_TAGS
 from laserchicken.utils import copy_point_cloud
 from laserchicken.volume_specification import InfiniteCylinder
-from . import compute_features
 from .feature_map import create_default_feature_map, _create_name_extractor_pairs
 
 np.random.seed(1234)
@@ -20,11 +19,11 @@ _TEST_NEIGHBORHOODS_FILE_NAME = 'AHN3_1000_random_neighbors.json'
 _TEST_DATA_SOURCE = 'testdata'
 
 _CYLINDER = InfiniteCylinder(4)
-_PC_260807 = read_ply.read(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
+_PC_260807 = load(os.path.join(_TEST_DATA_SOURCE, _TEST_FILE_NAME))
 _PC_1000 = copy_point_cloud(_PC_260807, array_mask=(
-    np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=1000, replace=False)))
+    np.random.choice(range(len(_PC_260807[point]['x']['data'])), size=1000, replace=False)))
 _PC_10 = copy_point_cloud(_PC_260807, array_mask=(
-    np.random.choice(range(len(_PC_260807[keys.point]['x']['data'])), size=10, replace=False)))
+    np.random.choice(range(len(_PC_260807[point]['x']['data'])), size=10, replace=False)))
 _1000_NEIGHBORHOODS_IN_260807 = list(compute_neighborhoods(_PC_260807, _PC_1000, _CYLINDER, sample_size=500))
 _10_NEIGHBORHOODS_IN_260807 = list(compute_neighborhoods(_PC_260807, _PC_10, _CYLINDER, sample_size=500))
 _260807_NEIGHBORHOODS_IN_10 = list(compute_neighborhoods(_PC_10, _PC_260807, _CYLINDER, sample_size=500))
@@ -130,10 +129,10 @@ def test_inputNotChanged(feature):
 def _create_point_cloud(x=None, y=None, z=None, norm_z=None, intensity=None, n=10):
     tag = GROUND_TAGS[0]
     pc = {point: {'x': _create_attribute(n, fill_value=x),
-                  'y': _create_attribute(n, fill_value=y),
-                  'z': _create_attribute(n, fill_value=z),
-                  keys.normalized_height: _create_attribute(n, fill_value=norm_z),
-                  keys.intensity: _create_attribute(n, fill_value=intensity),
+                  'y': _create_attribute(n,fill_value=y),
+                  'z': _create_attribute(n,fill_value=z),
+                  keys.normalized_height: _create_attribute(n,fill_value=norm_z),
+                  keys.intensity: _create_attribute(n,fill_value=intensity),
                   'raw_classification': {'data': np.array([i if i % 2 == 0 else tag for i in range(n)]),
                                          'type': 'float'}}}
     return pc
@@ -145,12 +144,12 @@ def _create_attribute(n_points, fill_value=None):
 
 
 def _assert_attributes_not_changed(original_point_cloud, new_point_cloud):
-    for attribute in original_point_cloud[keys.point]:
-        np.testing.assert_array_almost_equal(new_point_cloud[keys.point][attribute]['data'],
-                                             original_point_cloud[keys.point][attribute]['data'])
+    for attribute in original_point_cloud[point]:
+        np.testing.assert_array_almost_equal(new_point_cloud[point][attribute]['data'],
+                                             original_point_cloud[point][attribute]['data'])
 
 
 def _assert_consistent_attribute_length(target_point_cloud):
-    n_elements = len(target_point_cloud[keys.point]['x']['data'])
-    for key in target_point_cloud[keys.point]:
-        assert n_elements == len(target_point_cloud[keys.point][key]['data'])
+    n_elements = len(target_point_cloud[point]['x']['data'])
+    for key in target_point_cloud[point]:
+        assert n_elements == len(target_point_cloud[point][key]['data'])
