@@ -32,7 +32,7 @@ def get_xyz_per_neighborhood(sourcepc, neighborhoods):
     mask = np.zeros((len(neighborhoods), 3, max_length))
     for i, neighborhood in enumerate(neighborhoods):
         n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
+        if n_neighbors == 0:
             continue
         x, y, z = get_point(sourcepc, neighborhood)
         xyz_grp[i, 0, :n_neighbors] = x
@@ -56,7 +56,7 @@ def get_attributes_per_neighborhood(point_cloud, neighborhoods, attribute_names)
     mask = np.zeros((len(neighborhoods), (len(attribute_names)), max_length))
     for i_neighborhood, neighborhood in enumerate(neighborhoods):
         n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
+        if n_neighbors == 0:
             continue
         for i_attribute, attribute_name in enumerate(attribute_names):
             attribute = get_attribute_value(point_cloud, neighborhood, attribute_name)
