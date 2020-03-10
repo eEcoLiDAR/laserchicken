@@ -21,7 +21,7 @@ class LASHandler(IOHandler):
 
     def read(self, attributes=DEFAULT_LAS_ATTRIBUTES):
         """
-        Load the points from a LAS file into memory.
+        Load the points from a LAS(LAZ) file into memory.
 
         :param attributes: list of attributes to read ('all' for all attributes in file)
         :return: point cloud data structure
