@@ -108,7 +108,7 @@ def _stringify(entry):
         if isinstance(value, dict):
             copy[key] = _stringify(value)
         elif isinstance(value, list):
-            copy[key] = [_stringify(entry) for entry in value]
+            copy[key] = [_stringify(entry) if isinstance(entry, dict) else entry for entry in value]
         else:
             if key == 'time':
                 copy[key] = str(value)
