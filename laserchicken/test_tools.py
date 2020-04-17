@@ -21,31 +21,39 @@ class SimpleTestData(object):
     def get_point_cloud():
         """Get the point cloud data."""
         # This simple_test_point cloud and the simple_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'float', 'data': np.array([1, 2, 3])},
-                           'y': {'type': 'float', 'data': np.array([20, 30, 40])},
-                           'z': {'type': 'float', 'data': np.array([300, 400, 500])}}}
+        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
+                           'y': {'type': 'double', 'data': np.array([20, 30, 40], dtype=np.float64)},
+                           'z': {'type': 'double', 'data': np.array([300, 400, 500], dtype=np.float64)}}}
         return pc
 
     @staticmethod
-    def get_header():
+    def get_header(is_binary=False):
         """Get the ply header."""
+        if is_binary:
+            format = "binary_little_endian"
+        else:
+            format = "ascii"
         # This simple_test_header cloud and the simple_test_point should be in sync. Some tests depend on it.
         header = """ply
-format ascii 1.0
+format {} 1.0
 element vertex 3
-property float x
-property float y
-property float z
-"""
+property double x
+property double y
+property double z
+""".format(format)
         return header
 
     @staticmethod
-    def get_data():
+    def get_data(is_binary=False):
         """Get the data in ply format."""
-        data = """1 20 300
-2 30 400
-3 40 500
+        if not is_binary:
+            data = """1.0 20.0 300.0
+2.0 30.0 400.0
+3.0 40.0 500.0
 """
+        else:
+            with open("testdata/simple_test_data_little_endian.bin", "rb") as f:
+                data = f.read().rstrip()
         return data
 
 
@@ -58,45 +66,53 @@ class ComplexTestData(object):
     def get_point_cloud(self):
         """Get the point cloud data."""
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'float', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
-                           'y': {'type': 'float', 'data': np.array([2, 3, 4, 5, 6], dtype=np.float)},
-                           'z': {'type': 'float', 'data': np.array([3, 4, 5, 6, 7], dtype=np.float)},
-                           'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1], dtype=np.int)}
+        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
+                           'y': {'type': 'double', 'data': np.array([2, 3, 4, 5, 6], dtype=np.float)},
+                           'z': {'type': 'double', 'data': np.array([3, 4, 5, 6, 7], dtype=np.float)},
+                           'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1], dtype=np.int32)}
                            },
               keys.point_cloud: {'offset': {'type': 'double', 'data': 12.1}},
               keys.provenance: self.comments
               }
         return pc
 
-    def get_header(self):
+    def get_header(self, is_binary=False):
         """Get the ply header."""
+        if is_binary:
+            format = "binary_little_endian"
+        else:
+            format = "ascii"
         # This complex_test_header cloud and the complex_test_point should be in sync. Some tests depend on it.
         header = ("""ply
-format ascii 1.0
+format {} 1.0
 comment [
 comment {},
 comment {}
 comment ]
 element vertex 5
-property float x
-property float y
-property float z
+property double x
+property double y
+property double z
 property int return
 element pointcloud 1
 property double offset
-""").format(self.comments[0], self.comments[1])
+""").format(format, self.comments[0], self.comments[1])
         return header
 
     @staticmethod
-    def get_data():
+    def get_data(is_binary=False):
         """Get the data in ply format."""
-        data = """1.0 2.0 3.0 1
+        if not is_binary:
+            data = """1.0 2.0 3.0 1
 2.0 3.0 4.0 1
 3.0 4.0 5.0 2
 4.0 5.0 6.0 2
 5.0 6.0 7.0 1
 12.1
 """
+        else:
+            with open("testdata/complex_test_data_little_endian.bin", "rb") as f:
+                data = f.read().rstrip()
         return data
 
     @staticmethod
@@ -115,11 +131,14 @@ def create_point_cloud(x, y, z, normalized_z=None):
     :param normalized_z: optional normalized z attribute values
     :return: point cloud object
     """
-    point_cloud = {keys.point: {'x': {'type': 'float', 'data': np.array(x)}, 'y': {'type': 'float', 'data': np.array(y)},
-                            'z': {'type': 'float', 'data': np.array(z)}}, keys.point_cloud: {},
-               keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]}
+    point_cloud = {keys.point: {'x': {'type': 'double', 'data': np.array(x, dtype=np.float)},
+                                'y': {'type': 'double', 'data': np.array(y, dtype=np.float)},
+                                'z': {'type': 'double', 'data': np.array(z, dtype=np.float)}},
+                   keys.point_cloud: {},
+                   keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]}
     if normalized_z is not None:
-        point_cloud[keys.point][keys.normalized_height] = {'type': 'float', 'data': np.array(normalized_z)}
+        point_cloud[keys.point][keys.normalized_height] = {'type': 'double',
+                                                           'data': np.array(normalized_z, dtype=np.float)}
     return point_cloud
 
 

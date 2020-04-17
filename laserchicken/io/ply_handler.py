@@ -10,5 +10,5 @@ class PLYHandler(IOHandler):
     def read(self):
         return read(self.path)
 
-    def write(self, point_cloud):
-        write(point_cloud, self.path)
+    def write(self, point_cloud, *args, **kwargs):
+        write(point_cloud, self.path, *args, **kwargs)

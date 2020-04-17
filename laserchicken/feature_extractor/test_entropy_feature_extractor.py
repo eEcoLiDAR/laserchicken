@@ -30,13 +30,13 @@ class TestExtractEntropy(unittest.TestCase):
         """Test if parameters were written to log."""
         expected_parameters = [0.1, None, None]
         target_point_cloud = self._find_neighbors_for_random_targets_and_compute_entropy()
-        self.assertEqual(expected_parameters, target_point_cloud[keys.provenance][0]["parameters"])
+        self.assertEqual(expected_parameters, target_point_cloud[keys.provenance][-1]["parameters"])
 
     def test_entropy_module_name_in_log(self):
         """Test if parameters were written to log."""
         target_point_cloud = self._find_neighbors_for_random_targets_and_compute_entropy()
         desired_module_name = 'laserchicken.feature_extractor.entropy_feature_extractor'
-        self.assertEqual(desired_module_name, target_point_cloud[keys.provenance][0]["module"])
+        self.assertEqual(desired_module_name, target_point_cloud[keys.provenance][-1]["module"])
 
     def _find_neighbors_for_random_targets_and_compute_entropy(self):
         num_all_pc_points = len(self.point_cloud[keys.point]["x"]["data"])

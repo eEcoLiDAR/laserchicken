@@ -4,6 +4,7 @@ import math
 import os
 import shapefile
 import shapely
+import sys
 from shapely.geometry import Point
 from shapely.errors import WKTReadingError
 from shapely.wkt import loads
@@ -12,7 +13,7 @@ import numpy as np
 
 from laserchicken.keys import point
 from laserchicken import kd_tree
-from laserchicken.utils import copy_point_cloud
+from laserchicken.utils import copy_point_cloud, add_metadata
 
 
 def select_equal(point_cloud, attribute, value):
@@ -26,7 +27,10 @@ def select_equal(point_cloud, attribute, value):
     """
     _check_valid_arguments(attribute, point_cloud)
     mask = point_cloud[point][attribute]['data'] == value
-    return copy_point_cloud(point_cloud, mask)
+    point_cloud_filtered = copy_point_cloud(point_cloud, mask)
+    add_metadata(point_cloud_filtered, sys.modules[__name__],
+                 {'attribute': attribute, 'value': value})
+    return point_cloud_filtered
 
 
 def select_above(point_cloud, attribute, threshold):
@@ -40,7 +44,10 @@ def select_above(point_cloud, attribute, threshold):
     """
     _check_valid_arguments(attribute, point_cloud)
     mask = point_cloud[point][attribute]['data'] > threshold
-    return copy_point_cloud(point_cloud, mask)
+    point_cloud_filtered = copy_point_cloud(point_cloud, mask)
+    add_metadata(point_cloud_filtered, sys.modules[__name__],
+                 {'attribute': attribute, 'threshold': threshold})
+    return point_cloud_filtered
 
 
 def select_below(point_cloud, attribute, threshold):
@@ -54,7 +61,10 @@ def select_below(point_cloud, attribute, threshold):
     """
     _check_valid_arguments(attribute, point_cloud)
     mask = point_cloud[point][attribute]['data'] < threshold
-    return copy_point_cloud(point_cloud, mask)
+    point_cloud_filtered = copy_point_cloud(point_cloud, mask)
+    add_metadata(point_cloud_filtered, sys.modules[__name__],
+                 {'attribute': attribute, 'threshold': threshold})
+    return point_cloud_filtered
 
 
 def _check_valid_arguments(attribute, point_cloud):
@@ -95,7 +105,11 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False):
         points_in = _contains(point_cloud, polygon)
     else:
         raise ValueError('It is not a Polygon.')
-    return copy_point_cloud(point_cloud, points_in)
+    point_cloud_filtered = copy_point_cloud(point_cloud, points_in)
+    add_metadata(point_cloud_filtered, sys.modules[__name__],
+                 {'polygon_string': polygon_string,
+                  'read_from_file': read_from_file})
+    return point_cloud_filtered
 
 
 def _read_wkt_file(path):

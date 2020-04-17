@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added:
 - build_volume module
 - the most relevant functions can be now imported directly from laserchicken
+- reading/writing of binary PLY and LAZ files, with optional writing of selected attributes
+- utility function to merge point-cloud data
+- extra log tasks implemented: point-cloud log entries are introduced upon point-cloud loading, filtering, normalizing, merging and assinging to targets.
 
 ## Changed:
 - compute neighborhoods returns generator with neighborhoods instead of nested neighborhoods like it did before (breaking change!)
@@ -16,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `feature_extraction` created (functions moved from `feature_extractor/__init__.py`)
     - `select` and `spatial_selection` merged into `filter`, with the function `select_polygon` allowing to deal with all the spatial selection functionalities
     - format-specific `read_*` and `write_*` modules replaced by `load` and `export`
+- Dependency on `laspy` replaced by `pylas` + `lazperf` (easier reading/writing of LAS/LAZ files)
 
 ## 0.3.2 - 2019-12-12
 ## Added

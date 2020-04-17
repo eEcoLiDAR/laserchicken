@@ -1,3 +1,5 @@
+import sys
+import copy
 import datetime
 
 import numpy as np
@@ -30,7 +32,7 @@ def get_xyz_per_neighborhood(sourcepc, neighborhoods):
     mask = np.zeros((len(neighborhoods), 3, max_length))
     for i, neighborhood in enumerate(neighborhoods):
         n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
+        if n_neighbors == 0:
             continue
         x, y, z = get_point(sourcepc, neighborhood)
         xyz_grp[i, 0, :n_neighbors] = x
@@ -54,7 +56,7 @@ def get_attributes_per_neighborhood(point_cloud, neighborhoods, attribute_names)
     mask = np.zeros((len(neighborhoods), (len(attribute_names)), max_length))
     for i_neighborhood, neighborhood in enumerate(neighborhoods):
         n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
+        if n_neighbors == 0:
             continue
         for i_attribute, attribute_name in enumerate(attribute_names):
             attribute = get_attribute_value(point_cloud, neighborhood, attribute_name)
@@ -124,7 +126,7 @@ def copy_point_cloud(source_point_cloud, array_mask=None):
             else:
                 new_value = np.copy(value)
         else:
-            new_value = value
+            new_value = copy.copy(value)
         result[key] = new_value
     return result
 
@@ -146,6 +148,60 @@ def add_metadata(point_cloud, module, params):
     if keys.provenance not in point_cloud:
         point_cloud[keys.provenance] = []
     point_cloud[keys.provenance].append(msg)
+
+
+def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
+    """
+    Add points from a point cloud to another
+
+    :param point_cloud_1: point cloud where points are added (it can be empty)
+    :param point_cloud_2: point cloud from which points are taken
+    :param add_log: whether to add a log to the point cloud structure
+    :return: updated point cloud
+    """
+    if keys.point in point_cloud_1:
+        # check whether second point cloud is valid
+        if keys.point not in point_cloud_2:
+            raise TypeError('Invalid point cloud provided!')
+
+        # if first point cloud is empty, fill it with attributes of second point cloud
+        if len(point_cloud_1[keys.point]['x']['data']) == 0:
+            for key, value in copy_point_cloud(point_cloud_2).items():
+                point_cloud_1[key] = value
+            return point_cloud_1
+    else:
+        # down the tree structure, the point clouds need to have the same attributes
+        attributes_1 = sorted(point_cloud_1.keys())
+        attributes_2 = sorted(point_cloud_2.keys())
+        if attributes_1 != attributes_2:
+            raise AttributeError('Attributes differ: [{}] <-> [{}]'.format(", ".join(attributes_1),
+                                                                           ", ".join(attributes_2)))
+
+    for key, value in point_cloud_2.items():
+        # if root attributes are missing (e.g. log), add them
+        if key not in point_cloud_1:
+            point_cloud_1[key] = copy.copy(value)
+            continue
+
+        # check type of data to merge
+        if not isinstance(point_cloud_1[key], type(value)):
+            raise TypeError('Types of attribute {} differ in the two point clouds: '
+                            '{} <-> {}'.format(key, type(point_cloud_1[key]), type(value)))
+
+        if isinstance(value, dict):
+            add_to_point_cloud(point_cloud_1[key], value, add_log=False)
+        elif isinstance(value, list):
+            point_cloud_1[key] += value
+        elif isinstance(value, np.ndarray):
+            point_cloud_1[key] = np.concatenate((point_cloud_1[key], value))
+        else:
+            # non extendable elements should be identical
+            if point_cloud_1[key] != value:
+                raise ValueError('Point clouds differ in attribute {}: '
+                                 '{} <-> {}'.format(key, point_cloud_1[key], value))
+    if add_log:
+        add_metadata(point_cloud_1, sys.modules[__name__], {'point clouds merged'})
+    return point_cloud_1
 
 
 def fit_plane_svd(xpts, ypts, zpts):

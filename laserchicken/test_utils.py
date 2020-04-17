@@ -1,6 +1,7 @@
 import numpy as np
 import unittest
 import datetime
+import pytest
 from laserchicken import utils, test_tools, keys
 from laserchicken.utils import fit_plane
 from time import time
@@ -98,6 +99,53 @@ class TestUtils(unittest.TestCase):
         from laserchicken import filter as somemodule
         utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
         self.assertEqual(len(pc[keys.provenance]),1)
+
+    def test_AddToPointCloudEmpty(self):
+        pc_1 = utils.create_point_cloud([],[],[])
+        pc_2 = test_tools.generate_tiny_test_point_cloud()
+        utils.add_to_point_cloud(pc_1, pc_2)
+        for attr in pc_2[keys.point].keys():
+            self.assertIn(attr, pc_1[keys.point])
+            self.assertEqual(pc_1[keys.point][attr]['type'],
+                             pc_2[keys.point][attr]['type'])
+            self.assertTrue(all(pc_1[keys.point][attr]['data'] == pc_2[keys.point][attr]['data']))
+
+    def test_AddToPointCloudInvalid(self):
+        pc_1 = test_tools.SimpleTestData.get_point_cloud()
+        # invalid format
+        pc_2 = {}
+        with pytest.raises(TypeError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+        with pytest.raises(AttributeError):
+            utils.add_to_point_cloud(pc_2, pc_1)
+        # non-matching attributes
+        test_data = test_tools.ComplexTestData()
+        pc_2 = test_data.get_point_cloud()
+        with pytest.raises(AttributeError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+        # different structure
+        pc_2 = {'vertex':{'x':1, 'y':2, 'z':3}}
+        with pytest.raises(TypeError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+        # different data types
+        pc_2 = {'vertex': {'x': {'data': np.zeros(3, dtype=int), 'type': 'int'},
+                           'y': {'data': np.zeros(3, dtype=int), 'type': 'int'},
+                           'z': {'data': np.zeros(3, dtype=int), 'type': 'int'}}}
+        with pytest.raises(ValueError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+
+    def test_AddToPointCloud(self):
+        test_data = test_tools.ComplexTestData()
+        pc_source = test_data.get_point_cloud()
+        pc_dest = utils.copy_point_cloud(pc_source)
+        utils.add_to_point_cloud(pc_dest, pc_source)
+        for key in pc_source.keys():
+            self.assertIn(key, pc_dest)
+        for attr in pc_source[keys.point].keys():
+            self.assertEqual(len(pc_dest[keys.point][attr]['data']),
+                             2*len(pc_source[keys.point][attr]['data']))
+        self.assertEqual(pc_dest[keys.provenance][-1]['module'],
+                         'laserchicken.utils')
 
 class TestPlaneFit(unittest.TestCase):
 

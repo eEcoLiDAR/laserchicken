@@ -83,7 +83,8 @@ class TestReadPly(unittest.TestCase):
         log = load(self.test_file_path)['log']
 
         modules = [entry['module'] for entry in log]
-        self.assertListEqual(['load', 'filter'], modules)
+        # an additional 'load' is added in the log when reading
+        self.assertListEqual(['load', 'filter', 'laserchicken.io.load'], modules)
 
     def test_correctTimesLogged(self):
         log = load(self.test_file_path)['log']
@@ -102,3 +103,9 @@ class TestReadPly(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self._test_dir)
+
+
+class TestReadPlyBinary(TestReadPly):
+    _test_file_name = 'example_little_endian.ply'
+    _test_file_without_comments_name = 'example_without_comments_little_endian.ply'
+    _test_file_with_invalid_comments_name = 'example_with_invalid_comments_little_endian.ply'
