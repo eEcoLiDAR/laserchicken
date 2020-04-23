@@ -252,3 +252,38 @@ def fit_plane(x, y, a):
     matrix = np.column_stack((np.ones(x.size), x, y))
     parameters, _, _, _ = np.linalg.lstsq(matrix, a)
     return lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters)
+
+
+def add_feature(point_cloud, feature_name, value, array_mask=None, add_log=True):
+    """
+    Add one new feature to the point cloud and assign value
+
+    :param point_cloud: point cloud to add the new feature
+    :param feature_name: name of the feature
+    :param value: value of the feature. Can be a signl value or an array
+    :param array_mask: A mask indicating which point to add the new feature
+    :param add_log: whether to add a log to the point cloud structure
+    :return: updated point cloud
+    """
+
+    if isinstance(value, np.ndarray):
+        if array_mask is not None:
+            if value.size != len(point_cloud[keys.point]['x']['data']): 
+                raise AssertionError("value size: {} doesn't match the size of point cloud column: {}".format(value.size, len(point_cloud[keys.point]['x']['data'])))
+        else:
+            if value.size != np.sum(array_mask): 
+                raise AssertionError("value size: {} doesn't match the number of elements in mask: {}".format(value.size, np.sum(array_mask)))
+        pass
+    
+    point_cloud[keys.point][feature_name] = np.full(len(point_cloud[keys.point]['x']['data']),np.nan)
+    
+    if array_mask is None:
+        point_cloud[keys.point][feature_name][:] = value
+    else:
+        point_cloud[keys.point][feature_name][array_mask] = value
+
+
+    if add_log:
+        add_metadata(point_cloud, sys.modules[__name__], {'add feature {} to point cloud.'.format(feature_name)})
+
+    return point_cloud
