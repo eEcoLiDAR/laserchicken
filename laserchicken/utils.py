@@ -256,7 +256,9 @@ def fit_plane(x, y, a):
 
 def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=True):
     """
-    Update one feature of the point cloud and assign value. If the feature does not exist, add it.
+    Update one feature of the point cloud and assign value.
+    The feature 
+    If the feature does not exist in the point cloud, add it.
 
     :param point_cloud: point cloud to update the feature
     :param feature_name: name of the feature
@@ -266,7 +268,16 @@ def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=Tr
     :return: updated point cloud
     """
 
-    # Check the size of the feature
+    # Get and check input data type
+    if isinstance(value, np.ndarray):
+        data_type = value.dtype.name
+    else:
+        if isinstance(value, (str, int, float, bool)):
+            data_type = type(value).__name__
+        else:
+           raise TypeError("value must be numpy ndarray, or one in (str, int, float, bool)") 
+    
+    # If value is ndarray, it shall have the same length as x, or true elements in mask
     if isinstance(value, np.ndarray):
         if array_mask is not None:
             if value.size != len(point_cloud[keys.point]['x']['data']): 
@@ -274,17 +285,23 @@ def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=Tr
         else:
             if value.size != np.sum(array_mask): 
                 raise AssertionError("value size: {} doesn't match the number of elements in mask: {}".format(value.size, np.sum(array_mask)))
-        pass
+
+    # Check if the feature exists if not create the column
+    if not feature_name in point_cloud[keys.point]:
+        point_cloud[keys.point][feature_name] = {'data':np.zeros(len(point_cloud[keys.point]['x']['data']), dtype=data_type),
+                                                 'type':data_type}
     
-    # Check if the feature exists. If not, create with a nan column
-    if feature_name in point_cloud[keys.point]:
-        point_cloud[keys.point][feature_name] = np.full(len(point_cloud[keys.point]['x']['data']),np.nan)
+    # Convert data of the feature if necccesary
+    if point_cloud[keys.point][feature_name]['type'] != data_type:
+        print('Setting data type of {} as {}'.format(feature_name, data_type))
+        point_cloud[keys.point][feature_name]['data'] = point_cloud[keys.point][feature_name]['data'].astype(data_type)
+        point_cloud[keys.point][feature_name]['type'] = data_type
 
     # Update the column 
     if array_mask is None:
-        point_cloud[keys.point][feature_name][:] = value
+        point_cloud[keys.point][feature_name]['data'][:] = value
     else:
-        point_cloud[keys.point][feature_name][array_mask] = value
+        point_cloud[keys.point][feature_name]['data'][array_mask] = value
 
     if add_log:
         add_metadata(point_cloud, sys.modules[__name__], {'add feature {} to point cloud.'.format(feature_name)})
