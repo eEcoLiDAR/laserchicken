@@ -254,18 +254,19 @@ def fit_plane(x, y, a):
     return lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters)
 
 
-def add_feature(point_cloud, feature_name, value, array_mask=None, add_log=True):
+def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=True):
     """
-    Add one new feature to the point cloud and assign value
+    Update one feature of the point cloud and assign value. If the feature does not exist, add it.
 
-    :param point_cloud: point cloud to add the new feature
+    :param point_cloud: point cloud to update the feature
     :param feature_name: name of the feature
     :param value: value of the feature. Can be a signl value or an array
-    :param array_mask: A mask indicating which point to add the new feature
+    :param array_mask: A mask indicating which point to update the feature
     :param add_log: whether to add a log to the point cloud structure
     :return: updated point cloud
     """
 
+    # Check the size of the feature
     if isinstance(value, np.ndarray):
         if array_mask is not None:
             if value.size != len(point_cloud[keys.point]['x']['data']): 
@@ -275,13 +276,15 @@ def add_feature(point_cloud, feature_name, value, array_mask=None, add_log=True)
                 raise AssertionError("value size: {} doesn't match the number of elements in mask: {}".format(value.size, np.sum(array_mask)))
         pass
     
-    point_cloud[keys.point][feature_name] = np.full(len(point_cloud[keys.point]['x']['data']),np.nan)
-    
+    # Check if the feature exists. If not, create with a nan column
+    if feature_name in point_cloud[keys.point]:
+        point_cloud[keys.point][feature_name] = np.full(len(point_cloud[keys.point]['x']['data']),np.nan)
+
+    # Update the column 
     if array_mask is None:
         point_cloud[keys.point][feature_name][:] = value
     else:
         point_cloud[keys.point][feature_name][array_mask] = value
-
 
     if add_log:
         add_metadata(point_cloud, sys.modules[__name__], {'add feature {} to point cloud.'.format(feature_name)})
