@@ -277,15 +277,20 @@ def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=Tr
         else:
            raise TypeError("value must be numpy ndarray, or one in (str, int, float, bool)") 
     
+    # Check mask size and type
+    if array_mask is not None:
+        if array_mask.size != len(point_cloud[keys.point]['x']['data']):
+            raise AssertionError("Mask size: {} doesn't match the size of point cloud column: {}".format(array_mask.size, len(point_cloud[keys.point]['x']['data'])))
+
     # If value is ndarray, it shall have the same length as x, or true elements in mask
     if isinstance(value, np.ndarray):
-        if array_mask is not None:
+        if array_mask is None:
             if value.size != len(point_cloud[keys.point]['x']['data']): 
                 raise AssertionError("value size: {} doesn't match the size of point cloud column: {}".format(value.size, len(point_cloud[keys.point]['x']['data'])))
         else:
             if value.size != np.sum(array_mask): 
                 raise AssertionError("value size: {} doesn't match the number of elements in mask: {}".format(value.size, np.sum(array_mask)))
-
+    
     # Check if the feature exists if not create the column
     if not feature_name in point_cloud[keys.point]:
         point_cloud[keys.point][feature_name] = {'data':np.zeros(len(point_cloud[keys.point]['x']['data']), dtype=data_type),

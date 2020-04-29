@@ -146,6 +146,58 @@ class TestUtils(unittest.TestCase):
                              2*len(pc_source[keys.point][attr]['data']))
         self.assertEqual(pc_dest[keys.provenance][-1]['module'],
                          'laserchicken.utils')
+    
+    def test_AddFeatureArray(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 1, 1, 1, 1], dtype=int)
+        utils.update_feature(pc, 'test_feature', feature_add)
+        self.assertIn('test_feature', pc[keys.point])
+        self.assertTrue(all(pc[keys.point]['test_feature']['data'] == feature_add))
+
+    def test_AddFeatureArrayInvalid(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 1, 1, 1, 1, 2], dtype=int)
+        with pytest.raises(AssertionError):
+            utils.update_feature(pc, 'test_feature', feature_add)
+    
+    def test_AddFeatureArrayMask(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 2, 3, 4], dtype=int)
+        mask = np.array([1, 1, 0, 1, 1], dtype=bool)
+        utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+        self.assertIn('test_feature', pc[keys.point])
+        self.assertTrue(all(pc[keys.point]['test_feature']['data'] == [1, 2, 0, 3, 4]))
+    
+    def test_AddFeatureArrayMaskInvalid(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 2, 3, 4], dtype=int)
+        mask = np.array([1, 1, 1, 1, 1], dtype=bool)
+        with pytest.raises(AssertionError):
+            utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+
+    def test_AddFeatureValueMask(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = 1.1
+        mask = np.array([1, 1, 0, 1, 1], dtype=bool)
+        utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+        self.assertIn('test_feature', pc[keys.point])
+        self.assertTrue(all(pc[keys.point]['test_feature']['data'] == [1.1, 1.1, 0.0, 1.1, 1.1]))
+    
+    def test_AddFeatureValueMaskInvalid(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = 1.1
+        mask = np.array([1, 1, 0, 1, 1, 1], dtype=bool)
+        with pytest.raises(AssertionError):
+            utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+        
+
+        
 
 class TestPlaneFit(unittest.TestCase):
 
