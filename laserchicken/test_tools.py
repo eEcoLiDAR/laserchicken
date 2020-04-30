@@ -60,7 +60,8 @@ property double z
 class ComplexTestData(object):
     """Test data within this class should all be in sync (reflect the same data)."""
 
-    def get_point_cloud(self):
+    @staticmethod
+    def get_point_cloud():
         """Get the point cloud data."""
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
         pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
