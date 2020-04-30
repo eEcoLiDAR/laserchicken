@@ -1,3 +1,4 @@
+import json
 import numpy as np
 
 from struct import pack
@@ -98,7 +99,7 @@ def _write_comment(pc, ply):
 
     head = 'comment [\n'
     tail = 'comment ]\n'
-    formatted_entries = ',\n'.join(['comment ' + str(_stringify(entry)) for entry in log]) + '\n'
+    formatted_entries = ',\n'.join(['comment ' + json.dumps(_stringify(entry), sort_keys=True) for entry in log]) + '\n'
     ply.write(head + formatted_entries + tail)
 
 

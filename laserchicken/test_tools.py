@@ -85,8 +85,8 @@ class ComplexTestData(object):
         header = ("""ply
 format {} 1.0
 comment [
-comment {{'module': 'filter', 'time': '2018-01-18 16:01:00'}},
-comment {{'module': 'filter', 'time': '2018-02-04 13:11:00'}}
+comment {{"module": "filter", "time": "2018-01-18 16:01:00"}},
+comment {{"module": "filter", "time": "2018-02-04 13:11:00"}}
 comment ]
 element vertex 5
 property double x

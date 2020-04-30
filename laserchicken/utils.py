@@ -200,7 +200,7 @@ def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
                 raise ValueError('Point clouds differ in attribute {}: '
                                  '{} <-> {}'.format(key, point_cloud_1[key], value))
     if add_log:
-        add_metadata(point_cloud_1, sys.modules[__name__], {'point clouds merged'})
+        add_metadata(point_cloud_1, sys.modules[__name__], 'point clouds merged')
     return point_cloud_1
 
 
@@ -309,6 +309,6 @@ def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=Tr
         point_cloud[keys.point][feature_name]['data'][array_mask] = value
 
     if add_log:
-        add_metadata(point_cloud, sys.modules[__name__], {'add feature {} to point cloud.'.format(feature_name)})
+        add_metadata(point_cloud, sys.modules[__name__], 'add feature {} to point cloud.'.format(feature_name))
 
     return point_cloud
