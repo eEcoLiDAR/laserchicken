@@ -102,8 +102,17 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mas
     else:
         polygon = _load_polygon(polygon_string)
     
-    if (isinstance(polygon, shapely.geometry.polygon.Polygon) or isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon)) and polygon.is_valid:
+    if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
         points_in = _contains(point_cloud, polygon)
+    elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon) and polygon.is_valid:
+        points_in = []
+        count=1
+        for poly in polygon:
+            if not(count%200) or count==len(polygon):
+                print('Checking polygon {}/{}...'.format(count, len(polygon)))
+            points_in.extend(_contains(point_cloud, poly))
+            count=count+1
+        print('{} points found in {} polygons.'.format(len(points_in), len(polygon)))
     else:
         raise ValueError('It is not a Polygon or Multipolygon.')
     
@@ -183,10 +192,7 @@ def _contains(pc, polygon):
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
         point_id = 0
-        for i in indices:
-            if not(i%100):
-                print('Check point {}/{}'.format(i, indices[-1]))
-            
+        for i in indices:            
             if polygon.contains(Point(x[i], y[i])):
                 points_in.append(i)
                 point_id += 1
