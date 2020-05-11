@@ -60,10 +60,8 @@ property double z
 class ComplexTestData(object):
     """Test data within this class should all be in sync (reflect the same data)."""
 
-    comments = [{"module": "filter", "time": str(dt.datetime(2018, 1, 18, 16, 1, 0))},
-                {"module": "filter", "time": str(dt.datetime(2018, 2, 4, 13, 11, 0))}]
-
-    def get_point_cloud(self):
+    @staticmethod
+    def get_point_cloud():
         """Get the point cloud data."""
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
         pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
@@ -72,11 +70,13 @@ class ComplexTestData(object):
                            'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1], dtype=np.int32)}
                            },
               keys.point_cloud: {'offset': {'type': 'double', 'data': 12.1}},
-              keys.provenance: self.comments
+              keys.provenance: [{"module": "filter", "time": str(dt.datetime(2018, 1, 18, 16, 1, 0))},
+                                {"module": "filter", "time": str(dt.datetime(2018, 2, 4, 13, 11, 0))}]
               }
         return pc
 
-    def get_header(self, is_binary=False):
+    @staticmethod
+    def get_header(is_binary=False):
         """Get the ply header."""
         if is_binary:
             format = "binary_little_endian"
@@ -86,8 +86,8 @@ class ComplexTestData(object):
         header = ("""ply
 format {} 1.0
 comment [
-comment {},
-comment {}
+comment {{"module": "filter", "time": "2018-01-18 16:01:00"}},
+comment {{"module": "filter", "time": "2018-02-04 13:11:00"}}
 comment ]
 element vertex 5
 property double x
@@ -96,7 +96,7 @@ property double z
 property int return
 element pointcloud 1
 property double offset
-""").format(format, self.comments[0], self.comments[1])
+""").format(format)
         return header
 
     @staticmethod

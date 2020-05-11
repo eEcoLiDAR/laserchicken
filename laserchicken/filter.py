@@ -81,13 +81,14 @@ def _check_valid_arguments(attribute, point_cloud):
         raise ValueError('Attribute key {} for selection not found in point cloud.'.format(attribute))
 
 
-def select_polygon(point_cloud, polygon_string, read_from_file=False):
+def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mask=False):
     """
     Return the selection of the input point cloud that contains only points within a given polygon.
 
     :param point_cloud: Input point cloud
     :param polygon_string: Polygon, either defined in a WKT string or in a file (WKT and ESRI formats supported)
     :param read_from_file: if true, polygon is expected to be the name of the file where the polygon is defined
+    :param return_mask: if true, return a mask of selected points, rather than point cloud
     :return:
     """
     if point_cloud is None:
@@ -100,16 +101,31 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False):
         polygon = reader(polygon_string)
     else:
         polygon = _load_polygon(polygon_string)
-
+    
     if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
         points_in = _contains(point_cloud, polygon)
+    elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon) and polygon.is_valid:
+        points_in = []
+        count=1
+        for poly in polygon:
+            if not(count%200) or count==len(polygon):
+                print('Checking polygon {}/{}...'.format(count, len(polygon)))
+            points_in.extend(_contains(point_cloud, poly))
+            count=count+1
+        print('{} points found in {} polygons.'.format(len(points_in), len(polygon)))
     else:
-        raise ValueError('It is not a Polygon.')
-    point_cloud_filtered = copy_point_cloud(point_cloud, points_in)
-    add_metadata(point_cloud_filtered, sys.modules[__name__],
-                 {'polygon_string': polygon_string,
-                  'read_from_file': read_from_file})
-    return point_cloud_filtered
+        raise ValueError('It is not a Polygon or Multipolygon.')
+    
+    if return_mask: 
+        mask = np.zeros(len(point_cloud['vertex']['x']['data']), dtype=bool)
+        mask[points_in] = True
+        return mask
+    else:
+        point_cloud_filtered = copy_point_cloud(point_cloud, points_in)
+        add_metadata(point_cloud_filtered, sys.modules[__name__],
+                    {'polygon_string': polygon_string,
+                    'read_from_file': read_from_file})
+        return point_cloud_filtered
 
 
 def _read_wkt_file(path):
@@ -176,7 +192,7 @@ def _contains(pc, polygon):
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
         point_id = 0
-        for i in indices:
+        for i in indices:            
             if polygon.contains(Point(x[i], y[i])):
                 points_in.append(i)
                 point_id += 1
