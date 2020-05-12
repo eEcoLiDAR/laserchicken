@@ -65,17 +65,17 @@ the PDAL library (https://pdal.io/), this provides access to a comprehensive ran
 
 Example from the tutorial notebook::
 
-   from laserchicken.read_las import read
-   point_cloud = read('testdata/AHN3.las')
+   from laserchicken import load
+   point_cloud = load('testdata/AHN3.las')
 
 Normalize
 ---------
 
-A number of features (Table~\ref{tab_features}) require the normalized height above ground as input. Laserchicken provides the option of internally constructing a digital terrain model (DTM) and deriving this quantity. To this end, the EPC is divided into small cells 1m or 2.5m squared). The lowest point in each cell is taken as the height of the DTM. Each point in the cell is then assigned a normalized height with respect to the derived DTM height. This results in strictly positive heights and smooths variations in elevation on scales larger than the cell size. The normalized EPC can be used directly in further analysis, or serialized to disk.
+A number of features require the normalized height above ground as input. Laserchicken provides the option of internally constructing a digital terrain model (DTM) and deriving this quantity. To this end, the EPC is divided into small cells 1m or 2.5m squared). The lowest point in each cell is taken as the height of the DTM. Each point in the cell is then assigned a normalized height with respect to the derived DTM height. This results in strictly positive heights and smooths variations in elevation on scales larger than the cell size. The normalized EPC can be used directly in further analysis, or serialized to disk.
 
 Example from the tutorial notebook::
 
-   from laserchicken.normalization import normalize
+   from laserchicken.normalize import normalize
    normalize(point_cloud)
 
 Filter
@@ -84,18 +84,17 @@ Laserchicken provides the option of filtering the EPC prior to extracting featur
 
 Example of spatial filtering from the tutorial notebook::
 
-   from laserchicken.spatial_selections import points_in_polygon_wkt
+   from laserchicken.filter import select_polygon
    polygon = "POLYGON(( 131963.984125 549718.375000," + \
                       " 132000.000125 549718.375000," + \
                       " 132000.000125 549797.063000," + \
                       " 131963.984125 549797.063000," + \
                       " 131963.984125 549718.375000))"
-   points_in_area = points_in_polygon_wkt(point_cloud, polygon)
-   point_cloud = points_in_area
+   point_cloud = select_polygon(point_cloud, polygon)
 
 Example of applying a filter on the theshold of an attribute::
 
-   from laserchicken.select import select_above, select_below
+   from laserchicken.filter import select_above, select_below
    points_below_1_meter = select_below(point_cloud, 'normalized_height', 1)
    points_above_1_meter = select_above(point_cloud, 'normalized_height', 1)
 
@@ -110,13 +109,13 @@ and TPC in kdTrees in an initial step prior to the computation of neighbors, sub
 
 Example from the tutorial notebook::
 
-   from laserchicken.compute_neighbors import compute_neighborhoods
-   from laserchicken.volume_specification import Sphere
+   from laserchicken import compute_neighborhoods
+   from laserchicken import build_volume
    targets = point_cloud
-   volume = Sphere(5)
-   neighbors = compute_neighborhoods(point_cloud, targets, volume)
+   volume = build_volume('sphere', radius=5)
+   neighborhoods = compute_neighborhoods(point_cloud, targets, volume)
 
-Note that in the above example, neighbors is a generator and can only be iterated once. If you would want to do multiple calculations without recalculating the neighbors, you can copy the neighbors to a list. This is not done by default because neighbors can quickly grow quite large so that available RAM unnecessarily becomes the bottle neck.
+Note that in the above example, ``neighborhoods`` is a generator and can only be iterated once. If you would want to do multiple calculations without recalculating the neighbors, you can copy the neighborhoods to a list. This is not done by default because neighborhoods can quickly grow quite large so that available RAM unnecessarily becomes the bottle neck.
 
 Features
 --------
@@ -128,15 +127,14 @@ template for new features requiring similar operations.
 
 Example from the tutorial notebook::
 
-   from laserchicken.feature_extractor import compute_features
-   for x in neighbors:
-       compute_features(point_cloud, x, 0, targets, ['std_z','mean_z','slope'], volume)
+   from laserchicken import compute_features
+   compute_features(point_cloud, neighborhoods, targets, ['std_z','mean_z','slope'], volume)
 
 Features can be parameterized. If you need different parameters for them then their defaults you need to register them with these prior to using them.
 
 Example of adding a few parameterized band ratio features on different attributes::
 
-   from laserchicken.feature_extractor import register_new_feature_extractor
+   from laserchicken import register_new_feature_extractor
    from laserchicken.feature_extractor.band_ratio_feature_extractor import BandRatioFeatureExtractor
    register_new_feature_extractor(BandRatioFeatureExtractor(None,1,data_key='normalized_height'))
    register_new_feature_extractor(BandRatioFeatureExtractor(1,2,data_key='normalized_height'))
@@ -210,12 +208,12 @@ Below is an example. The figure visualizes the slope feature for a small neighbo
 Export
 ------
 
-Laserchicken can write to PLY, CSV, or LAS/LAZ format for further analysis with the user's choice of software. The PLY format is preferred, as it is flexibly extendable and is the only format Laserchicken will write provenance data to. It is also a widely supported point cloud format.
+Laserchicken can write to PLY or LAS/LAZ format for further analysis with the user's choice of software. The PLY format is preferred, as it is flexibly extendable and is the only format Laserchicken will write provenance data to. It is also a widely supported point cloud format.
 
 Example from the tutorial notebook::
 
-   from laserchicken.write_ply import write
-   write(point_cloud, 'my_output.ply')
+   from laserchicken import export
+   export(point_cloud, 'my_output.ply')
 
 
 

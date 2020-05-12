@@ -100,9 +100,9 @@ def create_point_cloud(x, y, z):
     :param z: z attribute values
     :return: point cloud object
     """
-    return {keys.point: {'x': {'type': 'float', 'data': np.array(x)},
-                         'y': {'type': 'float', 'data': np.array(y)},
-                         'z': {'type': 'float', 'data': np.array(z)}},
+    return {keys.point: {'x': {'type': 'float64', 'data': np.array(x)},
+                         'y': {'type': 'float64', 'data': np.array(y)},
+                         'z': {'type': 'float64', 'data': np.array(z)}},
             keys.point_cloud: {},
             keys.provenance: []
             }
