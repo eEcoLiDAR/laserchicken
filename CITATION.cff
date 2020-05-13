@@ -36,11 +36,23 @@ authors:
     given-names: Gijs
     name-particle: "van den"
   -
+    affiliation: "Netherlands eScience Center"
+    family-names: Grootes
+    given-names: "Meiert W."
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Nattino
+    given-names: Francesco
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Ku
+    given-names: Ou
+  -
     affiliation: "Institute for Biodiversity and Ecosystem Dynamics, University of Amsterdam"
     family-names: Koma
     given-names: Zsófia
 cff-version: "1.0.3"
-date-released: 2019-10-15
+date-released: 2020-05-13
 doi: "10.5281/zenodo.1219422"
 keywords:
   - "airborne laser scanning"
@@ -50,5 +62,5 @@ keywords:
 license: "Apache-2.0"
 message: "If you use this software, please cite it using these metadata."
 title: "Laserchicken: toolkit for ALS point clouds"
-version: "0.3.2"
+version: "0.4.0"
 ...
