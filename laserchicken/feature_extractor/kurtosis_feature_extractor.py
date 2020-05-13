@@ -17,7 +17,10 @@ class KurtosisFeatureExtractor(FeatureExtractor):
     def provides(self):
         return ['kurto_' + self.data_key]
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
+        return [self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]
+
+    def _extract_one(self, sourcepc, neighborhood):
         if neighborhood:
             z = sourcepc[point][self.data_key]['data'][neighborhood]
             kurtosis_z = stat.kurtosis(z)

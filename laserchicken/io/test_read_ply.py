@@ -6,7 +6,7 @@ import numpy as np
 from pytest import raises
 
 from laserchicken import keys
-from laserchicken.read_ply import read
+from laserchicken.io.load import load
 
 
 class TestReadPly(unittest.TestCase):
@@ -24,69 +24,70 @@ class TestReadPly(unittest.TestCase):
     def test_nonexistentFile_error(self):
         # Catch most specific subclass of FileNotFoundException (3.6) and IOError (2.7).
         with raises(Exception):
-            read('nonexistentfile.ply')
+            load('nonexistentfile.ply')
 
     def test_wrongFormat_error(self):
         with raises(ValueError):
-            read(self.las_file_path)
+            load(self.las_file_path, format='.PLY')
 
     def test_existentPly_noError(self):
-        read(self.test_file_path)
+        load(self.test_file_path)
 
     def test_containsPointsElement(self):
-        data = read(self.test_file_path)
+        data = load(self.test_file_path)
         self.assertIn(keys.point, data)
 
     def test_containsXElement(self):
-        data = read(self.test_file_path)
+        data = load(self.test_file_path)
         self.assertIn('x', data[keys.point])
 
     def test_rightNumberOfPoints(self):
-        data = read(self.test_file_path)
+        data = load(self.test_file_path)
         self.assertEqual(len(data[keys.point]['x']['data']), 3)
 
     def test_correctPoints(self):
-        data = read(self.test_file_path)
+        data = load(self.test_file_path)
         points = data[keys.point]
         point = np.array(
             [points['x']['data'][0], points['y']['data'][0], points['z']['data'][0], points['return']['data'][0]])
         np.testing.assert_allclose(point, np.array([0.11, 0.12, 0.13, 1]))
 
     def test_correctPointCloud(self):
-        data = read(self.test_file_path)
+        data = load(self.test_file_path)
         point_cloud = data['pointcloud']
         offset = point_cloud['offset']['data'][0]
         np.testing.assert_allclose(offset, 12.1)
 
     def test_correctPointCloudWithoutComments(self):
         """Missing comment section should not cause error (regression test)."""
-        data = read(self.test_file_without_comments_path)
+        data = load(self.test_file_without_comments_path)
         point_cloud = data['pointcloud']
         offset = point_cloud['offset']['data'][0]
         np.testing.assert_allclose(offset, 12.1)
 
     def test_correctPointCloudWithInvalidComments(self):
         """Invalid comments should not cause error."""
-        data = read(self.test_file_with_invalid_comments_path)
+        data = load(self.test_file_with_invalid_comments_path)
         point_cloud = data['pointcloud']
         offset = point_cloud['offset']['data'][0]
         np.testing.assert_allclose(offset, 12.1)
 
     def test_allLogEntriesContainAllColumns(self):
-        log = read(self.test_file_path)['log']
+        log = load(self.test_file_path)['log']
 
         for entry in log:
             for key in ['time', 'module', 'parameters', 'version']:
                 self.assertIn(key, entry)
 
     def test_correctModulesLogged(self):
-        log = read(self.test_file_path)['log']
+        log = load(self.test_file_path)['log']
 
         modules = [entry['module'] for entry in log]
-        self.assertListEqual(['load', 'filter'], modules)
+        # an additional 'load' is added in the log when reading
+        self.assertListEqual(['load', 'filter', 'laserchicken.io.load'], modules)
 
     def test_correctTimesLogged(self):
-        log = read(self.test_file_path)['log']
+        log = load(self.test_file_path)['log']
 
         self.assertListEqual([2018, 1, 18, 16, 1, 0, 3, 18, -1], list(log[0]['time'].timetuple()))
         self.assertListEqual([2018, 1, 18, 16, 3, 0, 3, 18, -1], list(log[1]['time'].timetuple()))
@@ -102,3 +103,9 @@ class TestReadPly(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self._test_dir)
+
+
+class TestReadPlyBinary(TestReadPly):
+    _test_file_name = 'example_little_endian.ply'
+    _test_file_without_comments_name = 'example_without_comments_little_endian.ply'
+    _test_file_with_invalid_comments_name = 'example_with_invalid_comments_little_endian.ply'

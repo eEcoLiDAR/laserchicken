@@ -1,6 +1,7 @@
 import numpy as np
 import unittest
 import datetime
+import pytest
 from laserchicken import utils, test_tools, keys
 from laserchicken.utils import fit_plane
 from time import time
@@ -95,9 +96,108 @@ class TestUtils(unittest.TestCase):
     def test_AddMetaDataToPointCloud(self):
         """ Test adding info to the point cloud for test module """
         pc = test_tools.generate_tiny_test_point_cloud()
-        from laserchicken import select as somemodule
+        from laserchicken import filter as somemodule
         utils.add_metadata(pc,somemodule,params = (0.5,"cylinder",4))
         self.assertEqual(len(pc[keys.provenance]),1)
+
+    def test_AddToPointCloudEmpty(self):
+        pc_1 = utils.create_point_cloud([],[],[])
+        pc_2 = test_tools.generate_tiny_test_point_cloud()
+        utils.add_to_point_cloud(pc_1, pc_2)
+        for attr in pc_2[keys.point].keys():
+            self.assertIn(attr, pc_1[keys.point])
+            self.assertEqual(pc_1[keys.point][attr]['type'],
+                             pc_2[keys.point][attr]['type'])
+            self.assertTrue(all(pc_1[keys.point][attr]['data'] == pc_2[keys.point][attr]['data']))
+
+    def test_AddToPointCloudInvalid(self):
+        pc_1 = test_tools.SimpleTestData.get_point_cloud()
+        # invalid format
+        pc_2 = {}
+        with pytest.raises(TypeError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+        with pytest.raises(AttributeError):
+            utils.add_to_point_cloud(pc_2, pc_1)
+        # non-matching attributes
+        test_data = test_tools.ComplexTestData()
+        pc_2 = test_data.get_point_cloud()
+        with pytest.raises(AttributeError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+        # different structure
+        pc_2 = {'vertex':{'x':1, 'y':2, 'z':3}}
+        with pytest.raises(TypeError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+        # different data types
+        pc_2 = {'vertex': {'x': {'data': np.zeros(3, dtype=int), 'type': 'int'},
+                           'y': {'data': np.zeros(3, dtype=int), 'type': 'int'},
+                           'z': {'data': np.zeros(3, dtype=int), 'type': 'int'}}}
+        with pytest.raises(ValueError):
+            utils.add_to_point_cloud(pc_1, pc_2)
+
+    def test_AddToPointCloud(self):
+        test_data = test_tools.ComplexTestData()
+        pc_source = test_data.get_point_cloud()
+        pc_dest = utils.copy_point_cloud(pc_source)
+        utils.add_to_point_cloud(pc_dest, pc_source)
+        for key in pc_source.keys():
+            self.assertIn(key, pc_dest)
+        for attr in pc_source[keys.point].keys():
+            self.assertEqual(len(pc_dest[keys.point][attr]['data']),
+                             2*len(pc_source[keys.point][attr]['data']))
+        self.assertEqual(pc_dest[keys.provenance][-1]['module'],
+                         'laserchicken.utils')
+    
+    def test_AddFeatureArray(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 1, 1, 1, 1], dtype=int)
+        utils.update_feature(pc, 'test_feature', feature_add)
+        self.assertIn('test_feature', pc[keys.point])
+        self.assertTrue(all(pc[keys.point]['test_feature']['data'] == feature_add))
+
+    def test_AddFeatureArrayInvalid(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 1, 1, 1, 1, 2], dtype=int)
+        with pytest.raises(AssertionError):
+            utils.update_feature(pc, 'test_feature', feature_add)
+    
+    def test_AddFeatureArrayMask(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 2, 3, 4], dtype=int)
+        mask = np.array([1, 1, 0, 1, 1], dtype=bool)
+        utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+        self.assertIn('test_feature', pc[keys.point])
+        self.assertTrue(all(pc[keys.point]['test_feature']['data'] == [1, 2, 0, 3, 4]))
+    
+    def test_AddFeatureArrayMaskInvalid(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = np.array([1, 2, 3, 4], dtype=int)
+        mask = np.array([1, 1, 1, 1, 1], dtype=bool)
+        with pytest.raises(AssertionError):
+            utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+
+    def test_AddFeatureValueMask(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = 1.1
+        mask = np.array([1, 1, 0, 1, 1], dtype=bool)
+        utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+        self.assertIn('test_feature', pc[keys.point])
+        self.assertTrue(all(pc[keys.point]['test_feature']['data'] == [1.1, 1.1, 0.0, 1.1, 1.1]))
+    
+    def test_AddFeatureValueMaskInvalid(self):
+        test_data = test_tools.ComplexTestData()
+        pc = test_data.get_point_cloud()
+        feature_add = 1.1
+        mask = np.array([1, 1, 0, 1, 1, 1], dtype=bool)
+        with pytest.raises(AssertionError):
+            utils.update_feature(pc, 'test_feature', feature_add, array_mask=mask)
+        
+
+        
 
 class TestPlaneFit(unittest.TestCase):
 

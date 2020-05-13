@@ -8,9 +8,8 @@ from colorama import Back, init
 
 from . import ToolException
 from .._version import __version__
-from ..select import select_above, select_below
-from ..spatial_selections import points_in_polygon_shp_file, points_in_polygon_wkt, points_in_polygon_wkt_file
-from .io import _check_save_path, _load, _save
+from ..filter import select_above, select_below, select_polygon
+from .io import _load, _save
 
 
 @click.group(chain=True, invoke_without_command=True)
@@ -32,7 +31,6 @@ def main(input_file, output_file):
 def process_pipeline(processors, input_file, output_file):
     init(autoreset=True)
     try:
-        _check_save_path(output_file)
         point_cloud = _load(input_file)
         for processor in processors:
             point_cloud = processor(point_cloud)
@@ -98,15 +96,7 @@ def _filter_in_polygon(polygon):
     laserchicken testdata/AHN2.las test.ply filter_in_polygon 'POLYGON(( 243590.0 572110.0, 243640.0 572160.0, 243700.0 572110.0, 243640.0 572060.0, 243590.0 572110.0 ))'
     """
     if os.path.isfile(polygon):
-        ext = os.path.splitext(polygon)[1].lower()
-        functions = {
-            '.shp': points_in_polygon_shp_file,
-            '.wkt': points_in_polygon_wkt_file,
-        }
-        if ext not in functions:
-            raise ToolException("Unable to determine type of shapefile, "
-                                "choose from types {}".format(list(functions)))
-        return lambda point_cloud: functions[ext](point_cloud, polygon)
+        return lambda point_cloud: select_polygon(point_cloud, polygon, read_from_file=True)
     else:
         print("polygon is not a file, assuming it is a WKT string")
-        return lambda point_cloud: points_in_polygon_wkt(point_cloud, polygon)
+        return lambda point_cloud: select_polygon(point_cloud, polygon, read_from_file=False)

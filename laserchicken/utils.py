@@ -1,3 +1,5 @@
+import sys
+import copy
 import datetime
 
 import numpy as np
@@ -30,7 +32,7 @@ def get_xyz_per_neighborhood(sourcepc, neighborhoods):
     mask = np.zeros((len(neighborhoods), 3, max_length))
     for i, neighborhood in enumerate(neighborhoods):
         n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
+        if n_neighbors == 0:
             continue
         x, y, z = get_point(sourcepc, neighborhood)
         xyz_grp[i, 0, :n_neighbors] = x
@@ -54,7 +56,7 @@ def get_attributes_per_neighborhood(point_cloud, neighborhoods, attribute_names)
     mask = np.zeros((len(neighborhoods), (len(attribute_names)), max_length))
     for i_neighborhood, neighborhood in enumerate(neighborhoods):
         n_neighbors = len(neighborhood)
-        if n_neighbors is 0:
+        if n_neighbors == 0:
             continue
         for i_attribute, attribute_name in enumerate(attribute_names):
             attribute = get_attribute_value(point_cloud, neighborhood, attribute_name)
@@ -98,9 +100,9 @@ def create_point_cloud(x, y, z):
     :param z: z attribute values
     :return: point cloud object
     """
-    return {keys.point: {'x': {'type': 'float', 'data': np.array(x)},
-                         'y': {'type': 'float', 'data': np.array(y)},
-                         'z': {'type': 'float', 'data': np.array(z)}},
+    return {keys.point: {'x': {'type': 'float64', 'data': np.array(x)},
+                         'y': {'type': 'float64', 'data': np.array(y)},
+                         'z': {'type': 'float64', 'data': np.array(z)}},
             keys.point_cloud: {},
             keys.provenance: []
             }
@@ -124,7 +126,7 @@ def copy_point_cloud(source_point_cloud, array_mask=None):
             else:
                 new_value = np.copy(value)
         else:
-            new_value = value
+            new_value = copy.copy(value)
         result[key] = new_value
     return result
 
@@ -146,6 +148,60 @@ def add_metadata(point_cloud, module, params):
     if keys.provenance not in point_cloud:
         point_cloud[keys.provenance] = []
     point_cloud[keys.provenance].append(msg)
+
+
+def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
+    """
+    Add points from a point cloud to another
+
+    :param point_cloud_1: point cloud where points are added (it can be empty)
+    :param point_cloud_2: point cloud from which points are taken
+    :param add_log: whether to add a log to the point cloud structure
+    :return: updated point cloud
+    """
+    if keys.point in point_cloud_1:
+        # check whether second point cloud is valid
+        if keys.point not in point_cloud_2:
+            raise TypeError('Invalid point cloud provided!')
+
+        # if first point cloud is empty, fill it with attributes of second point cloud
+        if len(point_cloud_1[keys.point]['x']['data']) == 0:
+            for key, value in copy_point_cloud(point_cloud_2).items():
+                point_cloud_1[key] = value
+            return point_cloud_1
+    else:
+        # down the tree structure, the point clouds need to have the same attributes
+        attributes_1 = sorted(point_cloud_1.keys())
+        attributes_2 = sorted(point_cloud_2.keys())
+        if attributes_1 != attributes_2:
+            raise AttributeError('Attributes differ: [{}] <-> [{}]'.format(", ".join(attributes_1),
+                                                                           ", ".join(attributes_2)))
+
+    for key, value in point_cloud_2.items():
+        # if root attributes are missing (e.g. log), add them
+        if key not in point_cloud_1:
+            point_cloud_1[key] = copy.copy(value)
+            continue
+
+        # check type of data to merge
+        if not isinstance(point_cloud_1[key], type(value)):
+            raise TypeError('Types of attribute {} differ in the two point clouds: '
+                            '{} <-> {}'.format(key, type(point_cloud_1[key]), type(value)))
+
+        if isinstance(value, dict):
+            add_to_point_cloud(point_cloud_1[key], value, add_log=False)
+        elif isinstance(value, list):
+            point_cloud_1[key] += value
+        elif isinstance(value, np.ndarray):
+            point_cloud_1[key] = np.concatenate((point_cloud_1[key], value))
+        else:
+            # non extendable elements should be identical
+            if point_cloud_1[key] != value:
+                raise ValueError('Point clouds differ in attribute {}: '
+                                 '{} <-> {}'.format(key, point_cloud_1[key], value))
+    if add_log:
+        add_metadata(point_cloud_1, sys.modules[__name__], 'point clouds merged')
+    return point_cloud_1
 
 
 def fit_plane_svd(xpts, ypts, zpts):
@@ -196,3 +252,63 @@ def fit_plane(x, y, a):
     matrix = np.column_stack((np.ones(x.size), x, y))
     parameters, _, _, _ = np.linalg.lstsq(matrix, a)
     return lambda x_in, y_in: np.stack((np.ones(len(x)), x_in, y_in)).T.dot(parameters)
+
+
+def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=True):
+    """
+    Update one feature of the point cloud and assign value.
+    The feature 
+    If the feature does not exist in the point cloud, add it.
+
+    :param point_cloud: point cloud to update the feature
+    :param feature_name: name of the feature
+    :param value: value of the feature. Can be a signl value or an array
+    :param array_mask: A mask indicating which point to update the feature
+    :param add_log: whether to add a log to the point cloud structure
+    :return: updated point cloud
+    """
+
+    # Get and check input data type
+    if isinstance(value, np.ndarray):
+        data_type = value.dtype.name
+    else:
+        if isinstance(value, (str, int, float, bool)):
+            data_type = type(value).__name__
+        else:
+           raise TypeError("value must be numpy ndarray, or one in (str, int, float, bool)") 
+    
+    # Check mask size and type
+    if array_mask is not None:
+        if array_mask.size != len(point_cloud[keys.point]['x']['data']):
+            raise AssertionError("Mask size: {} doesn't match the size of point cloud column: {}".format(array_mask.size, len(point_cloud[keys.point]['x']['data'])))
+
+    # If value is ndarray, it shall have the same length as x, or true elements in mask
+    if isinstance(value, np.ndarray):
+        if array_mask is None:
+            if value.size != len(point_cloud[keys.point]['x']['data']): 
+                raise AssertionError("value size: {} doesn't match the size of point cloud column: {}".format(value.size, len(point_cloud[keys.point]['x']['data'])))
+        else:
+            if value.size != np.sum(array_mask): 
+                raise AssertionError("value size: {} doesn't match the number of elements in mask: {}".format(value.size, np.sum(array_mask)))
+    
+    # Check if the feature exists if not create the column
+    if not feature_name in point_cloud[keys.point]:
+        point_cloud[keys.point][feature_name] = {'data':np.zeros(len(point_cloud[keys.point]['x']['data']), dtype=data_type),
+                                                 'type':data_type}
+    
+    # Convert data of the feature if necccesary
+    if point_cloud[keys.point][feature_name]['type'] != data_type:
+        print('Setting data type of {} as {}'.format(feature_name, data_type))
+        point_cloud[keys.point][feature_name]['data'] = point_cloud[keys.point][feature_name]['data'].astype(data_type)
+        point_cloud[keys.point][feature_name]['type'] = data_type
+
+    # Update the column 
+    if array_mask is None:
+        point_cloud[keys.point][feature_name]['data'][:] = value
+    else:
+        point_cloud[keys.point][feature_name]['data'][array_mask] = value
+
+    if add_log:
+        add_metadata(point_cloud, sys.modules[__name__], 'add feature {} to point cloud.'.format(feature_name))
+
+    return point_cloud

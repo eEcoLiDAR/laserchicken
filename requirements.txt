@@ -1,4 +1,5 @@
-laspy
+lazperf
+pylas
 scipy>=0.11
 pytest
 mock

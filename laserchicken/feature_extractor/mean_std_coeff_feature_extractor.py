@@ -17,7 +17,10 @@ class MeanStdCoeffFeatureExtractor(FeatureExtractor):
         base_names = ['mean_', 'std_', 'coeff_var_']
         return [base + str(self.data_key) for base in base_names]
 
-    def extract(self, sourcepc, neighborhood, targetpc, targetindex, volume_description):
+    def extract(self, point_cloud, neighborhoods, target_point_cloud, target_indices, volume_description):
+        return np.array([self._extract_one(point_cloud, neighborhood) for neighborhood in neighborhoods]).T
+
+    def _extract_one(self, sourcepc, neighborhood):
         if neighborhood:
             z = sourcepc[point][self.data_key]['data'][neighborhood]
             mean_z = np.mean(z)

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from laserchicken import keys,kd_tree,read_las
+from laserchicken import keys,kd_tree,load
 
 
 class TestKDTree(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestKDTree(unittest.TestCase):
 
 
     def setUp(self):
-        self.pointcloud = read_las.read(os.path.join(self._test_data_source,self._test_file_name))
+        self.pointcloud = load(os.path.join(self._test_data_source,self._test_file_name))
 
     def tearDown(self):
         pass
