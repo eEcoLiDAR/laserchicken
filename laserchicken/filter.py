@@ -19,15 +19,19 @@ from laserchicken.utils import copy_point_cloud, add_metadata
 def select_equal(point_cloud, attribute, value, return_mask=False):
     """
     Return the selection of the input point cloud that contains only points with a given attribute equal to some value.
+    If a list of values is given, select the points corresponding to any of the provided values.
 
     :param point_cloud: Input point cloud.
     :param attribute: The attribute name used for selection
-    :param value: The value to compare the attribute to
+    :param value: The value(s) to compare the attribute to
     :param return_mask: If true, return the mask corresponding to the selection
     :return:
     """
     _check_valid_arguments(attribute, point_cloud)
-    mask = point_cloud[point][attribute]['data'] == value
+    # broadcast using shape of the values
+    mask = point_cloud[point][attribute]['data'] == np.array(value)[..., None]
+    if mask.ndim > 1:
+        mask = np.any(mask, axis=0)  # reduce
     if return_mask:
         return mask
     point_cloud_filtered = copy_point_cloud(point_cloud, mask)
