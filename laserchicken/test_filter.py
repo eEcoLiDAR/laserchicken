@@ -49,6 +49,13 @@ class TestSelectEqual(unittest.TestCase):
         assert_equal(len(pc_out[point]['x']['data']), 2)
 
     @staticmethod
+    def test_selectEqual_multipleValues():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        pc_out = select_equal(pc_in, 'return', [1, 2])
+        assert_equal(len(pc_out[point]['x']['data']), 3)
+
+    @staticmethod
     def test_selectEqual_maskCorrect():
         """ Correct number of results. """
         pc_in = get_test_data()
