@@ -1,6 +1,8 @@
 import ast
+import json
 import numpy as np
-from dateutil import parser
+
+from json.decoder import JSONDecodeError
 from struct import unpack, calcsize
 
 from laserchicken.io.utils import convert_to_short_type, convert_to_single_character_type
@@ -78,12 +80,13 @@ def _read_header_line(ply, is_binary=False):
 
 def _read_log(comments):
     try:
-        log = ast.literal_eval(' '.join(comments)) if comments else []
-    except SyntaxError:  # Log can't be read. Maybe a ply file with 'regular' comments and no log.
-        log = []
-    for i, entry in enumerate(log):
-        if 'time' in entry:
-            entry['time'] = parser.parse(entry['time'])
+        log = json.loads(' '.join(comments)) if comments else []
+    except JSONDecodeError:
+        try:
+            # legacy: comments for laserchicken < 0.4.0
+            log = ast.literal_eval(' '.join(comments)) if comments else []
+        except SyntaxError:  # Log can't be read. Maybe a ply file with 'regular' comments and no log.
+            log = []
     return log
 
 
