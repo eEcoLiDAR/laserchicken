@@ -24,7 +24,7 @@ pip install laserchicken
 * Create .zenodo.json file from CITATION.cff (using cffconvert)  
 ```cffconvert --validate```  
 ```cffconvert --ignore-suspect-keys --outputformat zenodo --outfile .zenodo.json```
-* Set new version number in laserchicken/_version.py
+* Set new version number in laserchicken/_version.txt
 * Check that documentation uses the correct version
 * Edit Changelog (based on commits in https://github.com/eecolidar/laserchicken/compare/v0.3.2...master)
 * Test if package can be installed with pip (`pip install .`)
