@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.4.1 - 2020-05-20
+## Added:
+- select_equal filter accepts list of values to compare to the points' attributes
+- also the attribute-based filter functions optionally return a mask to allow filter combinations
+
+## Fixed:
+- bug in writing/reading 'None' as parameter in the PLY comments
+
 ## 0.4.0 - 2020-05-13
 ## Added:
 - build_volume module
