@@ -1,3 +1,4 @@
+import dateutil
 import os
 import shutil
 import unittest
@@ -89,8 +90,10 @@ class TestReadPly(unittest.TestCase):
     def test_correctTimesLogged(self):
         log = load(self.test_file_path)['log']
 
-        self.assertListEqual([2018, 1, 18, 16, 1, 0, 3, 18, -1], list(log[0]['time'].timetuple()))
-        self.assertListEqual([2018, 1, 18, 16, 3, 0, 3, 18, -1], list(log[1]['time'].timetuple()))
+        self.assertListEqual([2018, 1, 18, 16, 1, 0, 3, 18, -1],
+                             list(dateutil.parser.parse(log[0]['time']).timetuple()))
+        self.assertListEqual([2018, 1, 18, 16, 3, 0, 3, 18, -1],
+                             list(dateutil.parser.parse(log[1]['time']).timetuple()))
 
     def setUp(self):
         os.mkdir(self._test_dir)

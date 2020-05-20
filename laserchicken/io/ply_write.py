@@ -99,29 +99,8 @@ def _write_comment(pc, ply):
 
     head = 'comment [\n'
     tail = 'comment ]\n'
-    formatted_entries = ',\n'.join(['comment ' + json.dumps(_stringify(entry), sort_keys=True) for entry in log]) + '\n'
+    formatted_entries = ',\n'.join(['comment ' + json.dumps(entry, sort_keys=True) for entry in log]) + '\n'
     ply.write(head + formatted_entries + tail)
-
-
-def _stringify(entry):
-    copy = {}
-    for key, value in _sort_by_key(entry):
-        if isinstance(value, dict):
-            copy[key] = _stringify(value)
-        elif isinstance(value, list):
-            copy[key] = [_stringify(entry) if isinstance(entry, dict) else entry for entry in value]
-        else:
-            if key == 'time':
-                copy[key] = str(value)
-            else:
-                copy[key] = value
-    return copy
-
-
-def _sort_by_key(entry):
-    key_value_pairs = list(entry.items())
-    key_value_pairs.sort(key=lambda key_value_pair: key_value_pair[0])
-    return key_value_pairs
 
 
 def _write_header_elements(pc, attributes, ply, element_name, get_num_elements=None):

@@ -140,7 +140,7 @@ def add_metadata(point_cloud, module, params):
     :param params:
     :return:
     """
-    msg = {"time": datetime.datetime.utcnow(),
+    msg = {"time": str(datetime.datetime.utcnow()),
            "module": module.__name__ if hasattr(module, "__name__") else str(module)}
     if any(params):
         msg["parameters"] = params

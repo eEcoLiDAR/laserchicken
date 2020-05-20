@@ -48,6 +48,27 @@ class TestSelectEqual(unittest.TestCase):
         pc_out = select_equal(pc_in, 'return', 1)
         assert_equal(len(pc_out[point]['x']['data']), 2)
 
+    @staticmethod
+    def test_selectEqual_multipleValues():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        pc_out = select_equal(pc_in, 'return', [1, 2])
+        assert_equal(len(pc_out[point]['x']['data']), 3)
+
+    @staticmethod
+    def test_selectEqual_maskCorrect():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        mask_out = select_equal(pc_in, 'return', 1, return_mask=True)
+        assert_equal(mask_out, np.array([1,1,0], dtype=bool))
+
+    @staticmethod
+    def test_selectEqual_maskEmpty():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        mask_out = select_equal(pc_in, 'return', 3, return_mask=True)
+        assert_equal(sum(mask_out), 0)
+
 
 class TestSelectBelow(unittest.TestCase):
     @staticmethod
@@ -88,6 +109,20 @@ class TestSelectBelow(unittest.TestCase):
         assert_almost_equal(pc_out[point]['y']['data'][0], 2.1)
         assert_almost_equal(pc_out[point]['z']['data'][0], 3.1)
         assert_almost_equal(pc_out[point]['return']['data'][0], 1)
+    
+    @staticmethod
+    def test_selectBelow_maskCorrect():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        mask_out = select_below(pc_in, 'return', 2, return_mask=True)
+        assert_equal(mask_out, np.array([1,1,0], dtype=bool))
+
+    @staticmethod
+    def test_selectBelow_maskAll():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        mask_out = select_below(pc_in, 'return', 3, return_mask=True)
+        assert_equal(sum(mask_out), 3)
 
 
 class TestSelectAbove(unittest.TestCase):
@@ -128,6 +163,20 @@ class TestSelectAbove(unittest.TestCase):
         assert_almost_equal(pc_out[point]['y']['data'][0], 2.3)
         assert_almost_equal(pc_out[point]['z']['data'][0], 3.3)
         assert_almost_equal(pc_out[point]['return']['data'][0], 2)
+    
+    @staticmethod
+    def test_selectAbove_maskCorrect():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        mask_out = select_above(pc_in, 'return', 1, return_mask=True)
+        assert_equal(mask_out, np.array([0,0,1], dtype=bool))
+
+    @staticmethod
+    def test_selectAbove_maskAll():
+        """ Correct number of results. """
+        pc_in = get_test_data()
+        mask_out = select_above(pc_in, 'return', 0, return_mask=True)
+        assert_equal(sum(mask_out), 3)
 
 
 class TestSelectPolygonWKT(unittest.TestCase):
