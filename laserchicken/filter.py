@@ -208,7 +208,8 @@ def _contains(pc, polygon):
         tree = kd_tree.get_kdtree_for_pc(pc)
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
-        mask = contains(polygon, x[indices], y[indices])
-        points_in.extend(indices[mask])
+        if len(indices) > 0:
+            mask = contains(polygon, x[indices], y[indices])
+            points_in.extend(indices[mask])
 
     return points_in
