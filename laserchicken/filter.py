@@ -116,9 +116,9 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mas
     else:
         polygon = _load_polygon(polygon_string)
     
-    if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
+    if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = _contains(point_cloud, polygon)
-    elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon) and polygon.is_valid:
+    elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon):
         points_in = []
         count=1
         for poly in polygon:
@@ -192,6 +192,9 @@ def _contains(pc, polygon):
     x = pc[point]['x']['data']
     y = pc[point]['y']['data']
     points_in = []
+
+    if not polygon.is_valid:
+        raise ValueError('Invalid polygon in input')
 
     mbr = polygon.envelope
     point_box = box(np.min(x), np.min(y), np.max(x), np.max(y))
