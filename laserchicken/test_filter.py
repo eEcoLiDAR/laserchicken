@@ -221,13 +221,6 @@ class TestSelectPolygonWKT(unittest.TestCase):
             select_polygon(pc_in, "MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))")
 
     @staticmethod
-    def test_points_in_polygon_wkt_MultiPolygon():
-        pc_in = load("testdata/AHN2.las")
-        with pytest.raises(ValueError):
-            select_polygon(pc_in,
-                           "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))")
-
-    @staticmethod
     def test_points_in_polygon_wkt_Collection():
         pc_in = load("testdata/AHN2.las")
         with pytest.raises(ValueError):
@@ -329,12 +322,6 @@ class TestSelectPolygonWKTFile(unittest.TestCase):
         pc_in = load("testdata/AHN2.las")
         with pytest.raises(ValueError):
             select_polygon(pc_in, "testdata/ahn2_geometries_wkt/multiline.wkt", read_from_file=True)
-
-    @staticmethod
-    def test_points_in_polygon_wkt_MultiPolygon():
-        pc_in = load("testdata/AHN2.las")
-        with pytest.raises(ValueError):
-            select_polygon(pc_in, "testdata/ahn2_geometries_wkt/multipolygon.wkt", read_from_file=True)
 
     @staticmethod
     def test_points_in_polygon_wkt_Collection():
