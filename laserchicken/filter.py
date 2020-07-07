@@ -146,8 +146,9 @@ def _read_wkt_file(path):
     with open(path) as f:
         content = f.readlines()
 
-    content = [x.strip() for x in content]
-    return _load_polygon(content[0])
+    content = [_load_polygon(x.strip()) for x in content]
+    geom = shapely.geometry.MultiPolygon(content) if len(content) > 1 else content[0]
+    return geom
 
 
 def _read_shp_file(path):
