@@ -9,6 +9,7 @@ from shapely.geometry import Point
 from shapely.errors import WKTReadingError
 from shapely.wkt import loads
 from shapely.geometry import box
+from shapely.vectorized import contains
 import numpy as np
 
 from laserchicken.keys import point
@@ -204,10 +205,7 @@ def _contains(pc, polygon):
         tree = kd_tree.get_kdtree_for_pc(pc)
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
-        point_id = 0
-        for i in indices:            
-            if polygon.contains(Point(x[i], y[i])):
-                points_in.append(i)
-                point_id += 1
+        mask = contains(polygon, x[indices], y[indices])
+        points_in.extend(indices[mask])
 
     return points_in
