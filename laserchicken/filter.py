@@ -152,11 +152,10 @@ def _read_wkt_file(path):
 
 def _read_shp_file(path):
     shape = shapefile.Reader(path)
-    # first feature of the shapefile
-    feature = shape.shapeRecords()[0]
-    first = feature.shape.__geo_interface__
-    # or shp_geom = shape(first) with PyShp)
-    shp_geom = shapely.geometry.shape(first)
+    features = shape.shapeRecords()
+    shp_geoms = [shapely.geometry.shape(feature.shape.__geo_interface__)
+                 for feature in features]
+    shp_geom = shapely.geometry.MultiPolygon(shp_geoms) if len(shp_geoms) > 1 else shp_geoms[0]
     return shp_geom
 
 
