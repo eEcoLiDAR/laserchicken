@@ -9,6 +9,7 @@ from shapely.geometry import Point
 from shapely.errors import WKTReadingError
 from shapely.wkt import loads
 from shapely.geometry import box
+from shapely.vectorized import contains
 import numpy as np
 
 from laserchicken.keys import point
@@ -115,9 +116,9 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mas
     else:
         polygon = _load_polygon(polygon_string)
     
-    if isinstance(polygon, shapely.geometry.polygon.Polygon) and polygon.is_valid:
+    if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = _contains(point_cloud, polygon)
-    elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon) and polygon.is_valid:
+    elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon):
         points_in = []
         count=1
         for poly in polygon:
@@ -145,17 +146,17 @@ def _read_wkt_file(path):
     with open(path) as f:
         content = f.readlines()
 
-    content = [x.strip() for x in content]
-    return _load_polygon(content[0])
+    content = [_load_polygon(x.strip()) for x in content]
+    geom = shapely.geometry.MultiPolygon(content) if len(content) > 1 else content[0]
+    return geom
 
 
 def _read_shp_file(path):
     shape = shapefile.Reader(path)
-    # first feature of the shapefile
-    feature = shape.shapeRecords()[0]
-    first = feature.shape.__geo_interface__
-    # or shp_geom = shape(first) with PyShp)
-    shp_geom = shapely.geometry.shape(first)
+    features = shape.shapeRecords()
+    shp_geoms = [shapely.geometry.shape(feature.shape.__geo_interface__)
+                 for feature in features]
+    shp_geom = shapely.geometry.MultiPolygon(shp_geoms) if len(shp_geoms) > 1 else shp_geoms[0]
     return shp_geom
 
 
@@ -192,6 +193,9 @@ def _contains(pc, polygon):
     y = pc[point]['y']['data']
     points_in = []
 
+    if not polygon.is_valid:
+        raise ValueError('Invalid polygon in input')
+
     mbr = polygon.envelope
     point_box = box(np.min(x), np.min(y), np.max(x), np.max(y))
 
@@ -204,10 +208,8 @@ def _contains(pc, polygon):
         tree = kd_tree.get_kdtree_for_pc(pc)
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
-        point_id = 0
-        for i in indices:            
-            if polygon.contains(Point(x[i], y[i])):
-                points_in.append(i)
-                point_id += 1
+        if len(indices) > 0:
+            mask = contains(polygon, x[indices], y[indices])
+            points_in.extend(indices[mask])
 
     return points_in
