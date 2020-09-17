@@ -122,7 +122,8 @@ def copy_point_cloud(source_point_cloud, array_mask=None):
             new_value = copy_point_cloud(value, array_mask)
         elif isinstance(value, np.ndarray):
             if array_mask is not None:
-                new_value = value[array_mask] if any(value) else np.copy(value)
+                new_value = (value[array_mask]
+                             if value.size > 0 else np.copy(value))
             else:
                 new_value = np.copy(value)
         else:
