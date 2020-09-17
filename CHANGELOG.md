@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.4.2 - 2020-09-18
+## Added:
+- faster implementation of spatial selection
+
+## Changed:
+- all elements in WKT and shapefiles containing multiple polygons are considered (not only the first element)
+- the validity conditions for multipolygons have been relaxed: valid adjacent polygons are now accepted
+
+## Fixed:
+- bug in copy_point_cloud with masks and zero-filled feature-arrays
+
 ## 0.4.1 - 2020-05-20
 ## Added:
 - select_equal filter accepts list of values to compare to the points' attributes
