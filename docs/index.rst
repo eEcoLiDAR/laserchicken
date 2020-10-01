@@ -130,7 +130,7 @@ Example from the tutorial notebook::
    from laserchicken import compute_features
    compute_features(point_cloud, neighborhoods, targets, ['std_z','mean_z','slope'], volume)
 
-Features can be parameterized. If you need different parameters for them then their defaults you need to register them with these prior to using them.
+Features can be parameterized. If you need different parameters than their defaults you need to register them with these prior to using them.
 
 Example of adding a few parameterized band ratio features on different attributes::
 
@@ -141,7 +141,7 @@ Example of adding a few parameterized band ratio features on different attribute
    register_new_feature_extractor(BandRatioFeatureExtractor(2,None,data_key='normalized_height'))
    register_new_feature_extractor(BandRatioFeatureExtractor(None,0,data_key='z'))
 
-The currently registered features can be listed as followes::
+The currently registered features can be listed as follows::
 
    from laserchicken.feature_extractor import list_feature_names
    sorted(list_feature_names())
@@ -199,6 +199,41 @@ Which outputs something like::
     'var_norm_z',
     'var_z']
 
+The following table includes the list of all implemented features:
+
+.. table::
+   :widths: 35 30 25 10
+
+   ============================================================  ========================================================================================================================================  ===========================================================  ==================================
+    Feature name                                                  Formal description                                                                                                                        Example of use                                               Refs.
+   ============================================================  ========================================================================================================================================  ===========================================================  ==================================
+   Point density (``point_density``)                             :math:`N/A` where :math:`S` is the neighborhood target volume (area) for finite (infinite) cells                                          Point cloud spatial distribution                             |
+   Pulse penetration ratio (``pulse_penetration_ratio``)         :math:`N_{\mathrm{ground}}/N_{\mathrm{tot}}`                                                                                              Tree species classification                                  :cite:`yu2014`
+   Echo ratio (``echo_ratio``)                                   :math:`N_{\mathrm{sphere}}/N_{\mathrm{cylinder}}`                                                                                         Roof detection                                               :cite:`car2009`
+   Skewness (``skew_z``) [a]_                                    :math:`1/\sigma^3 \cdot \sum{(Z_i - \bar{Z})^3/N}`                                                                                        Vegetation, ground, and roof classification and detection    :cite:`Crosilla2013`
+   Kurtosis (``kurto_z``) [a]_                                   :math:`1/\sigma^4 \cdot \sum{(Z_i - \bar{Z})^4/N}`                                                                                        Vegetation, ground, and roof classification and detection    :cite:`Crosilla2013`
+   Standard deviation (``std_z``) [a]_ [b]_                      :math:`\sqrt{\sum{(Z_i - \bar{Z})^2/(N - 1)}}`                                                                                            Classification of reed within wetland                        :cite:`zlinszky2012`
+   Variance (``var_z``) [a]_                                     :math:`\sum{(Z_i - \bar{Z})^2/(N - 1)}`                                                                                                   Classification of reed within wetland                        :cite:`zlinszky2012`
+   Sigma Z (``sigma_z``) [a]_                                    :math:`\sqrt{\sum{(R_i - \bar{R})^2/(N - 1)}}` where :math:`R_i` is  the residual after plane fitting                                     |                                                            :cite:`zlinszky2012`
+   Minimum Z (``min_z``) [a]_ [b]_                               :math:`Z_{\mathrm{min}}`                                                                                                                  Simple digital terrain model in wetlands                     :cite:`zlinszky2012`
+   Maximum Z (``max_z``) [a]_ [b]_                               :math:`Z_{\mathrm{max}}`                                                                                                                  Height and structure of forests                              :cite:`naesset2002`
+   Mean Z (``mean_z``) [a]_ [b]_                                 :math:`\sum{Z_{i}}/N`                                                                                                                     Height and structure of forests                              :cite:`naesset2002`
+   Median Z (``median_z``) [a]_                                  :math:`Z_{\mathrm{median}}`                                                                                                               Height and structure of forests                              :cite:`naesset2002`
+   Range Z (``range_z``) [a]_ [b]_                               :math:`|Z_{\mathrm{max}} - Z_{\mathrm{min}}|`                                                                                             Height and structure of forests                              :cite:`naesset2002`
+   Percentiles Z (``perc_X_z`` with ``X`` in (0:100]) [a]_       Height of every :math:`10^{\mathrm{th}}` percentile.                                                                                      Height and structure of forests                              :cite:`naesset2002`
+   Eigenvalues (``eigenv_X``, with ``X`` in (1,2,3))             :math:`\lambda_1, \lambda_2, \lambda_3 ` , with :math:`|\lambda_1| \ge |\lambda_2| \ge |\lambda_3|`                                       Classification of urban objects                              :cite:`weinmann2017`
+   Normal vector (``normal_vector_X``, with ``X`` in (1,2,3))    eigen vector :math:`\vec{v}_3`                                                                                                            Roof detection                                               :cite:`Dorninger2008`
+   Slope (``slope``)                                             :math:`\tan(\mathrm{arccos}(\vec{v}_3\cdot\vec{k}))` , where :math:`\vec{k} = [0,0,1]^T`                                                  Planar surface detection                                     :cite:`doi:10.1002/esp.3606`
+   Entropy Z  (``entropy_z``) [a]_                               :math:`-\sum_{i}{P_i \cdot \mathrm{log}_2{P_i}}`, with :math:`P_i = N_i/\sum_{j}{N_j}`  and :math:`N_i` points in bin :math:`i`           Foliage height diversity                                     :cite:`Bae2014`
+   Coefficient variance Z (``coeff_var_z``) [a]_ [b]_            :math:`\frac{1}{\bar{Z}} \cdot \sqrt{\sum{\frac{(Z_i - \bar{Z})^2}{N - 1}}}`                                                              Urban tree species classification                            :cite:`koma2016urban`
+   Density absolute mean (``density_absolute_mean_z``) [a]_      :math:`100 \cdot \sum [Z_i > \bar{Z}]/N`                                                                                                  Urban tree species classification                            :cite:`koma2016urban`
+   Band ratio (``band_ratio_Z1<z<Z2``) [c]_                      :math:`N_{Z_1<Z<Z_2}/N_{\mathrm{tot}}` where :math:`Z_1` and :math:`Z_2` are user-provided values                                         Height and structure of forests                              |
+   ============================================================  ========================================================================================================================================  ===========================================================  ==================================
+
+.. [a] Also available for the normalized height (e.g. ``mean_normalized_height``)
+.. [b] Also available for the intensity (e.g. ``mean_intensity``)
+.. [c] Fully customizable in variable and range
+
 Below is an example. The figure visualizes the slope feature for a small neighborhood size. We used the same target point cloud as the environment point cloud. The image was generated using mayavi plotting software (https://docs.enthought.com/mayavi/mayavi/).
 
 .. image:: figures/slope.png
@@ -215,5 +250,8 @@ Example from the tutorial notebook::
    from laserchicken import export
    export(point_cloud, 'my_output.ply')
 
+.. bibliography:: bibliography.bib
+   :cited:
+   :style: unsrt
 
 
