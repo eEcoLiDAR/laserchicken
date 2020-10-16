@@ -45,6 +45,7 @@ extensions = [
 #    'sphinx.ext.pngmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
+    'sphinxcontrib.bibtex'
 ]
 
 napoleon_numpy_docstring = True
