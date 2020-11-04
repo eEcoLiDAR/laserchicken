@@ -13,7 +13,7 @@ Toolkit for handling point clouds created using airborne laser scanning (ALS). F
 
 # Installation
 Prerequisites:
-- Python 3.5 or higher (3.6 is recommended)
+- Python 3.6 or higher
 - pip
 ```
 pip install laserchicken
