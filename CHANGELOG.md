@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+## Changed:
+- update documentation with table of features
+- drop python 3.5 due to problematic lazperf dependency, includes CI on python 3.7 and 3.8 
 
 ## 0.4.2 - 2020-09-18
 ## Added:
