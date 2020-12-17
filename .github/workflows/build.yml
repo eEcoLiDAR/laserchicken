@@ -39,27 +39,17 @@ jobs:
         run: |
           pip install pytest pytest-cov
           pytest --cov=laserchicken --cov-report xml:coverage.xml
+      - name: Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
+          flag-name: Unit Test
 
-  finish:
+  coveralls_finish:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Coveralls Finished
+      uses: AndreMiras/coveralls-python-action@develop
       with:
-        python-version: 3.7
-    - name: Coveralls
-      shell: bash -l {0}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        pip install coveralls
-        coveralls
-    - name: Codacy
-      shell: bash -l {0}
-      env:
-        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-      run: |
-        pip install codacy-coverage
-        python-codacy-coverage -r coverage.xml
+        parallel-finished: true
