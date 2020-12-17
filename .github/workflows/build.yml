@@ -56,8 +56,10 @@ jobs:
       run: |
         pip install coveralls
         coveralls
-    - name: Run codacy-coverage-reporter
-      uses: codacy/codacy-coverage-reporter-action@master
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: coverage.xml
+    - name: Codacy
+      shell: bash -l {0}
+      env:
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      run: |
+        pip install codacy-coverage
+        python-codacy-coverage -r coverage.xml
