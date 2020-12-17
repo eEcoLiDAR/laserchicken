@@ -37,24 +37,18 @@ jobs:
       - name: Test
         shell: bash -l {0}
         run: |
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov coveralls
           pytest --cov=laserchicken --cov-report xml:coverage.xml
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          flag-name: run-python-${{ matrix.python-version }}
-          parallel: true
 
   finish:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+    - name: Coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        coveralls
     - uses: actions/checkout@master
     - name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@master
