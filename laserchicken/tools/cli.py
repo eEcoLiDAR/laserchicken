@@ -27,7 +27,7 @@ def main(input_file, output_file):
     """
 
 
-@main.resultcallback()
+@main.result_callback()
 def process_pipeline(processors, input_file, output_file):
     init(autoreset=True)
     try:
