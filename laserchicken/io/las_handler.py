@@ -1,9 +1,10 @@
 """ IO Handler for LAS (and compressed LAZ) file format """
 import laspy
+import numpy as np
 
 from laserchicken import keys
 from laserchicken.io.base_io_handler import IOHandler
-from laserchicken.io.utils import select_valid_attributes
+from laserchicken.io.utils import convert_to_short_type, select_valid_attributes
 
 
 DEFAULT_LAS_ATTRIBUTES = {
@@ -36,10 +37,9 @@ class LASHandler(IOHandler):
         points = {}
         for name in attributes:
             if hasattr(file, name):
-                if name in 'xyz':
-                    data = getattr(file, name).scaled_array()
-                else:
-                    data = getattr(file, name)
+                file_data = getattr(file, name)
+                data = np.zeros_like(file_data)
+                data[:] = file_data
                 points[name] = _get_attribute(data, data.dtype.name)
 
         return {keys.point: points}
@@ -65,15 +65,16 @@ class LASHandler(IOHandler):
         dtype = file.header.point_format.dtype()
         for attribute in attributes:
             data, type = _get_data_and_type(points[attribute])
+            type_short = convert_to_short_type(type)
             if attribute not in 'xyz':
                 # x,y,z are not there but file methods can be used to convert coords to int4
                 if attribute not in dtype.fields:
                     param = laspy.ExtraBytesParams(name=attribute, type=type)
                     file.add_extra_dim(param)
-            file_type = getattr(file, attribute).dtype.name
-            if not file_type == type:
+            file_type_short = convert_to_short_type(getattr(file, attribute).dtype.name)
+            if not file_type_short == type_short:
                 raise TypeError('Data type in file does not match the one in point cloud: '
-                                'for {}, {} vs {}'.format(attribute, file_type, type))
+                                'for {}, {} vs {}'.format(attribute, file_type_short, type_short))
 
         for dim in 'xyz':
             data, _ = _get_data_and_type(points[dim])
