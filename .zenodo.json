@@ -1,63 +1,65 @@
 {
-    "creators": [
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Meijer, Christiaan"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Goncalves, Romulo"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Renaud, Nico"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Andela, Bouwe"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Dzigan, Yifat"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Diblen, Faruk"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Ranguelova, Elena"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "van den Oord, Gijs"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Grootes, Meiert W."
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Nattino, Francesco"
-        },
-        {
-            "affiliation": "Netherlands eScience Center",
-            "name": "Ku, Ou"
-        },
-        {
-            "affiliation": "Institute for Biodiversity and Ecosystem Dynamics, University of Amsterdam",
-            "name": "Koma, Zsófia"
-        }
-    ],
-    "description": "Laserchicken is a toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our user manual and our (very modest) tutorial.",
-    "keywords": [
-        "airborne laser scanning",
-        "machine learning",
-        "point cloud",
-        "digital terrain map"
-    ],
-    "license": {
-        "id": "Apache-2.0"
+  "creators": [
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Meijer, Christiaan"
     },
-    "title": "Laserchicken: toolkit for ALS point clouds"
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Goncalves, Romulo"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Renaud, Nico"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Andela, Bouwe"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Dzigan, Yifat"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Diblen, Faruk"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Ranguelova, Elena"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "van den Oord, Gijs"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Grootes, Meiert W."
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Nattino, Francesco"
+    },
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Ku, Ou"
+    },
+    {
+      "affiliation": "Institute for Biodiversity and Ecosystem Dynamics, University of Amsterdam",
+      "name": "Koma, Zsófia"
+    }
+  ],
+  "description": "Laserchicken is a toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our user manual and our (very modest) tutorial.",
+  "keywords": [
+    "airborne laser scanning",
+    "machine learning",
+    "point cloud",
+    "digital terrain map"
+  ],
+  "license": {
+    "id": "Apache-2.0"
+  },
+  "publication_date": "2022-05-20",
+  "title": "Laserchicken: toolkit for ALS point clouds",
+  "version": "0.5.0"
 }
