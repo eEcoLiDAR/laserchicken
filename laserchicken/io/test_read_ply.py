@@ -1,9 +1,9 @@
-import dateutil
 import os
 import shutil
 import unittest
 
 import numpy as np
+from dateutil.parser import parse
 from pytest import raises
 
 from laserchicken import keys
@@ -91,9 +91,9 @@ class TestReadPly(unittest.TestCase):
         log = load(self.test_file_path)['log']
 
         self.assertListEqual([2018, 1, 18, 16, 1, 0, 3, 18, -1],
-                             list(dateutil.parser.parse(log[0]['time']).timetuple()))
+                             list(parse(log[0]['time']).timetuple()))
         self.assertListEqual([2018, 1, 18, 16, 3, 0, 3, 18, -1],
-                             list(dateutil.parser.parse(log[1]['time']).timetuple()))
+                             list(parse(log[1]['time']).timetuple()))
 
     def setUp(self):
         os.mkdir(self._test_dir)

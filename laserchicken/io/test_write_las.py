@@ -3,7 +3,7 @@ import shutil
 import unittest
 
 import numpy as np
-import pylas
+import laspy
 import pytest
 
 from laserchicken import keys
@@ -126,9 +126,9 @@ def _assert_all_attributes_in_file(attributes, file):
         assert hasattr(file, name)
         file_data = getattr(file, name)
         assert dtype.name == file_data.dtype.name
-        assert data.size == file_data.size
+        assert data.size == len(file_data)
         np.testing.assert_allclose(data, file_data, err_msg="{} differ".format(name))
 
 
 def _get_file_from_path(path):
-    return pylas.read(path)
+    return laspy.read(path)
