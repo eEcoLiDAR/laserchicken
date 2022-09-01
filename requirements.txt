@@ -1,5 +1,4 @@
-lazperf
-pylas
+laspy[lazrs]
 scipy>=0.11
 pytest
 mock
