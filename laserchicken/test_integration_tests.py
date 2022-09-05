@@ -48,7 +48,7 @@ class FromTutorial(unittest.TestCase):
 
         cylinder = build_volume("infinite cylinder", radius=5)
         neighborhoods = compute_neighborhoods(point_cloud, targets, cylinder)
-        compute_features(point_cloud, neighborhoods, targets, ['band_ratio_1<normalized_height<2'], cylinder)
+        compute_features(point_cloud, neighborhoods, targets, ['band_ratio_1_normalized_height_2'], cylinder)
 
         from laserchicken import export
         export(point_cloud, 'my_output.ply')

@@ -47,10 +47,10 @@ class BandRatioFeatureExtractor(FeatureExtractor):
         """
         name = 'band_ratio_'
         if self.lower_limit is not None:
-            name += str(self.lower_limit) + '<'
+            name += str(self.lower_limit) + '_'
         name += self.data_key
         if self.upper_limit is not None:
-            name += '<' + str(self.upper_limit)
+            name += '_' + str(self.upper_limit)
         return [name]
 
     def extract(self, point_cloud, neighborhoods, target_point_cloud, target_index, volume_description):
