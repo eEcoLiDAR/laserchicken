@@ -3,17 +3,18 @@ Please cite the software if you are using it in your scientific publication.
   <img src="https://raw.githubusercontent.com/eEcoLiDAR/laserchicken/master/laserchicken_logo.png" width="500"/>
 </p>
 
-[![Build Status](https://travis-ci.org/eEcoLiDAR/laserchicken.svg?branch=master)](https://travis-ci.org/eEcoLiDAR/laserchicken)
+[![Build Status](https://github.com/eEcoLiDAR/laserchicken/workflows/Build/badge.svg)](https://github.com/eEcoLiDAR/laserchicken/actions)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6e3836750fe14f34ba85e26956e8ef10)](https://www.codacy.com/app/c-meijer/eEcoLiDAR?utm_source=www.github.com&amp;utm_medium=referral&amp;utm_content=eEcoLiDAR/eEcoLiDAR&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://coveralls.io/repos/github/eEcoLiDAR/eEcoLiDAR/badge.svg)](https://coveralls.io/github/eEcoLiDAR/eEcoLiDAR)
+[![Coverage Status](https://coveralls.io/repos/github/eEcoLiDAR/laserchicken/badge.svg)](https://coveralls.io/github/eEcoLiDAR/laserchicken)
 [![DOI](https://zenodo.org/badge/95649056.svg)](https://zenodo.org/badge/latestdoi/95649056)
 [![Documentation Status](https://readthedocs.org/projects/laserchicken/badge/?version=latest)](https://laserchicken.readthedocs.io/en/latest/)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4524/badge)](https://bestpractices.coreinfrastructure.org/projects/4524)
 
 Toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our [user manual](https://laserchicken.readthedocs.io/) and our (very modest) [tutorial](https://github.com/eEcoLiDAR/laserchicken/blob/master/tutorial.ipynb).
 
 # Installation
 Prerequisites:
-- Python 3.6 or higher
+- Python 3.7 or higher
 - pip
 ```
 pip install laserchicken

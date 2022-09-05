@@ -38,7 +38,7 @@ class TestSkewZFeatureExtractor(unittest.TestCase):
         point_cloud = create_point_cloud(x, y, z, normalized_z=normalized_z)
         neighborhood = [[0, 1, 2]]
 
-        skew = self.extractor.extract(point_cloud, [neighborhood], None, None, None)[0]
+        skew = self.extractor.extract(point_cloud, neighborhood, None, None, None)[0]
 
         self.assertGreater(skew, 0.1)
 
