@@ -1,5 +1,5 @@
 import numpy as np
-import scipy.stats.stats as stat
+import scipy.stats as stats
 
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
@@ -23,7 +23,7 @@ class SkewFeatureExtractor(FeatureExtractor):
     def _extract_one(self, point_cloud, neighborhood):
         if neighborhood:
             source_data = point_cloud[point][self.data_key]['data'][neighborhood]
-            skew = stat.skew(source_data)
+            skew = stats.skew(source_data)
         else:
             skew = np.NaN
         return skew

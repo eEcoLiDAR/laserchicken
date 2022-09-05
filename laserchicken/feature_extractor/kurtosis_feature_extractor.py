@@ -1,5 +1,5 @@
 import numpy as np
-import scipy.stats.stats as stat
+import scipy.stats as stats
 
 from laserchicken.feature_extractor.base_feature_extractor import FeatureExtractor
 from laserchicken.keys import point
@@ -23,7 +23,7 @@ class KurtosisFeatureExtractor(FeatureExtractor):
     def _extract_one(self, sourcepc, neighborhood):
         if neighborhood:
             z = sourcepc[point][self.data_key]['data'][neighborhood]
-            kurtosis_z = stat.kurtosis(z)
+            kurtosis_z = stats.kurtosis(z)
         else:
             kurtosis_z = np.NaN
         return kurtosis_z
