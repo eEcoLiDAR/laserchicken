@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.6.0 - 2022-09-05
+## Changed:
+- continuous integration moved from travis to GH actions
+- naming of band ratio's modified (symbol "<" dropped from label)
+
+## Added 
+- releases published on PyPI using GH actions
+- checklists included
+
+## Fixed 
+- Fixed import of deprecated `scipy.stats.stats`
+
 ## 0.5.0 - 2022-05-20
 ## Changed:
 - update documentation with table of features
