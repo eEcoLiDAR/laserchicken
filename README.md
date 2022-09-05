@@ -30,7 +30,7 @@ pip install laserchicken
 * Edit Changelog (based on commits in https://github.com/eecolidar/laserchicken/compare/v0.3.2...master)
 * Test if package can be installed with pip (`pip install .`)
 * Create Github release
-* Upload to pypi:  
+* Upload to pypi (now implemented via GitHub Actions):  
 ```python setup.py sdist bdist_wheel```  
 ```python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*```  
 (or ```python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*``` to test first)
