@@ -1,1 +1,4 @@
-sphinxcontrib-bibtex
+sphinxcontrib-bibtex==1.0
+sphinx
+docutils
+recommonmark

@@ -5,9 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 0.5.0 - 2022-05-20
 ## Changed:
 - update documentation with table of features
 - drop python 3.5 due to problematic lazperf dependency, includes CI on python 3.7 and 3.8 
+- drop usage of pylas (deprecated) in favour of laspy, with lazrs backend for LAZ compression
+
+## Fixed
+- minor fixes following updates in dateutils/click
 
 ## 0.4.2 - 2020-09-18
 ## Added:
