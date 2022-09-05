@@ -86,22 +86,22 @@ class TestBandRatioFeatureExtractorSimpleArtificialData(unittest.TestCase):
         assert_expected_ratio(volume=InfiniteCylinder(5))
 
     def test_provides_simple(self):
-        self.assertEqual(['band_ratio_6<z<20'], BandRatioFeatureExtractor(6, 20).provides())
+        self.assertEqual(['band_ratio_6_z_20'], BandRatioFeatureExtractor(6, 20).provides())
 
     def test_provides_with_only_upper_limit(self):
-        self.assertEqual(['band_ratio_z<20'], BandRatioFeatureExtractor(None, 20).provides())
+        self.assertEqual(['band_ratio_z_20'], BandRatioFeatureExtractor(None, 20).provides())
 
     def test_provides_with_only_lower_limit(self):
-        self.assertEqual(['band_ratio_20<z'], BandRatioFeatureExtractor(20, None).provides())
+        self.assertEqual(['band_ratio_20_z'], BandRatioFeatureExtractor(20, None).provides())
 
     def test_provides_with_zero_lower_limit(self):
-        self.assertEqual(['band_ratio_0<z'], BandRatioFeatureExtractor(0, None).provides())
+        self.assertEqual(['band_ratio_0_z'], BandRatioFeatureExtractor(0, None).provides())
 
     def test_provides_with_zero_upper_limit(self):
-        self.assertEqual(['band_ratio_z<0'], BandRatioFeatureExtractor(None, 0).provides())
+        self.assertEqual(['band_ratio_z_0'], BandRatioFeatureExtractor(None, 0).provides())
 
     def test_provides_with_data_key(self):
-        self.assertEqual(['band_ratio_1<normalized_height<3'],
+        self.assertEqual(['band_ratio_1_normalized_height_3'],
                          BandRatioFeatureExtractor(1, 3, data_key=keys.normalized_height).provides())
 
 
