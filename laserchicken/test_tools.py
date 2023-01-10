@@ -8,9 +8,9 @@ from laserchicken import keys
 
 def generate_tiny_test_point_cloud():
     """Generate a simple but valid point cloud with 3 points."""
-    pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
-                       'y': {'type': 'double', 'data': np.array([2, 3, 4], dtype=np.float64)},
-                       'z': {'type': 'double', 'data': np.array([3, 4, 5], dtype=np.float64)}}}
+    pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=float64)},
+                       'y': {'type': 'double', 'data': np.array([2, 3, 4], dtype=float64)},
+                       'z': {'type': 'double', 'data': np.array([3, 4, 5], dtype=float64)}}}
     return pc
 
 
@@ -21,9 +21,9 @@ class SimpleTestData(object):
     def get_point_cloud():
         """Get the point cloud data."""
         # This simple_test_point cloud and the simple_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
-                           'y': {'type': 'double', 'data': np.array([20, 30, 40], dtype=np.float64)},
-                           'z': {'type': 'double', 'data': np.array([300, 400, 500], dtype=np.float64)}}}
+        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=float64)},
+                           'y': {'type': 'double', 'data': np.array([20, 30, 40], dtype=float64)},
+                           'z': {'type': 'double', 'data': np.array([300, 400, 500], dtype=float64)}}}
         return pc
 
     @staticmethod
@@ -64,9 +64,9 @@ class ComplexTestData(object):
     def get_point_cloud():
         """Get the point cloud data."""
         # This complex_test_point cloud and the complex_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3, 4, 5], dtype=np.float)},
-                           'y': {'type': 'double', 'data': np.array([2, 3, 4, 5, 6], dtype=np.float)},
-                           'z': {'type': 'double', 'data': np.array([3, 4, 5, 6, 7], dtype=np.float)},
+        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3, 4, 5], dtype=float)},
+                           'y': {'type': 'double', 'data': np.array([2, 3, 4, 5, 6], dtype=float)},
+                           'z': {'type': 'double', 'data': np.array([3, 4, 5, 6, 7], dtype=float)},
                            'return': {'type': 'int', 'data': np.array([1, 1, 2, 2, 1], dtype=np.int32)}
                            },
               keys.point_cloud: {'offset': {'type': 'double', 'data': 12.1}},
@@ -131,14 +131,14 @@ def create_point_cloud(x, y, z, normalized_z=None):
     :param normalized_z: optional normalized z attribute values
     :return: point cloud object
     """
-    point_cloud = {keys.point: {'x': {'type': 'double', 'data': np.array(x, dtype=np.float)},
-                                'y': {'type': 'double', 'data': np.array(y, dtype=np.float)},
-                                'z': {'type': 'double', 'data': np.array(z, dtype=np.float)}},
+    point_cloud = {keys.point: {'x': {'type': 'double', 'data': np.array(x, dtype=float)},
+                                'y': {'type': 'double', 'data': np.array(y, dtype=float)},
+                                'z': {'type': 'double', 'data': np.array(z, dtype=float)}},
                    keys.point_cloud: {},
                    keys.provenance: [{'time': (dt.datetime(2018, 1, 18, 16, 1, 0)), 'module': 'filter'}]}
     if normalized_z is not None:
         point_cloud[keys.point][keys.normalized_height] = {'type': 'double',
-                                                           'data': np.array(normalized_z, dtype=np.float)}
+                                                           'data': np.array(normalized_z, dtype=float)}
     return point_cloud
 
 
