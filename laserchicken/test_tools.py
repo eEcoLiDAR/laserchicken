@@ -8,9 +8,9 @@ from laserchicken import keys
 
 def generate_tiny_test_point_cloud():
     """Generate a simple but valid point cloud with 3 points."""
-    pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=float64)},
-                       'y': {'type': 'double', 'data': np.array([2, 3, 4], dtype=float64)},
-                       'z': {'type': 'double', 'data': np.array([3, 4, 5], dtype=float64)}}}
+    pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
+                       'y': {'type': 'double', 'data': np.array([2, 3, 4], dtype=np.float64)},
+                       'z': {'type': 'double', 'data': np.array([3, 4, 5], dtype=np.float64)}}}
     return pc
 
 
@@ -21,9 +21,9 @@ class SimpleTestData(object):
     def get_point_cloud():
         """Get the point cloud data."""
         # This simple_test_point cloud and the simple_test_header should be in sync. Some tests depend on it.
-        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=float64)},
-                           'y': {'type': 'double', 'data': np.array([20, 30, 40], dtype=float64)},
-                           'z': {'type': 'double', 'data': np.array([300, 400, 500], dtype=float64)}}}
+        pc = {keys.point: {'x': {'type': 'double', 'data': np.array([1, 2, 3], dtype=np.float64)},
+                           'y': {'type': 'double', 'data': np.array([20, 30, 40], dtype=np.float64)},
+                           'z': {'type': 'double', 'data': np.array([300, 400, 500], dtype=np.float64)}}}
         return pc
 
     @staticmethod
