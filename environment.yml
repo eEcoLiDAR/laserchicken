@@ -9,6 +9,17 @@ dependencies:
   - lazrs-python
   - laspy
   - pip
+  - scipy
+  - mock
+  - plyfile
+  - python-dateutil
+  - shapely
+  - pyshp
+  - pandas
+  - click
+  - colorama
+  - psutil
+  - numpy
   - pip:
       - -r requirements.txt
       - .

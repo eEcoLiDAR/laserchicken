@@ -36,3 +36,14 @@ jobs:
       run: |
         conda install pytest
         pytest
+
+    - name: Build
+      shell: bash -l {0}
+      run: |
+        python setup.py build
+
+    - name: Test
+      shell: bash -l {0}
+      run: |
+        pip install pytest pytest-cov
+        pytest --cov=laserchicken --cov-report xml:coverage.xml
