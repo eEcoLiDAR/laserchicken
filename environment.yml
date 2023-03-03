@@ -6,6 +6,8 @@ channels:
 
 dependencies:
   - python>=3.8
+  - lazrs-python
+  - laspy
   - pip
   - pip:
       - -r requirements.txt
