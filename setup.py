@@ -7,7 +7,7 @@ def read(file_name):
     return open(os.path.join(os.path.dirname(__file__), file_name)).read()
 
 
-required = read('requirements.txt').splitlines()
+# required = read('requirements.txt').splitlines()
 version = read('laserchicken/_version.txt').strip()
 
 
@@ -19,7 +19,7 @@ setup(
     keywords=['Python', 'Point cloud'],
     url='https://github.com/eEcoLiDAR/eEcoLiDAR',
     packages=find_packages(),
-    install_requires=required,
+    install_requires=[],
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     classifiers=[

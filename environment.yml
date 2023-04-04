@@ -21,5 +21,4 @@ dependencies:
   - psutil
   - numpy
   - pip:
-      - -r requirements.txt
       - .
