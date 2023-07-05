@@ -5,7 +5,7 @@ import os
 import shapefile
 import shapely
 import sys
-from shapely.geometry import Point
+
 from shapely.errors import WKTReadingError
 from shapely.wkt import loads
 from shapely.geometry import box
@@ -97,11 +97,11 @@ def _check_valid_arguments(attribute, point_cloud):
 
 def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mask=False):
     """
-    Return the selection of the input point cloud that contains only points within a given polygon.
+    Return the selection of the input point cloud that contains only points within the given (multi-)polygon.
 
     :param point_cloud: Input point cloud
-    :param polygon_string: Polygon, either defined in a WKT string or in a file (WKT and ESRI formats supported)
-    :param read_from_file: if true, polygon is expected to be the name of the file where the polygon is defined
+    :param polygon_string: (Multi-)polygon, either defined in a WKT string or in a file (WKT and ESRI formats supported)
+    :param read_from_file: if true, polygon is expected to be the name of the file where the geometry is defined
     :param return_mask: if true, return a mask of selected points, rather than point cloud
     :return:
     """
@@ -121,12 +121,12 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mas
     elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon):
         points_in = []
         count=1
-        for poly in polygon:
-            if not(count%200) or count==len(polygon):
-                print('Checking polygon {}/{}...'.format(count, len(polygon)))
+        for poly in polygon.geoms:
+            if not(count%200) or count==len(polygon.geoms):
+                print('Checking polygon {}/{}...'.format(count, len(polygon.geoms)))
             points_in.extend(_contains(point_cloud, poly))
             count=count+1
-        print('{} points found in {} polygons.'.format(len(points_in), len(polygon)))
+        print('{} points found in {} polygons.'.format(len(points_in), len(polygon.geoms)))
     else:
         raise ValueError('It is not a Polygon or Multipolygon.')
     
