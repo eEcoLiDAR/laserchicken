@@ -60,7 +60,7 @@ class EigenValueVectorizeFeatureExtractor(FeatureExtractor):
         # and reshape and even repeat some indices to get the behavior I'm looking for.
         vects_t = eigen_vectors.transpose([0, 2, 1])  # Eigen vectors used as column vectors. Making row vectors here.
         flattened_vects_t = vects_t.reshape(-1, 3 * 3)  # Flatten the (eigen) vector dimension
-        vect_indices = np.zeros_like(flattened_vects_t, dtype=np.int) + [0, 1, 2, 0, 1, 2, 0, 1, 2]  # 0,1,2 for x,y,z
+        vect_indices = np.zeros_like(flattened_vects_t, dtype=int) + [0, 1, 2, 0, 1, 2, 0, 1, 2]  # 0,1,2 for x,y,z
         vect_indices[:, :3] += new_vector_indices[:, 0:1] * 3  # Because x,y,z, indices have to be increased by 3.
         vect_indices[:, 3:6] += new_vector_indices[:, 1:2] * 3
         vect_indices[:, 6:9] += new_vector_indices[:, 2:3] * 3

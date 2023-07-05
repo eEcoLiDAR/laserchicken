@@ -38,7 +38,7 @@ class TestExtractFeatures(unittest.TestCase):
     @staticmethod
     def test_extract_can_overwrite():
         target = test_tools.ComplexTestData().get_point_cloud()
-        target[keys.point]['test1_a'] = {"type": np.float64, "data": [0.9, 0.99, 0.999, 0.9999]}
+        target[keys.point]['test1_a'] = {"type": float, "data": [0.9, 0.99, 0.999, 0.9999]}
         feature_names = ['test3_a', 'test1_a']
         target = _compute_features(target, feature_names)
         assert all(target[keys.point]['test1_a']['data'] == 0.5 * target[keys.point]['z']['data'])
