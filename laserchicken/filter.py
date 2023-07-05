@@ -97,10 +97,10 @@ def _check_valid_arguments(attribute, point_cloud):
 
 def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mask=False):
     """
-    Return the selection of the input point cloud that contains only points within the given (multi-)polygon.
+    Return the selection of the input point cloud that contains only points within the given polygon(s).
 
     :param point_cloud: Input point cloud
-    :param polygon_string: (Multi-)polygon, either defined in a WKT string or in a file (WKT and ESRI formats supported)
+    :param polygon_string: polygon(s), either defined in a WKT string or in a file (WKT and ESRI formats supported)
     :param read_from_file: if true, polygon is expected to be the name of the file where the geometry is defined
     :param return_mask: if true, return a mask of selected points, rather than point cloud
     :return:
