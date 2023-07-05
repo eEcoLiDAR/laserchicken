@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.6.1 - 2023-07-05
+
+## Fixed
+- select_polygon now works with shapely 2.0
+
 ## 0.6.0 - 2022-09-05
 ## Changed:
 - continuous integration moved from travis to GH actions

@@ -52,7 +52,7 @@ authors:
     family-names: Koma
     given-names: Zsófia
 cff-version: "1.0.3"
-date-released: 2022-09-05
+date-released: 2023-07-05
 doi: "10.5281/zenodo.1219422"
 keywords:
   - "airborne laser scanning"
@@ -62,5 +62,5 @@ keywords:
 license: "Apache-2.0"
 message: "If you use this software, please cite it using these metadata."
 title: "Laserchicken: toolkit for ALS point clouds"
-version: "0.6.0"
+version: "0.6.1"
 ...
