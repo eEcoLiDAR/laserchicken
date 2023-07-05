@@ -4,7 +4,7 @@ pytest
 mock
 plyfile
 python-dateutil
-shapely
+shapely>=2
 PyShp
 pandas
 click
