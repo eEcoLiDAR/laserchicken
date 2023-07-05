@@ -87,7 +87,7 @@ def _get_point_cloud_size(target_point_cloud):
 
 
 def _calculate_number_of_chunks(chunk_size, n_targets):
-    return int(np.math.ceil(n_targets / chunk_size))
+    return int(np.ceil(n_targets / chunk_size))
 
 
 def _compute_features_for_chunk(features_to_do, env_point_cloud, current_neighborhoods, target_point_cloud,
