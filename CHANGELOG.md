@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+
+- laserchicken can now handle sub-field attributes derived from composite dimensions (e.g.
+  "raw_classification" and "bit_fields")
+
 ## Changed
 
 - move to stable Python versions (3.9, 3.10, 3.11)

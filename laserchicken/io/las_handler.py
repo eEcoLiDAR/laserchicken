@@ -28,9 +28,17 @@ class LASHandler(IOHandler):
         :return: point cloud data structure
         """
         file = laspy.read(self.path)
-        dtype = file.header.point_format.dtype()
+        point_format = file.point_format
+        # dimension_names gives access to all the standard and custom
+        # dimensions, including derived sub-fields such as e.g.
+        # "classification", "synthetic", "return_number", and
+        # "number_of_returns")
+        dim_names = list(point_format.dimension_names)
+        # dtype gives access to "raw" dimensions packed as composed fields
+        # (e.g. "raw_classification" and "bit_fields")
+        raw_dim_names = list(point_format.dtype().fields.keys())
         attributes_available = [el if el not in ['X', 'Y', 'Z'] else el.lower()
-                                for el in dtype.fields.keys()]
+                                for el in set(dim_names + raw_dim_names)]
 
         attributes = select_valid_attributes(attributes_available, attributes)
 
