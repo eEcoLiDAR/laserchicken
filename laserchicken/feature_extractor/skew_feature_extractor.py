@@ -25,5 +25,5 @@ class SkewFeatureExtractor(FeatureExtractor):
             source_data = point_cloud[point][self.data_key]['data'][neighborhood]
             skew = stats.skew(source_data)
         else:
-            skew = np.NaN
+            skew = np.nan
         return skew

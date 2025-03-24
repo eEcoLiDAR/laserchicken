@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.7.0 - 2025-03-24
+
+## Added
+
+- laserchicken can now handle sub-field attributes derived from composite dimensions (e.g.
+  "raw_classification" and "bit_fields")
+
+## Changed
+
+- move to stable Python versions (3.9, 3.10, 3.11)
+
+## Fixed
+
+- compatibility issues with Numpy 2.0
+
 ## 0.6.1 - 2023-07-05
 
 ## Fixed
@@ -16,17 +31,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - continuous integration moved from travis to GH actions
 - naming of band ratio's modified (symbol "<" dropped from label)
 
-## Added 
+## Added
 - releases published on PyPI using GH actions
 - checklists included
 
-## Fixed 
+## Fixed
 - Fixed import of deprecated `scipy.stats.stats`
 
 ## 0.5.0 - 2022-05-20
 ## Changed:
 - update documentation with table of features
-- drop python 3.5 due to problematic lazperf dependency, includes CI on python 3.7 and 3.8 
+- drop python 3.5 due to problematic lazperf dependency, includes CI on python 3.7 and 3.8
 - drop usage of pylas (deprecated) in favour of laspy, with lazrs backend for LAZ compression
 
 ## Fixed
@@ -99,7 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - Percentiles 1-100
 - Percentiles normalized height 1-100
-- Band ratio feature extractor 
+- Band ratio feature extractor
 - Function to list available feature extractors
 - Tutorial notebook
 
