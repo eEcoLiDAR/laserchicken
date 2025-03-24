@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Changed
+
+- move to stable Python versions (3.9, 3.10, 3.11)
+
 ## Fixed
 
 - compatibility issues with Numpy 2.0
