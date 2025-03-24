@@ -59,7 +59,7 @@
   "license": {
     "id": "Apache-2.0"
   },
-  "publication_date": "2023-07-05",
+  "publication_date": "2025-03-24",
   "title": "Laserchicken: toolkit for ALS point clouds",
-  "version": "0.6.1"
+  "version": "0.7.0"
 }

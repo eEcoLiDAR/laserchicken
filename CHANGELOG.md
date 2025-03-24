@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.7.0 - 2025-03-24
+
 ## Added
 
 - laserchicken can now handle sub-field attributes derived from composite dimensions (e.g.
