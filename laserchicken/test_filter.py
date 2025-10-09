@@ -429,8 +429,8 @@ class TestSelectPolygonSHPFile(unittest.TestCase):
         x = pc_out[point]['x']['data']
         y = pc_out[point]['y']['data']
         # Seemingly redundant 'astype' call: since pandas 0.24 Dataframe() doesn't enforce the given dtype as before
-        df_out = pd.DataFrame({'x': x, 'y': y}, dtype=np.int32).astype(dtype=np.int32)
-        df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=np.int32)
+        df_out = pd.DataFrame({'x': x, 'y': y}).astype(int)
+        df = pd.read_csv("testdata/ahn2_polygon.out", sep=',', header=0, index_col=0, dtype=int)
         assert (pd.DataFrame.equals(df, df_out))
 
     @staticmethod

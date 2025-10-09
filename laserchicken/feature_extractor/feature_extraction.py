@@ -56,7 +56,7 @@ def compute_features(env_point_cloud, neighborhoods, target_point_cloud, feature
     for feature_name in extended_features:
         target_point_cloud[point][feature_name] = {"type": 'float64',
                                                    "data": np.zeros_like(target_point_cloud[point]['x']['data'],
-                                                                         dtype=np.float64)}
+                                                                         dtype=float)}
 
     if provenance in env_point_cloud:
         utils.add_metadata(target_point_cloud, sys.modules[__name__],
@@ -87,7 +87,7 @@ def _get_point_cloud_size(target_point_cloud):
 
 
 def _calculate_number_of_chunks(chunk_size, n_targets):
-    return int(np.math.ceil(n_targets / chunk_size))
+    return int(np.ceil(n_targets / chunk_size))
 
 
 def _compute_features_for_chunk(features_to_do, env_point_cloud, current_neighborhoods, target_point_cloud,
@@ -124,7 +124,7 @@ def _add_features_from_single_extractor(extractor, env_point_cloud, current_neig
                                      target_indices, volume)
 
     n_targets = len(target_indices)
-    feature_values = [np.empty(n_targets, dtype=np.float64) for _ in range(n_features)]
+    feature_values = [np.empty(n_targets, dtype=float) for _ in range(n_features)]
     if n_features > 1:
         for i in range(n_features):
             feature_values[i] = point_values[i]

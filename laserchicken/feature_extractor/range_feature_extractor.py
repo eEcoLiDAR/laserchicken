@@ -31,5 +31,5 @@ class RangeFeatureExtractor(FeatureExtractor):
             min_z = np.min(source_data) if len(source_data) > 0 else self.DEFAULT_MIN
             range_z = max_z - min_z
         else:
-            max_z = min_z = range_z = np.NaN
+            max_z = min_z = range_z = np.nan
         return max_z, min_z, range_z

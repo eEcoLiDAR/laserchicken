@@ -27,5 +27,5 @@ class MeanStdCoeffFeatureExtractor(FeatureExtractor):
             std_z = np.std(z)
             coeff_var_z = std_z / mean_z
         else:
-            mean_z = std_z = coeff_var_z = np.NaN
+            mean_z = std_z = coeff_var_z = np.nan
         return mean_z, std_z, coeff_var_z

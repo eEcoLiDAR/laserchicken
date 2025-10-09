@@ -24,5 +24,5 @@ class MedianFeatureExtractor(FeatureExtractor):
             source_data = point_cloud[point][self.data_key]['data'][neighborhood]
             median = np.median(source_data)
         else:
-            median = np.NaN
+            median = np.nan
         return median

@@ -25,5 +25,5 @@ class KurtosisFeatureExtractor(FeatureExtractor):
             z = sourcepc[point][self.data_key]['data'][neighborhood]
             kurtosis_z = stats.kurtosis(z)
         else:
-            kurtosis_z = np.NaN
+            kurtosis_z = np.nan
         return kurtosis_z

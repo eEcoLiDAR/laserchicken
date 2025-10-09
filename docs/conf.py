@@ -21,7 +21,7 @@ from laserchicken import __version__
 # -- Project information -----------------------------------------------------
 
 project = 'Laserchicken'
-copyright = '2019, Netherlands eScience Center'
+copyright = '2025, Netherlands eScience Center'
 author = 'Christiaan Meijer'
 
 # The short X.Y version.

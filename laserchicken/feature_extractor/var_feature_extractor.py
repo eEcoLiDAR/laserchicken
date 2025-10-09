@@ -24,5 +24,5 @@ class VarianceFeatureExtractor(FeatureExtractor):
             source_data = source_point_cloud[point][self.data_key]['data'][neighborhood]
             var_z = np.var(source_data)
         else:
-            var_z = np.NaN
+            var_z = np.nan
         return var_z
