@@ -9,7 +9,7 @@ import sys
 from shapely.errors import ShapelyError
 from shapely.wkt import loads
 from shapely.geometry import box
-from shapely.vectorized import contains
+from shapely import contains_xy
 import numpy as np
 
 from laserchicken.keys import point
@@ -209,7 +209,7 @@ def _contains(pc, polygon):
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
         if len(indices) > 0:
-            mask = contains(polygon, x[indices], y[indices])
+            mask = contains_xy(polygon, x[indices], y[indices])
             points_in.extend(indices[mask])
 
     return points_in
