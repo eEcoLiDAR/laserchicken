@@ -7,7 +7,7 @@ import click
 from colorama import Back, init
 
 from . import ToolException
-from .._version import __version__
+from .. import __version__
 from ..filter import select_above, select_below, select_polygon
 from .io import _load, _save
 

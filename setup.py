@@ -8,12 +8,10 @@ def read(file_name):
 
 
 required = read('requirements.txt').splitlines()
-version = read('laserchicken/_version.txt').strip()
-
 
 setup(
     name='laserchicken',
-    version=version,
+    version='0.7.0',
     description='Point cloud toolkit',
     license='Apache 2.0',
     keywords=['Python', 'Point cloud'],
@@ -31,5 +29,4 @@ setup(
             'laserchicken = laserchicken.tools.cli:main',
         ],
     },
-    package_data={'': ['_version.txt']},
 )
