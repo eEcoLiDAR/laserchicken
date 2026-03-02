@@ -1,7 +1,5 @@
 laspy[lazrs]
 scipy>=0.11
-pytest
-mock
 plyfile
 python-dateutil
 shapely>=2

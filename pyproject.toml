@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "laserchicken"
+version = "0.7.0"
+dependencies = [
+    "laspy[lazrs]",
+    "scipy>=0.11",
+    "plyfile",
+    "python-dateutil",
+    "PyShp",
+    "shapely>=2",
+    "pandas",
+    "click",
+    "colorama",
+    "psutil",
+    "numpy",
+]
+description = "Python toolkit for ALS point clouds."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Christiaan Meijer"},
+    {name = "Romulo Goncalves"},
+    {name = "Nicolas Renaud"},
+    {name = "Bouwe Andela"},
+    {name = "Yifat Dzigan"},
+    {name = "Faruk Diblen"},
+    {name = "Elena Ranguelova"},
+    {name = "Gijs van den Oord"},
+    {name = "Meiert W. Grootes"},
+    {name = "Francesco Nattino"},
+    {name = "Ou Ku"},
+    {name = "Zsófia Koma"},
+]
+keywords = [
+    "airborne laser scanning",
+    "machine learning",
+    "point cloud",
+    "digital terrain map",
+]
+classifiers=[
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+]
+
+[project.urls]
+repository = "https://github.com/eEcoLiDAR/laserchicken"
+documentation = "https://laserchicken.readthedocs.io"
+changelog = "https://github.com/eEcoLiDAR/laserchicken/blob/master/CHANGELOG.md"
+doi = "https://doi.org/10.5281/zenodo.1219422"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+]
+docs = [
+    "sphinx",
+    "sphinxcontrib-bibtex",
+    "docutils",
+    "recommonmark",
+]
+
+[tool.setuptools]
+packages = ["laserchicken"]
+
+[project.scripts]
+laserchicken = "laserchicken.tools.cli:main"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=laserchicken --cov-report xml:coverage.xml --cov-report=term"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["laserchicken"]
