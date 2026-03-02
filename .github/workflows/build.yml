@@ -28,17 +28,11 @@ jobs:
           python --version
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Build
-        shell: bash -l {0}
-        run: |
-          python setup.py build
+          pip install .[dev]
       - name: Test
         shell: bash -l {0}
         run: |
-          pip install pytest pytest-cov
-          pytest --cov=laserchicken --cov-report xml:coverage.xml
+          pytest
       - name: Coveralls
         uses: AndreMiras/coveralls-python-action@develop
         with:
