@@ -80,7 +80,7 @@ laserchicken = "laserchicken.tools.cli:main"
 minversion = "6.0"
 addopts = "--cov=laserchicken --cov-report xml:coverage.xml --cov-report=term"
 testpaths = [
-    "tests",
+    "laserchicken",
 ]
 
 [tool.coverage.run]
