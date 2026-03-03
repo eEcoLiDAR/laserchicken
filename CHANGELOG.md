@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - project version moved to `__version__.py`
 - project metadata described with pyproject.toml
 - update test GitHub action to stable Python version (3.11, 3.12, 3.13)
+- updated release GitHub action with new Python version & packages
 
 
 ## Fixed
