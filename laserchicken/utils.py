@@ -4,7 +4,7 @@ import datetime
 
 import numpy as np
 
-from laserchicken import keys, _version
+from laserchicken import keys, __version__
 
 
 def get_point(point_cloud, index):
@@ -141,11 +141,11 @@ def add_metadata(point_cloud, module, params):
     :param params:
     :return:
     """
-    msg = {"time": str(datetime.datetime.utcnow()),
+    msg = {"time": str(datetime.datetime.now(datetime.UTC)),
            "module": module.__name__ if hasattr(module, "__name__") else str(module)}
     if any(params):
         msg["parameters"] = params
-    msg["version"] = _version.__version__
+    msg["version"] = __version__
     if keys.provenance not in point_cloud:
         point_cloud[keys.provenance] = []
     point_cloud[keys.provenance].append(msg)
@@ -208,7 +208,7 @@ def add_to_point_cloud(point_cloud_1, point_cloud_2, add_log=True):
 def fit_plane_svd(xpts, ypts, zpts):
     """
     Fit a plane to a series of points given as x,y,z coordinates.
-    
+
     r=Return the normal vector to the plane
     Use the SVD methods described for example here
     https://www.ltu.se/cms_fs/1.51590!/svd-fitting.pdf
@@ -258,7 +258,7 @@ def fit_plane(x, y, a):
 def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=True):
     """
     Update one feature of the point cloud and assign value.
-    The feature 
+    The feature
     If the feature does not exist in the point cloud, add it.
 
     :param point_cloud: point cloud to update the feature
@@ -276,8 +276,8 @@ def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=Tr
         if isinstance(value, (str, int, float, bool)):
             data_type = type(value).__name__
         else:
-           raise TypeError("value must be numpy ndarray, or one in (str, int, float, bool)") 
-    
+           raise TypeError("value must be numpy ndarray, or one in (str, int, float, bool)")
+
     # Check mask size and type
     if array_mask is not None:
         if array_mask.size != len(point_cloud[keys.point]['x']['data']):
@@ -286,24 +286,24 @@ def update_feature(point_cloud, feature_name, value, array_mask=None, add_log=Tr
     # If value is ndarray, it shall have the same length as x, or true elements in mask
     if isinstance(value, np.ndarray):
         if array_mask is None:
-            if value.size != len(point_cloud[keys.point]['x']['data']): 
+            if value.size != len(point_cloud[keys.point]['x']['data']):
                 raise AssertionError("value size: {} doesn't match the size of point cloud column: {}".format(value.size, len(point_cloud[keys.point]['x']['data'])))
         else:
-            if value.size != np.sum(array_mask): 
+            if value.size != np.sum(array_mask):
                 raise AssertionError("value size: {} doesn't match the number of elements in mask: {}".format(value.size, np.sum(array_mask)))
-    
+
     # Check if the feature exists if not create the column
     if not feature_name in point_cloud[keys.point]:
         point_cloud[keys.point][feature_name] = {'data':np.zeros(len(point_cloud[keys.point]['x']['data']), dtype=data_type),
                                                  'type':data_type}
-    
+
     # Convert data of the feature if necccesary
     if point_cloud[keys.point][feature_name]['type'] != data_type:
         print('Setting data type of {} as {}'.format(feature_name, data_type))
         point_cloud[keys.point][feature_name]['data'] = point_cloud[keys.point][feature_name]['data'].astype(data_type)
         point_cloud[keys.point][feature_name]['type'] = data_type
 
-    # Update the column 
+    # Update the column
     if array_mask is None:
         point_cloud[keys.point][feature_name]['data'][:] = value
     else:

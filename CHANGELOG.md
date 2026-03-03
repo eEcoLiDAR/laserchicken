@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.8.0 - 2026-03-03
+
+## Added
+
+- Optional dependencies added for development and documentation
+
+## Changed
+
+- project version moved to `__version__.py`
+- project metadata described with pyproject.toml
+- update test GitHub action to stable Python version (3.11, 3.12, 3.13)
+
+
+## Fixed
+
+- fixed deprecation warnings
+- documentation (deployment) settings have been updated
+
+
 ## 0.7.0 - 2025-03-24
 
 ## Added

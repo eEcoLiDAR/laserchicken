@@ -6,10 +6,10 @@ import shapefile
 import shapely
 import sys
 
-from shapely.errors import WKTReadingError
+from shapely.errors import ShapelyError
 from shapely.wkt import loads
 from shapely.geometry import box
-from shapely.vectorized import contains
+from shapely import contains_xy
 import numpy as np
 
 from laserchicken.keys import point
@@ -115,7 +115,7 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mas
         polygon = reader(polygon_string)
     else:
         polygon = _load_polygon(polygon_string)
-    
+
     if isinstance(polygon, shapely.geometry.polygon.Polygon):
         points_in = _contains(point_cloud, polygon)
     elif isinstance(polygon,shapely.geometry.multipolygon.MultiPolygon):
@@ -129,8 +129,8 @@ def select_polygon(point_cloud, polygon_string, read_from_file=False, return_mas
         print('{} points found in {} polygons.'.format(len(points_in), len(polygon.geoms)))
     else:
         raise ValueError('It is not a Polygon or Multipolygon.')
-    
-    if return_mask: 
+
+    if return_mask:
         mask = np.zeros(len(point_cloud['vertex']['x']['data']), dtype=bool)
         mask[points_in] = True
         return mask
@@ -177,7 +177,7 @@ def _get_polygon_reader(format):
 def _load_polygon(string):
     try:
         return loads(string)
-    except WKTReadingError:
+    except ShapelyError:
         raise ValueError('Polygon is invalid. --> {}'.format(string))
 
 
@@ -209,7 +209,7 @@ def _contains(pc, polygon):
         indices = np.sort(tree.query_ball_point(x=p, r=rad))
 
         if len(indices) > 0:
-            mask = contains(polygon, x[indices], y[indices])
+            mask = contains_xy(polygon, x[indices], y[indices])
             points_in.extend(indices[mask])
 
     return points_in

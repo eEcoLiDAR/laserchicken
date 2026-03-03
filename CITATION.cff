@@ -62,5 +62,5 @@ keywords:
 license: "Apache-2.0"
 message: "If you use this software, please cite it using these metadata."
 title: "Laserchicken: toolkit for ALS point clouds"
-version: "0.7.0"
+version: "0.8.0"
 ...
