@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=80"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -70,8 +70,8 @@ docs = [
     "recommonmark",
 ]
 
-[tool.setuptools]
-packages = ["laserchicken"]
+[tool.setuptools.packages.find]
+namespaces = false
 
 [project.scripts]
 laserchicken = "laserchicken.tools.cli:main"
