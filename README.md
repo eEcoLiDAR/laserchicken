@@ -23,8 +23,11 @@ pip install laserchicken
 * Check citation.cff using general DOI for all version (option: create file via 'cffinit')
 * Create .zenodo.json file from CITATION.cff (using cffconvert)
 ```cffconvert --validate```
-```cffconvert --ignore-suspect-keys --outputformat zenodo --outfile .zenodo.json```
-* Set new version number in `laserchicken/__version__.py` and `pyproject.toml`
+```cffconvert --format zenodo --outfile .zenodo.json```
+* Set new version number in the following files:
+  * `laserchicken/__version__.py`
+  * `pyproject.toml`
+  * `CITATION.cff`
 * Check that documentation uses the correct version
 * Edit Changelog (based on commits in https://github.com/eecolidar/laserchicken/compare/v0.3.2...master)
 * Test if package can be installed with pip (`pip install .`)
