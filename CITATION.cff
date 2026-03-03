@@ -1,66 +1,66 @@
-# YAML 1.2
----
-abstract: "Laserchicken is a toolkit for handling point clouds created using airborne laser scanning (ALS). Find neighboring points in your point cloud and describe them as feature values. Read our user manual and our (very modest) tutorial."
+# This CITATION.cff file was generated with cffinit.
+
+cff-version: 1.2.0
+title: 'Laserchicken: toolkit for ALS point clouds'
+message: >-
+  If you use this software, please cite it using these
+  metadata.
+type: software
 authors:
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Meijer
     given-names: Christiaan
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Goncalves
     given-names: Romulo
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Renaud
     given-names: Nico
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Andela
     given-names: Bouwe
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Dzigan
     given-names: Yifat
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Diblen
     given-names: Faruk
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Ranguelova
     given-names: Elena
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Oord
     given-names: Gijs
-    name-particle: "van den"
-  -
-    affiliation: "Netherlands eScience Center"
+    name-particle: van den
+  - affiliation: Netherlands eScience Center
     family-names: Grootes
-    given-names: "Meiert W."
-  -
-    affiliation: "Netherlands eScience Center"
+    given-names: Meiert W.
+  - affiliation: Netherlands eScience Center
     family-names: Nattino
     given-names: Francesco
-  -
-    affiliation: "Netherlands eScience Center"
+  - affiliation: Netherlands eScience Center
     family-names: Ku
     given-names: Ou
-  -
-    affiliation: "Institute for Biodiversity and Ecosystem Dynamics, University of Amsterdam"
+  - affiliation: >-
+      Institute for Biodiversity and Ecosystem Dynamics,
+      University of Amsterdam
     family-names: Koma
     given-names: Zsófia
-cff-version: "1.0.3"
-date-released: 2025-03-24
-doi: "10.5281/zenodo.1219422"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.1219422
+    description: Zenodo
+abstract: >-
+  Laserchicken is a toolkit for handling point clouds
+  created using airborne laser scanning (ALS). Find
+  neighboring points in your point cloud and describe them
+  as feature values. Read our user manual and our (very
+  modest) tutorial.
 keywords:
-  - "airborne laser scanning"
-  - "machine learning"
-  - "point cloud"
-  - "digital terrain map"
-license: "Apache-2.0"
-message: "If you use this software, please cite it using these metadata."
-title: "Laserchicken: toolkit for ALS point clouds"
-version: "0.8.0"
-...
+  - airborne laser scanning
+  - machine learning
+  - point cloud
+  - digital terrain map
+license: Apache-2.0
+version: 0.8.1
+date-released: '2026-03-03'

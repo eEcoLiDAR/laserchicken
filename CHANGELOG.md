@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.8.1 - 2026-03-03
+
+## Changed
+
+- updated CITATION.cff to version 1.2
+
+## Fixed
+
+- fixed package discovery - 0.8.0 build on PyPI is broken
+- fixed test path in project metadata
+- release instructions have been updated to new tool versions
+
 ## 0.8.0 - 2026-03-03
 
 ## Added
